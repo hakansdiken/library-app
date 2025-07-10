@@ -1,21 +1,22 @@
 import bcrypt from 'bcrypt';
 import { UserRepository } from './user.repository.js';
+import { UserValidator } from './user.validator.js';
 
 export class UserService {
     constructor() {
         this.userRepository = new UserRepository();
+        this.validator = new UserValidator(this.userRepository);
     }
 
     async register(userData) {
 
-        const existingUser = await this.userRepository.findByEmail(userData.email);
+        const validation = await this.validator.validateForRegister(userData);
 
-        if (existingUser) {
-
-            return { success: false, message: 'Email already registered!' };
+        if (!validation.success) {
+            return validation;
         }
 
-        const hashedPassword = await bcrypt.hash(userData.password, 10);// kullanıcıdan gelen şifreyi hashledik.
+        const hashedPassword = await bcrypt.hash(userData.password, 10);// kullanıcıdan gelen şifre hashlendi
 
         const user = {
             name: userData.name,
@@ -35,23 +36,17 @@ export class UserService {
 
     async login(email, password) {
 
-        const user = await this.userRepository.findByEmail(email);
+        const validation = await this.validator.validateForLogin(email, password)
 
-        if (!user) {
-            return { success: false, message: 'User not found!' };
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-
-            return { success: false, message: 'Invalid password!' };
+        if (!validation.success) {
+            
+            return validation;
         }
 
         return {
             success: true,
             message: 'Login successful.',
-            data: user
+            data: validation.user
         };
     }
 }

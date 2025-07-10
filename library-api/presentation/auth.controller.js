@@ -29,21 +29,25 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-
     const { email, password } = req.body;
 
     try {
-
         const result = await userService.login(email, password);
 
         if (!result.success) {
-
             return res.status(400).json(result);
         }
 
-        res.status(200).json(result);
-    } catch (error) {
+        req.session.regenerate(err => {
+            if (err) {
+                return res.status(500).json({ success: false, message: 'Session error' });
+            }
 
+            req.session.userId = result.data.id;
+            res.status(200).json(result);
+        });
+
+    } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 });
