@@ -38,18 +38,41 @@ router.post('/login', async (req, res) => {
             return res.status(400).json(result);
         }
 
-        req.session.regenerate(err => {
-            if (err) {
-                return res.status(500).json({ success: false, message: 'Session error' });
-            }
-
-            req.session.userId = result.data.id;
-            res.status(200).json(result);
-        });
+        req.session.userId = result.data.id;
+        res.status(200).json(result);
 
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
+});
+
+router.post('/logout', (req, res) => {
+
+    if (!req.session.userId) {
+
+        return res.status(200).json({
+            success: true,
+            message: 'You are already logged out.',
+        });
+    }
+
+    req.session.destroy(err => {
+
+        if (err) {
+            
+            console.error('Session destroy error:', err);
+            return res.status(500).json({
+                success: false,
+                message: 'An error occurred during logout.',
+            });
+        }
+
+        res.clearCookie('connect.sid');
+        return res.status(200).json({
+            success: true,
+            message: 'Logout successful.',
+        });
+    });
 });
 
 export default router;
