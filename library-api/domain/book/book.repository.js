@@ -1,5 +1,5 @@
-import Book from "./book.model.js";
 import { pool } from "../../infrastructure/database.js";
+import { BookFactory } from "./book.factory.js";
 export class BookRepository {
 
     async findById(id) {
@@ -70,17 +70,6 @@ export class BookRepository {
     }
 
     _mapToEntity(row) {
-        return new Book({
-            id: row.id,
-            title: row.title,
-            author: row.author,
-            publisher: row.publisher,
-            publication_year: row.publication_year,
-            page_count: row.page_count,
-            isbn: row.isbn,
-            dewey_code: row.dewey_code,
-            created_at: row.created_at,
-            updated_at: row.updated_at
-        });
+        return BookFactory.fromRow(row);
     }
 }

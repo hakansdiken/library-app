@@ -30,19 +30,19 @@ export class UserValidator {
             return { success: false, message: 'Email is required!' };
         }
 
-        if (!userData.password) {
-
-            return { success: false, message: 'Password is required!' };
-        }
-
         if (!this.isValidEmail(userData.email)) {
 
             return { success: false, message: 'Invalid email!' };
         }
 
-        if (!userData.password || userData.password.length < 6) {
+        if (!this.isValidPassword(userData.password)) {
 
-            return { success: false, message: 'Password must be longer than 6 characters!' };
+            return { success: false, message: 'Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one number.' };
+        }
+
+        if (!this.isValidEmail(userData.email)) {
+
+            return { success: false, message: 'Email format is invalid.' };
         }
 
         return { success: true };
@@ -64,11 +64,16 @@ export class UserValidator {
             return { success: false, message: 'Invalid password!' };
         }
 
-        return { success: true, user};
+        return { success: true, user };
     }
 
     isValidEmail(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    isValidPassword(password) {
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        return regex.test(password);
     }
 }

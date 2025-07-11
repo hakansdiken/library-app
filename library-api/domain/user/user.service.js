@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt';
 import { UserRepository } from './user.repository.js';
 import { UserValidator } from './user.validator.js';
+import { UserDTO } from './user.dto.js';
+import { UserFactory } from './user.factory.js';
 
 export class UserService {
     constructor() {
@@ -13,24 +15,20 @@ export class UserService {
         const validation = await this.validator.validateForRegister(userData);
 
         if (!validation.success) {
+
             return validation;
         }
 
         const hashedPassword = await bcrypt.hash(userData.password, 10);// kullanıcıdan gelen şifre hashlendi
 
-        const user = {
-            name: userData.name,
-            surname: userData.surname,
-            email: userData.email,
-            password: hashedPassword
-        };
+        const user = UserFactory.create(userData, hashedPassword)
 
         const savedUser = await this.userRepository.save(user);
 
         return {
             success: true,
             message: 'User registered successfully.',
-            data: savedUser
+            data: UserDTO.from(savedUser)
         };
     }
 
@@ -39,14 +37,14 @@ export class UserService {
         const validation = await this.validator.validateForLogin(email, password)
 
         if (!validation.success) {
-            
+
             return validation;
         }
 
         return {
             success: true,
             message: 'Login successful.',
-            data: validation.user
+            data: UserDTO.from(validation.user)
         };
     }
 }
