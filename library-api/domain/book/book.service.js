@@ -1,5 +1,4 @@
 import { BookRepository } from './book.repository.js';
-import Book from '../../domain/book/book.model.js';
 import { BookValidator } from './book.validator.js';
 import { BookFactory } from './book.factory.js';
 import { BookDTO } from './book.dto.js';
@@ -59,6 +58,7 @@ export class BookService {
     }
 
     async updateBook(id, data) {
+        
         const book = await this.bookRepository.findById(id);
 
         if (!book) {

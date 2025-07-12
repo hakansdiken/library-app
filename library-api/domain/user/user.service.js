@@ -10,18 +10,18 @@ export class UserService {
         this.validator = new UserValidator(this.userRepository);
     }
 
-    async register(userData) {
+    async register(data) {
 
-        const validation = await this.validator.validateForRegister(userData);
+        const validation = await this.validator.validateForRegister(data);
 
         if (!validation.success) {
 
             return validation;
         }
 
-        const hashedPassword = await bcrypt.hash(userData.password, 10);// kullanıcıdan gelen şifre hashlendi
+        const hashedPassword = await bcrypt.hash(data.password, 10);// kullanıcıdan gelen şifre hashlendi
 
-        const user = UserFactory.create(userData, hashedPassword)
+        const user = UserFactory.create(data, hashedPassword)
 
         const savedUser = await this.userRepository.save(user);
 
@@ -45,6 +45,67 @@ export class UserService {
             success: true,
             message: 'Login successful.',
             data: UserDTO.from(validation.user)
+        };
+    }
+
+    async getAllUsers() {
+
+        const users = await this.userRepository.findAll();
+
+        return {
+            success: true,
+            message: "Users received successfully.",
+            data: users.map(user => UserDTO.from(user))
+        }
+    }
+
+    async getUserByEmail(email) {
+
+        const user = await this.userRepository.findByEmail(email);
+
+        if (!user) {
+
+            return {
+                success: false,
+                message: "User not found!"
+            };
+        }
+
+        return {
+            success: true,
+            message: "User received successfully.",
+            data: users.map(user => UserDTO.from(user))
+        }
+    }
+
+    async updateUser(email, data) {
+
+        const user = await this.userRepository.findByEmail(email);
+
+        if (!user) {
+
+            return {
+                success: false,
+                message: "User not found!"
+            };
+        }
+
+
+        const validation = await this.validator.validateForRegister(data);
+
+        if (!validation.success) {
+
+            return validation;
+        }
+
+        const updatedUser = await UserFactory.update(user, data);
+
+        const savedUser = await this.userRepository.save(updatedUser);
+
+        return {
+            success: true,
+            message: 'User updated successfully.',
+            data: UserDTO.from(savedUser)
         };
     }
 }

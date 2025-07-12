@@ -17,15 +17,15 @@ export class BookFactory {
         });
     }
 
-    static update(book, data) {
-        book.title = data.title ?? book.title;
-        book.author = data.author ?? book.author;
-        book.publisher = data.publisher ?? book.publisher;
-        book.publication_year = data.publication_year ?? book.publication_year;
-        book.page_count = data.page_count ?? book.page_count;
-        book.isbn = data.isbn ?? book.isbn;
-        book.dewey_code = data.dewey_code ?? book.dewey_code;
-        book.updated_at = new Date();
+    static update(existBook, data) {
+        existBook.title = data.title ?? existBook.title;
+        existBook.author = data.author ?? existBook.author;
+        existBook.publisher = data.publisher ?? existBook.publisher;
+        existBook.publication_year = data.publication_year ?? existBook.publication_year;
+        existBook.page_count = data.page_count ?? existBook.page_count;
+        existBook.isbn = data.isbn ?? book.isbn;
+        existBook.dewey_code = data.dewey_code ?? existBook.dewey_code;
+        existBook.updated_at = new Date();
 
         return book;
     }
