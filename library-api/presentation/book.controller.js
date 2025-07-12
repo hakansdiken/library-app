@@ -1,12 +1,14 @@
 import express from 'express';
 import { BookService } from '../domain/book/book.service.js';
 import { BookRepository } from '../domain/book/book.repository.js';
+import { Roles } from '../domain/constants/roles.js';
+import { authorize } from '../infrastructure/middlewares/authorize.middleware.js';
 
 const router = express.Router();
 const bookRepository = new BookRepository();
 const bookService = new BookService(bookRepository);
 
-router.get('/', async (req, res) => {
+router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN, Roles.MEMBER]), async (req, res) => {
 
     try {
 
@@ -24,7 +26,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN, Roles.MEMBER]), async (req, res) => {
 
     try {
 
@@ -44,7 +46,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
 
@@ -62,7 +64,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
 
@@ -85,7 +87,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
 
