@@ -2,7 +2,7 @@ export const Roles = Object.freeze({ //nesne değiştirilemez (immutable) hale g
     ADMIN: "admin",
     LIBRARIAN: "librarian",
     MEMBER: "member"
-})
+});
 
-//onst ile değişken referansını sabitliyoruz.
+//const ile değişken referansını sabitliyoruz.
 //Object.freeze() ile ise nesnenin içeriğini sabitliyoruz.

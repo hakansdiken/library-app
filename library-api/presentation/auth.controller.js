@@ -33,6 +33,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        
         const result = await userService.login(email, password);
 
         if (!result.success) {
@@ -57,6 +58,7 @@ router.post('/login', async (req, res) => {
 
 
     } catch (error) {
+
         res.status(500).json({ success: false, message: error.message });
     }
 });

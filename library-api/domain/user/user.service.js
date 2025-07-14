@@ -59,6 +59,7 @@ export class UserService {
         }
     }
 
+
     async getUserByEmail(email) {
 
         const user = await this.userRepository.findByEmail(email);
@@ -78,9 +79,27 @@ export class UserService {
         }
     }
 
-    async updateUser(email, data) {
+    async getUserById(id) {
 
-        const user = await this.userRepository.findByEmail(email);
+        const user = await this.userRepository.findById(id);
+
+        if (!user) {
+            return {
+                success: false,
+                message: "User not found!"
+            };
+        }
+
+        return {
+            success: true,
+            message: "User received successfully.",
+            data: UserDTO.from(user)
+        }
+    }
+
+    async updateUser(id, data) {
+
+        const user = await this.userRepository.findById(id);
 
         if (!user) {
 
@@ -89,7 +108,6 @@ export class UserService {
                 message: "User not found!"
             };
         }
-
 
         const validation = await this.validator.validateForRegister(data);
 
@@ -104,8 +122,28 @@ export class UserService {
 
         return {
             success: true,
-            message: 'User updated successfully.',
+            message: "User updated successfully.",
             data: UserDTO.from(savedUser)
         };
+    }
+
+    async deleteUser(email) {
+
+        const user = await this.userRepository.findById(id);
+
+        if (!user) {
+
+            return {
+                success: false,
+                message: "User not found!"
+            }
+        }
+
+        await this.userRepository.delete(email);
+
+        return {
+            success: true,
+            message: "User deleted successfully."
+        }
     }
 }
