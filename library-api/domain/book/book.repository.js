@@ -24,8 +24,8 @@ export class BookRepository {
 
             const result = await pool.query(
                 `INSERT INTO books 
-         (title, author, publisher, publication_year, page_count, isbn, dewey_code, created_at ,updated_at) 
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
+         (title, author, publisher, publication_year, page_count, isbn, dewey_code, description, created_at ,updated_at) 
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
                 [
                     book.title,
                     book.author,
@@ -34,6 +34,7 @@ export class BookRepository {
                     book.page_count,
                     book.isbn,
                     book.dewey_code,
+                    book.description,
                     book.created_at,
                     book.updated_at
                 ]
@@ -46,8 +47,8 @@ export class BookRepository {
             const result = await pool.query(
                 `UPDATE books SET 
            title = $1, author = $2, publisher = $3, publication_year = $4,
-           page_count = $5, isbn = $6, dewey_code = $7, updated_at = $8
-         WHERE id = $9 RETURNING *`,
+           page_count = $5, isbn = $6, description = $7,dewey_code = $8, updated_at = $9
+         WHERE id = $10 RETURNING *`,
                 [
                     book.title,
                     book.author,
@@ -56,6 +57,7 @@ export class BookRepository {
                     book.page_count,
                     book.isbn,
                     book.dewey_code,
+                    book.description,
                     book.updated_at,
                     book.id,
                 ]

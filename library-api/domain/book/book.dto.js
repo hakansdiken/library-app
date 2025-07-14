@@ -10,6 +10,7 @@ export class BookDTO {
       page_count: book.page_count,
       isbn: book.isbn,
       dewey_code: book.dewey_code,
+      description: book.description
     };
   }
 }

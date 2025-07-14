@@ -8,6 +8,7 @@ export default class Book {
     page_count,
     isbn,
     dewey_code,
+    description,
     created_at = new Date(),
     updated_at = new Date(),
   }) {
@@ -21,5 +22,6 @@ export default class Book {
     this.dewey_code = dewey_code;
     this.created_at = created_at;
     this.updated_at = updated_at;
+    this.description = description;
   }
 }

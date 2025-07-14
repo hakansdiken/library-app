@@ -90,11 +90,18 @@ export class BookService {
         const book = await this.bookRepository.findById(id);
 
         if (!book) {
-            return { success: false, message: "Book not found!" };
+
+            return { 
+                success: false, 
+                message: "Book not found!" 
+            };
         }
 
         await this.bookRepository.delete(id);
 
-        return { success: true, message: "Book deleted successfully." };
+        return { 
+            success: true, 
+            message: "Book deleted successfully." 
+        };
     }
 }

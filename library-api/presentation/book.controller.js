@@ -59,7 +59,9 @@ router.post('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => 
         }
 
         res.status(201).json(result);
+
     } catch (err) {
+
         res.status(500).json({ success: false, message: err.message });
     }
 });
@@ -72,11 +74,7 @@ router.put('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) =
 
         if (!result.success) {
 
-            if (result.message === "Book not found!") {
-
-                return res.status(404).json(result);
-            }
-            return res.status(400).json(result);
+            return res.status(404).json(result);
         }
 
         res.status(200).json(result);
@@ -94,12 +92,14 @@ router.delete('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res
         const result = await bookService.deleteBook(req.params.id);
 
         if (!result.success) {
+
             return res.status(404).json(result);
         }
 
         res.status(200).json(result);
 
     } catch (err) {
+
         res.status(500).json({ success: false, message: err.message });
     }
 });
