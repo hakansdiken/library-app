@@ -4,9 +4,9 @@ import { BookFactory } from './book.factory.js';
 import { BookDTO } from './book.dto.js';
 
 export class BookService {
-    constructor() {
-        this.bookRepository = new BookRepository();
-        this.bookValidator = new BookValidator();
+    constructor(bookRepository, bookValidator) {
+        this.bookRepository = bookRepository;
+        this.bookValidator = bookValidator;
     }
 
     async createBook(data) {
@@ -14,13 +14,14 @@ export class BookService {
         const validation = this.bookValidator.validateForCreate(data);
 
         if (!validation.success) {
+
             return validation;
         }
 
         const book = BookFactory.create(data);
 
         const savedBook = await this.bookRepository.save(book);
-        
+
         return {
             success: true,
             message: "Book created successfully.",
@@ -34,7 +35,7 @@ export class BookService {
 
         return {
             success: true,
-            message: "Books received successfully.",
+            message: "Books fetched successfully.",
             data: books.map(book => BookDTO.from(book))
         };
     }
@@ -44,6 +45,7 @@ export class BookService {
         const book = await this.bookRepository.findById(id);
 
         if (!book) {
+
             return {
                 success: false,
                 message: "Book not found!"
@@ -52,13 +54,13 @@ export class BookService {
 
         return {
             success: true,
-            message: "Book received successfully.",
+            message: "Book fetched successfully.",
             data: BookDTO.from(book)
         };
     }
 
     async updateBook(id, data) {
-        
+
         const book = await this.bookRepository.findById(id);
 
         if (!book) {
@@ -91,17 +93,17 @@ export class BookService {
 
         if (!book) {
 
-            return { 
-                success: false, 
-                message: "Book not found!" 
+            return {
+                success: false,
+                message: "Book not found!"
             };
         }
 
         await this.bookRepository.delete(id);
 
-        return { 
-            success: true, 
-            message: "Book deleted successfully." 
+        return {
+            success: true,
+            message: "Book deleted successfully."
         };
     }
 }

@@ -1,18 +1,23 @@
 import bcrypt from 'bcrypt';
-import { UserRepository } from './user.repository.js';
-import { UserValidator } from './user.validator.js';
 import { UserDTO } from './user.dto.js';
 import { UserFactory } from './user.factory.js';
 
 export class UserService {
-    constructor() {
-        this.userRepository = new UserRepository();
-        this.validator = new UserValidator(this.userRepository);
+    constructor(userRepository, userValidator) {
+        this.userRepository = userRepository;
+        this.userValidator = userValidator;
     }
 
     async register(data) {
 
-        const validation = await this.validator.validateForRegister(data);
+        const existingUser = await this.userRepository.findByEmail(data.email);
+
+        if (existingUser) {
+
+            return { success: false, message: 'Email is already registered.' };
+        }
+
+        const validation = await this.userValidator.validateForRegister(data);
 
         if (!validation.success) {
 
@@ -27,14 +32,14 @@ export class UserService {
 
         return {
             success: true,
-            message: 'User registered successfully.',
+            message: "User registered successfully.",
             data: UserDTO.from(savedUser)
         };
     }
 
     async login(email, password) {
 
-        const validation = await this.validator.validateForLogin(email, password)
+        const validation = await this.userValidator.validateForLogin(email, password)
 
         if (!validation.success) {
 
@@ -43,7 +48,7 @@ export class UserService {
 
         return {
             success: true,
-            message: 'Login successful.',
+            message: "Login successful.",
             data: UserDTO.from(validation.user)
         };
     }
@@ -54,7 +59,7 @@ export class UserService {
 
         return {
             success: true,
-            message: "Users received successfully.",
+            message: "Users fetched successfully.",
             data: users.map(user => UserDTO.from(user))
         }
     }
@@ -74,7 +79,7 @@ export class UserService {
 
         return {
             success: true,
-            message: "User received successfully.",
+            message: "User fetched successfully.",
             data: users.map(user => UserDTO.from(user))
         }
     }
@@ -92,7 +97,7 @@ export class UserService {
 
         return {
             success: true,
-            message: "User received successfully.",
+            message: "User fetched successfully.",
             data: UserDTO.from(user)
         }
     }
@@ -109,7 +114,7 @@ export class UserService {
             };
         }
 
-        const validation = await this.validator.validateForRegister(data);
+        const validation = await this.userValidator.validateForRegister(data);
 
         if (!validation.success) {
 

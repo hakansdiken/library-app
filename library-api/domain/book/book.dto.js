@@ -6,10 +6,10 @@ export class BookDTO {
       title: book.title,
       author: book.author,
       publisher: book.publisher,
-      publication_year: book.publication_year,
-      page_count: book.page_count,
+      publicationYear: book.publication_year,
+      pageCount: book.page_count,
       isbn: book.isbn,
-      dewey_code: book.dewey_code,
+      deweyCode: book.dewey_code,
       description: book.description
     };
   }

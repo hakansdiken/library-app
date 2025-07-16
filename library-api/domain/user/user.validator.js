@@ -2,18 +2,7 @@ import bcrypt from 'bcrypt';
 
 export class UserValidator {
 
-    constructor(userRepository) {
-        this.userRepository = userRepository;
-    }
-
     async validateForRegister(userData) {
-
-        const existingUser = await this.userRepository.findByEmail(userData.email);
-
-        if (existingUser) {
-
-            return { success: false, message: 'Email is already registered.' };
-        }
 
         if (!userData.name) {
 

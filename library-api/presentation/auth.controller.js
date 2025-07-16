@@ -1,10 +1,12 @@
 import express from 'express';
 import { UserRepository } from '../domain/user/user.repository.js';
 import { UserService } from '../domain/user/user.service.js';
+import { UserValidator } from '../domain/user/user.validator.js';
 
 const router = express.Router();
 const userRepository = new UserRepository();
-const userService = new UserService(userRepository);
+const userValidator = new UserValidator();
+const userService = new UserService(userRepository,userValidator);
 
 router.post('/register', async (req, res) => {
 

@@ -3,15 +3,14 @@ import Book from './book.model.js';
 export class BookFactory {
 
     static create(data) {
-
         return new Book({
             title: data.title,
             author: data.author,
             publisher: data.publisher,
-            publication_year: data.publication_year,
-            page_count: data.page_count,
+            publication_year: data.publicationYear, 
+            page_count: data.pageCount,
             isbn: data.isbn,
-            dewey_code: data.dewey_code,
+            dewey_code: data.deweyCode,
             description: data.description,
             created_at: new Date(),
             updated_at: new Date(),
@@ -22,14 +21,14 @@ export class BookFactory {
         existBook.title = data.title ?? existBook.title;
         existBook.author = data.author ?? existBook.author;
         existBook.publisher = data.publisher ?? existBook.publisher;
-        existBook.publication_year = data.publication_year ?? existBook.publication_year;
-        existBook.page_count = data.page_count ?? existBook.page_count;
+        existBook.publication_year = data.publicationYear ?? existBook.publication_year;
+        existBook.page_count = data.pageCount ?? existBook.page_count;
         existBook.isbn = data.isbn ?? existBook.isbn;
         existBook.description = data.description ?? existBook.description;
-        existBook.dewey_code = data.dewey_code ?? existBook.dewey_code;
+        existBook.dewey_code = data.deweyCode ?? existBook.dewey_code;
         existBook.updated_at = new Date();
 
-        return book;
+        return existBook;
     }
 
     static fromRow(row) {

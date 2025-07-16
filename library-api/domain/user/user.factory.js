@@ -2,7 +2,6 @@ import User from "./user.model.js";
 
 export class UserFactory {
     static create(data, hashedPassword) {
-
         return new User({
             name: data.name,
             surname: data.surname,
@@ -14,19 +13,17 @@ export class UserFactory {
         });
     }
 
-    static update(data, existUser) {
-
+    static update(existUser, data) {
         existUser.name = data.name ?? existUser.name;
         existUser.surname = data.surname ?? existUser.surname;
         existUser.email = data.email ?? existUser.email;
         existUser.role = data.role ?? existUser.role;
         existUser.updated_at = new Date();
 
-        return user;
+        return existUser;
     }
 
     static fromRow(row) {
-
         return new User({
             id: row.id,
             name: row.name,
@@ -38,6 +35,4 @@ export class UserFactory {
             updated_at: row.updated_at
         });
     }
-
-
 }

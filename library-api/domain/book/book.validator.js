@@ -30,6 +30,9 @@ export class BookValidator {
         if (typeof data.author !== 'string') {
             return { success: false, message: "Author must be a string." };
         }
+        if (typeof data.description !== 'string') {
+            return { success: false, message: "Description must be a string." };
+        }
         if (typeof data.publisher !== 'string') {
             return { success: false, message: "Publisher must be a string." };
         }
@@ -59,8 +62,11 @@ export class BookValidator {
         if (data.title && typeof data.title !== 'string') {
             return { success: false, message: "Title must be a string." };
         }
-        if (data.author && typeof data.author !== 'string') {
+        if (typeof data.author !== 'string') {
             return { success: false, message: "Author must be a string." };
+        }
+        if (typeof data.description !== 'string') {
+            return { success: false, message: "Description must be a string." };
         }
         if (data.publisher && typeof data.publisher !== 'string') {
             return { success: false, message: "Publisher must be a string." };

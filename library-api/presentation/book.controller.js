@@ -3,10 +3,12 @@ import { BookService } from '../domain/book/book.service.js';
 import { BookRepository } from '../domain/book/book.repository.js';
 import { Roles } from '../domain/constants/roles.js';
 import { authorize } from '../infrastructure/middlewares/authorize.middleware.js';
+import { BookValidator } from '../domain/book/book.validator.js';
 
 const router = express.Router();
 const bookRepository = new BookRepository();
-const bookService = new BookService(bookRepository);
+const bookValidator = new BookValidator();
+const bookService = new BookService(bookRepository, bookValidator);
 
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN, Roles.MEMBER]), async (req, res) => {
 

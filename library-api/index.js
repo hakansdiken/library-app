@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import bookController from './presentation/book.controller.js';
 import authController from './presentation/auth.controller.js';
 import userController from './presentation/user.controller.js';
+import borrowController from './presentation/borrow.controller.js'
 import { sessionMiddleware } from './infrastructure/middlewares/session.middleware.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -25,6 +26,7 @@ app.use(sessionMiddleware);
 app.use('/api', authController);
 app.use('/api/users', userController)
 app.use('/api/books', bookController);
+app.use('/api/borrows', borrowController);
 
 const PORT = process.env.PORT;
 
