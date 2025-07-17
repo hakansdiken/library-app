@@ -6,20 +6,18 @@ import authController from './presentation/auth.controller.js';
 import userController from './presentation/user.controller.js';
 import borrowController from './presentation/borrow.controller.js'
 import { sessionMiddleware } from './infrastructure/middlewares/session.middleware.js';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 
 const app = express();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.use(cors({
+    origin: 'http://localhost:4200',
+    credentials: true //cookie gönderimine izin verildi
+}
+));
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 app.use(sessionMiddleware);
 
