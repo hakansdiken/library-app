@@ -29,6 +29,11 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
         const result = await borrowService.getAllBorrows();
 
+        if (!result.success) {
+
+            return res.status(400).json(result);
+        }
+
         return res.json(result);
 
     } catch (err) {
@@ -37,6 +42,24 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
     }
 });
 
+router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
+
+    try {
+
+        const result = await borrowService.getBorrowsWithOverdue();
+
+        if (!result.success) {
+
+            return res.status(400).json(result);
+        }
+
+        return res.json(result);
+
+    } catch (err) {
+
+        res.status(500).json({ success: false, message: err.message });
+    }
+});
 
 router.get('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 

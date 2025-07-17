@@ -40,6 +40,15 @@ export class BorrowRepository {
         return result.rows.map(row => this._mapToEntity(row));
     }
 
+    async findAllWithOverdue() {
+
+        const result = await pool.query("SELECT * FROM borrows WHERE status = $1 AND due_date < NOW()", ["borrowed"])
+
+        if (result.rows.length === 0) return [];
+
+        return result.rows.map(row => this._mapToEntity(row));
+    }
+
     async save(borrow) {
 
         const values = [

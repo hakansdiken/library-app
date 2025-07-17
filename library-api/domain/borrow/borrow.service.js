@@ -121,11 +121,22 @@ export class BorrowService {
 
     async getBorrowsByUserId(userId) {
 
-        const borrows = await this.borrowRepository.findByUserId(userId)
+        const borrows = await this.borrowRepository.findByUserId(userId);
 
         return {
             success: true,
             message: "Borrow fetched successfully.",
+            data: borrows.map(borrow => BorrowDTO.from(borrow))
+        };
+    }
+
+    async getBorrowsWithOverdue() {
+
+        const borrows = await this.borrowRepository.findAllWithOverdue();
+
+        return {
+            success: true,
+            message: "Overdue borrows fetched successfully.",
             data: borrows.map(borrow => BorrowDTO.from(borrow))
         };
     }
