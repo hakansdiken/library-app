@@ -37,25 +37,7 @@ export class UserValidator {
         return { success: true };
     }
 
-    async validateForLogin(email, password) {
-
-        const user = await this.userRepository.findByEmail(email);
-
-        if (!user) {
-
-            return { success: false, message: 'User not found!' };
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password)
-
-        if (!isPasswordValid) {
-
-            return { success: false, message: 'Invalid password!' };
-        }
-
-        return { success: true, user };
-    }
-
+ 
     isValidEmail(email) {
         const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return regex.test(email);

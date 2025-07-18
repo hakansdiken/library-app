@@ -39,17 +39,25 @@ export class UserService {
 
     async login(email, password) {
 
-        const validation = await this.userValidator.validateForLogin(email, password)
 
-        if (!validation.success) {
+        const user = await this.userRepository.findByEmail(email);
 
-            return validation;
+        if (!user) {
+
+            return { success: false, message: 'User not found!' };
+        }
+
+        const isPasswordValid = await bcrypt.compare(password, user.password)
+
+        if (!isPasswordValid) {
+
+            return { success: false, message: 'Invalid password!' };
         }
 
         return {
             success: true,
             message: "Login successful.",
-            data: UserDTO.from(validation.user)
+            data: UserDTO.from(user)
         };
     }
 

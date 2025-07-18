@@ -6,7 +6,7 @@ import { UserValidator } from '../domain/user/user.validator.js';
 const router = express.Router();
 const userRepository = new UserRepository();
 const userValidator = new UserValidator();
-const userService = new UserService(userRepository,userValidator);
+const userService = new UserService(userRepository, userValidator);
 
 router.post('/register', async (req, res) => {
 
@@ -35,12 +35,14 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        
+
         const result = await userService.login(email, password);
 
         if (!result.success) {
+
+            const statusCode = result.message === "User not found!" ? 404 : 400;
             
-            return res.status(400).json(result);
+            return res.status(statusCode).json(result);
         }
 
         req.session.regenerate(err => {
