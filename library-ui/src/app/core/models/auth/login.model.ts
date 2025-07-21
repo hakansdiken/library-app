@@ -1,11 +1,11 @@
 import { User } from "./user.model";
 
-export interface RegisterRequest {
+export interface LoginRequest {
     email: string;
     password: string;
 }
 
-export interface RegisterResponse {
+export interface LoginResponse {
     success: boolean;
     message: string;
     user?: User;

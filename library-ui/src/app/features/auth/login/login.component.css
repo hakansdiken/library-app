@@ -1,0 +1,24 @@
+.title {
+    text-align: center;
+    color: #3f51b5;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    gap: 10px;
+}
+
+button {
+    color: white;
+    font-weight: 600;
+}
+
+button:hover {
+    background-color: #e8ebff;
+}
