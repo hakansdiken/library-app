@@ -1,6 +1,6 @@
 import { Routes } from "@angular/router";
-import { BooksListComponent } from "./list/books-list/books-list.component";
-import { BookDetailComponent } from "./detail/book-detail/book-detail.component";
+import { BooksListComponent } from "./list/books-list.component";
+import { BookDetailComponent } from "./detail/book-detail.component";
 
 export const BOOKS_ROUTE: Routes = [
     {
@@ -11,5 +11,4 @@ export const BOOKS_ROUTE: Routes = [
         path: ':id',
         component: BookDetailComponent
     },
-    
 ]

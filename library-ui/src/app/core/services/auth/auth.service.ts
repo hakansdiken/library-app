@@ -1,9 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { RegisterRequest, RegisterResponse } from '../../models/auth/register.model';
-import { LoginRequest, LoginResponse } from '../../models/auth/login.model';
+import { RegisterRequest } from '../../models/auth/register.model';
+import { LoginRequest } from '../../models/auth/login.model';
 import { API_ENDPOINTS } from '../../../../constants/api-endpoints';
+import { ApiResponse } from '../../models/generic.model';
+import { User } from '../../models/auth/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +14,13 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  register(data: RegisterRequest): Observable<RegisterResponse> {
+  register(data: RegisterRequest): Observable<ApiResponse<User>> {
 
-    return this.http.post<RegisterResponse>(`${API_ENDPOINTS.AUTH.REGISTER}`, data, { withCredentials: true })
+    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.REGISTER}`, data, { withCredentials: true })
   }
 
-  login(data: LoginRequest): Observable<LoginResponse> {
+  login(data: LoginRequest): Observable<ApiResponse<User>> {
 
-    return this.http.post<LoginResponse>(`${API_ENDPOINTS.AUTH.LOGIN}`, data, { withCredentials: true })
+    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.LOGIN}`, data, { withCredentials: true })
   }
 }

@@ -4,8 +4,8 @@ import { UserDetailComponent } from './user/detail/user-detail/user-detail.compo
 import { UserEditComponent } from './user/edit/user-edit/user-edit.component';
 import { BookCreateComponent } from './books/create/book-create/book-create.component';
 import { BookEditComponent } from './books/edit/book-edit/book-edit.component';
-import { BookDetailComponent } from '../books/detail/book-detail/book-detail.component';
-import { BooksListComponent } from '../books/list/books-list/books-list.component';
+import { BookDetailComponent } from '../books/detail/book-detail.component';
+import { BooksListComponent } from '../books/list/books-list.component';
 import { UserListComponent } from './user/list/user-list/user-list.component';
 
 export const ADMIN_ROUTES: Routes = [

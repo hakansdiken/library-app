@@ -1,0 +1,25 @@
+<h2 class="section-title">Kitap Listesi</h2>
+
+<div class="button-container">
+  <button mat-stroked-button class="add-button">
+    Add Book
+  </button>
+</div>
+
+<div class="books-container">
+  <mat-card *ngFor="let book of books" class="book-card">
+    <mat-card-header>
+      <mat-card-title>{{ book.title }}</mat-card-title>
+      <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p><strong>Publisher:</strong> {{ book.publisher }}</p>
+      <p><strong>Publish Year:</strong> {{ book.publicationYear }}</p>
+      <p><strong>Page Count:</strong> {{ book.pageCount }}</p>
+      <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+      <p><strong>Dewey Code:</strong> {{ book.deweyCode }}</p>
+      <button mat-flat-button>Borrow</button>
+      <button mat-raised-button (click)="goToBookDetail(book.id)">Detail</button>
+    </mat-card-content>
+  </mat-card>
+</div>
