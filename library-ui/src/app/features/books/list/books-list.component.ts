@@ -5,6 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
+import { BookCreateComponent } from '../create/book-create.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-books-list',
@@ -16,7 +18,7 @@ export class BooksListComponent implements OnInit {
 
   books: Book[] = [];
 
-  constructor(private bookService: BookService, private router: Router) { }
+  constructor(private bookService: BookService, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.loadBooks()
@@ -27,10 +29,19 @@ export class BooksListComponent implements OnInit {
     this.router.navigate([`/books/${bookId}`]);
   }
 
-  goToAddBook() {
+  openCreateDialog() {
+    const dialogRef = this.dialog.open(BookCreateComponent, {
+      width: '400px',
+      //data: {} 
+    });
 
-    this.router.navigate([`/books/create`])
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log("")
+      }
+    });
   }
+
 
   loadBooks() {
 

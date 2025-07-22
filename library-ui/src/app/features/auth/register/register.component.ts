@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, ViewChild } from '@angular/core';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -19,7 +19,8 @@ import { Router } from '@angular/router';
 })
 export class RegisterComponent {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  serverErrorMessage: string | null = null;
+  successMessage: string | null = null;
 
   registerData: RegisterRequest = {
     name: '',
@@ -28,17 +29,39 @@ export class RegisterComponent {
     password: ''
   };
 
-  onSubmit() {
+
+  constructor(private authService: AuthService, private router: Router) { }
+
+  onSubmit(registerForm: NgForm) {
+
+    if (registerForm.invalid) {
+
+      return;
+    }
 
     this.authService.register(this.registerData).subscribe({
-      
-      next: (res) => {
-        console.log("Register success:", res);
+
+      next: () => {
+
+        this.serverErrorMessage = null;
+        this.successMessage = "You registered successfully";
+
+        registerForm.resetForm();
       },
       error: (err) => {
 
-        console.error("Register failed:", err);
+        console.log("error:", err);
+
+        if (err.status === 400 && err.error?.message) {
+
+          this.serverErrorMessage = err.error.message;
+
+        } else {
+
+          this.serverErrorMessage = "Unexpected error occurred.";
+        }
       }
     });
   }
+
 }

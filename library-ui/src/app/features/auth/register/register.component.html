@@ -1,37 +1,64 @@
-<div class="register-container">
-    <form (ngSubmit)="onSubmit()" class="login-form" #loginForm="ngForm">
-        <h2 class="title">Register</h2>
+<form (ngSubmit)="onSubmit(registerForm)" class="register-form" #registerForm="ngForm">
+    <h2 class="title">Register</h2>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Name</mat-label>
-            <input matInput required [(ngModel)]="registerData.name" name="name" #nameInput="ngModel" />
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput required [(ngModel)]="registerData.name" name="name" #nameInput="ngModel" />
+        <mat-error *ngIf="nameInput.errors?.['required'] && (nameInput.dirty || nameInput.touched)">
+            Name is required.
+        </mat-error>
+    </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Surname</mat-label>
-            <input matInput required [(ngModel)]="registerData.surname" name="surname" #surnameInput="ngModel" />
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Surname</mat-label>
+        <input matInput required [(ngModel)]="registerData.surname" name="surname" #surnameInput="ngModel" />
+        <mat-error *ngIf="surnameInput.errors?.['required'] && (surnameInput.dirty || surnameInput.touched)">
+            Surname is required.
+        </mat-error>
+    </mat-form-field>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
-            <input matInput required [(ngModel)]="registerData.email" name="email" #emailInput="ngModel" />
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput required pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+            [(ngModel)]="registerData.email" name="email" #emailInput="ngModel" />
 
-            <mat-error *ngIf="emailInput.invalid && (emailInput.dirty )">
-                Please enter a valid email address.
-            </mat-error>
-        </mat-form-field>
+        <mat-error *ngIf="emailInput.errors?.['required'] && (emailInput.dirty || emailInput.touched)">
+            Email is required.
+        </mat-error>
 
-        <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Password</mat-label>
-            <input matInput type="password" required minlength="8" [(ngModel)]="registerData.password" name="password"
-                #passwordInput="ngModel" />
-            <mat-error *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)">
-                Password must be at least 8 characters.
-            </mat-error>
-        </mat-form-field>
+        <mat-error *ngIf="emailInput.errors?.['pattern'] && (emailInput.dirty || emailInput.touched)">
+            Please enter a valid email address.
+        </mat-error>
+    </mat-form-field>
 
-        <button mat-raised-button type="submit">
-            Submit
-        </button>
-    </form>
-</div>
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+
+        <input matInput type="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" minlength="8"
+            [(ngModel)]="registerData.password" name="password" #passwordInput="ngModel" />
+
+        <mat-error *ngIf="passwordInput.errors?.['required'] && (passwordInput.dirty || passwordInput.touched)">
+            Password is required.
+        </mat-error>
+
+        <mat-error *ngIf="passwordInput.errors?.['minlength'] && (passwordInput.dirty || passwordInput.touched)">
+            Password must be at least 8 characters.
+        </mat-error>
+
+        <mat-error *ngIf="passwordInput.errors?.['pattern'] && (passwordInput.dirty || passwordInput.touched)">
+            Password include at least one uppercase letter, one lowercase letter, and one number.
+        </mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button type="submit">
+        Submit
+    </button>
+</form>
+
+<mat-error *ngIf="serverErrorMessage">
+    {{ serverErrorMessage }}
+</mat-error>
+
+<span *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+</span>

@@ -1,0 +1,23 @@
+h2 {
+    text-align: center;
+}
+
+.w-full {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.create-container {
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+    height: 80vh; 
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 16px;
+    min-width: 350px;
+}
+
+.mat-form-field {
+    width: 100%;
+}

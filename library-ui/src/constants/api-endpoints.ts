@@ -9,16 +9,16 @@ export const API_ENDPOINTS = {
   USERS: {
     ROOT: `${API_BASE_URL}/users`,
     BY_ID: (id: string) => `${API_BASE_URL}/users/${id}`,
-    ADD: `${API_BASE_URL}/users/create`,
-    EDIT: (id: string) => `${API_BASE_URL}/users/update/${id}`,
-    DELETE: (id: string) => `${API_BASE_URL}/users/delete/${id}`
+    CREATE: `${API_BASE_URL}/users/`,
+    EDIT: (id: string) => `${API_BASE_URL}/users/${id}`,
+    DELETE: (id: string) => `${API_BASE_URL}/users/${id}`
   },
   BOOKS: {
     ROOT: `${API_BASE_URL}/books`,
     BY_ID: (id: string) => `${API_BASE_URL}/books/${id}`,
-    ADD: `${API_BASE_URL}/books/create`,
-    EDIT: (id: string) => `${API_BASE_URL}/books/update/${id}`,
-    DELETE: (id: string) => `${API_BASE_URL}/books/delete/${id}`
+    CREATE: `${API_BASE_URL}/books`,
+    EDIT: (id: string) => `${API_BASE_URL}/books/${id}`,
+    DELETE: (id: string) => `${API_BASE_URL}/books/${id}`
   },
 
 };

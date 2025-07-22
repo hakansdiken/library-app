@@ -1,1 +1,61 @@
-<p>book-create works!</p>
+<form #createForm="ngForm" (ngSubmit)="createBook(createForm)" class="create-container">
+
+    <h2 mat-dialog-title>Add New Book</h2>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput required [(ngModel)]="book.title" name="title" #titleInput="ngModel" />
+        <mat-error *ngIf="titleInput.errors?.['required']">Title is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Author</mat-label>
+        <input matInput required [(ngModel)]="book.author" name="author" #authorInput="ngModel" />
+        <mat-error *ngIf="authorInput.errors?.['required']">Author is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="3" [(ngModel)]="book.description" name="description"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Publisher</mat-label>
+        <input matInput required [(ngModel)]="book.publisher" name="publisher" #publisherInput="ngModel" />
+        <mat-error *ngIf="publisherInput.errors?.['required']">Publisher is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Publication Year</mat-label>
+        <input matInput required type="number" [max]="currentYear" [(ngModel)]="book.publicationYear"
+            name="publicationYear" #yearInput="ngModel" />
+        <mat-error *ngIf="yearInput.errors?.['required']">Publication year is required.</mat-error>
+        <mat-error *ngIf="yearInput.errors?.['max']">Publication year cannot be in the future.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>ISBN</mat-label>
+        <input matInput required [(ngModel)]="book.isbn" name="isbn" #isbnInput="ngModel" />
+        <mat-error *ngIf="isbnInput.errors?.['required']">ISBN is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Dewey Code</mat-label>
+        <input matInput required [(ngModel)]="book.deweyCode" name="deweyCode" #deweyInput="ngModel" />
+        <mat-error *ngIf="deweyInput.errors?.['required']">Dewey code is required.</mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Page Count</mat-label>
+        <input matInput required type="number" min="1" [(ngModel)]="book.pageCount" name="pageCount"
+            #pageCountInput="ngModel" />
+        <mat-error *ngIf="pageCountInput.errors?.['required']">Page count is required.</mat-error>
+        <mat-error *ngIf="pageCountInput.errors?.['min']">Page Count must be greater than 0</mat-error>
+    </mat-form-field>
+
+    <div>
+        <button mat-button type="submit" [disabled]="createForm.invalid">Add</button>
+        <button mat-button mat-dialog-close cdkFocusInitial>Cancel</button>
+    </div>
+
+</form>

@@ -7,9 +7,10 @@
 }
 
 .auth-card {
-    height: 600px;
-    padding: 2rem;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
-    background: linear-gradient(135deg, #f1f7ff 0%, #bfd6ff 100%);
+  height: 80vh; 
+  padding: 2rem;
+  overflow-y: auto; 
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f1f7ff 0%, #bfd6ff 100%);
 }

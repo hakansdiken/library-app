@@ -1,9 +1,7 @@
 <h2 class="section-title">Kitap Listesi</h2>
 
 <div class="button-container">
-  <button mat-stroked-button class="add-button">
-    Add Book
-  </button>
+  <button mat-raised-button (click)="openCreateDialog()">Add Book</button>
 </div>
 
 <div class="books-container">
@@ -18,8 +16,12 @@
       <p><strong>Page Count:</strong> {{ book.pageCount }}</p>
       <p><strong>ISBN:</strong> {{ book.isbn }}</p>
       <p><strong>Dewey Code:</strong> {{ book.deweyCode }}</p>
-      <button mat-flat-button>Borrow</button>
-      <button mat-raised-button (click)="goToBookDetail(book.id)">Detail</button>
+
+      <div class="operations-container">
+        <button mat-flat-button>Borrow</button>
+        <button mat-raised-button (click)="goToBookDetail(book.id)">Detail</button>
+      </div>
+
     </mat-card-content>
   </mat-card>
 </div>
