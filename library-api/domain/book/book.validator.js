@@ -48,7 +48,10 @@ export class BookValidator {
     if (typeof data.deweyCode !== 'string') {
       return { success: false, message: "Dewey code must be a string." };
     }
-
+    if (data.pageCount <= 0) {
+      return { success: false, message: "Page count must be a positive number." };
+    }
+    
     const currentYear = new Date().getFullYear();
     if (data.publicationYear > currentYear) {
       return { success: false, message: "Publication year cannot be in the future." };
@@ -81,6 +84,9 @@ export class BookValidator {
     }
     if (data.deweyCode && typeof data.deweyCode !== 'string') {
       return { success: false, message: "Dewey code must be a string." };
+    }
+    if (data.pageCount <= 0) {
+      return { success: false, message: "Page count must be a positive number." };
     }
 
     const currentYear = new Date().getFullYear();
