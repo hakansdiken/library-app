@@ -12,7 +12,7 @@ export class BookApplication {
 
         const dto = new BookCreateRequestDTO(data)
         const result = await this.bookService.createBook(dto);
-console.log(dto)
+        
         if (!result.success) {
 
             return result;

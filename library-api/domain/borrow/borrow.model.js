@@ -3,32 +3,32 @@ import { BorrowStatus } from "../constants/borrow-status.js";
 export default class Borrow {
   constructor({
     id,
-    book_id,
-    user_id,
-    borrow_date,
-    due_date,
-    return_date = null,
+    bookId,
+    userId,
+    borrowDate,
+    dueDate,
+    returnDate = null,
     status
   }) {
     this.id = id;
-    this.book_id = book_id;
-    this.user_id = user_id;
-    this.borrow_date = borrow_date;
-    this.due_date = due_date;
-    this.return_date = return_date;
+    this.bookId = bookId;
+    this.userId = userId;
+    this.borrowDate = borrowDate;
+    this.dueDate = dueDate;
+    this.returnDate = returnDate;
     this.status = status ?? BorrowStatus.BORROWED;
   }
 
-  markReturned(return_date = new Date()) {
-
-    this.return_date = return_date;
+  markReturned(returnDate = new Date()) {
+    
+    this.returnDate = returnDate;
     this.status = BorrowStatus.RETURNED;
   }
 
-  isOverdue(current_date = new Date()) {
+  isOverdue(currentDate = new Date()) {
 
     return (
-      this.status === BorrowStatus.BORROWED && new Date(this.due_date) < current_date
+      this.status === BorrowStatus.BORROWED && new Date(this.dueDate) < currentDate
     );
   }
 }

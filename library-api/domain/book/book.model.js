@@ -4,24 +4,24 @@ export default class Book {
     title,
     author,
     publisher,
-    publication_year,
-    page_count,
+    publicationYear,
+    pageCount,
     isbn,
-    dewey_code,
+    deweyCode,
     description,
-    created_at = new Date(),
-    updated_at = new Date(),
+    createdAt = new Date(),
+    updatedAt = new Date(),
   }) {
     this.id = id;
     this.title = title;
     this.author = author;
     this.publisher = publisher;
-    this.publication_year = publication_year;
-    this.page_count = page_count;
+    this.publicationYear = publicationYear;
+    this.pageCount = pageCount;
     this.isbn = isbn;
-    this.dewey_code = dewey_code;
-    this.created_at = created_at;
-    this.updated_at = updated_at;
+    this.deweyCode = deweyCode;
     this.description = description;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 }

@@ -8,8 +8,8 @@ export class UserFactory {
             email: data.email,
             role: data.role ?? 'member',
             password: hashedPassword,
-            created_at: new Date(),
-            updated_at: new Date(),
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
     }
 
@@ -18,7 +18,7 @@ export class UserFactory {
         existUser.surname = data.surname ?? existUser.surname;
         existUser.email = data.email ?? existUser.email;
         existUser.role = data.role ?? existUser.role;
-        existUser.updated_at = new Date();
+        existUser.updatedAt = new Date();
 
         return existUser;
     }
@@ -31,8 +31,8 @@ export class UserFactory {
             email: row.email,
             role: row.role,
             password: row.password,
-            created_at: row.created_at,
-            updated_at: row.updated_at
+            createdAt: row.created_at,
+            updatedAt: row.updated_at
         });
     }
 }

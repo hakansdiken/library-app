@@ -8,7 +8,6 @@ export class BookService {
 
     async createBook(data) {
         
-        console.log("data:" + data)
         const validation = this.bookValidator.validateForCreate(data);
 
         if (!validation.success) {

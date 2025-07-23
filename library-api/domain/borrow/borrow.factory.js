@@ -10,35 +10,32 @@ export class BorrowFactory {
         dueDate.setDate(borrowDate.getDate() + 14);
 
         return new Borrow({
-            book_id: data.bookId,
-            user_id: data.userId,
-            borrow_date: borrowDate,
-            due_date: dueDate,
-            return_date: null,
+            bookId: data.bookId,
+            userId: data.userId,
+            borrowDate: borrowDate,
+            dueDate: dueDate,
+            returnDate: null,
             status: BorrowStatus.BORROWED
         });
     }
 
     static update(existBorrow, data) {
-
-        existBorrow.return_date = data.returnDate ?? existBorrow.return_date;
-        existBorrow.status = data.status ?? existBorrow.status
-        existBorrow.due_date = data.dueDate ?? existBorrow.due_date
+        existBorrow.returnDate = data.returnDate ?? existBorrow.returnDate;
+        existBorrow.status = data.status ?? existBorrow.status;
+        existBorrow.dueDate = data.dueDate ?? existBorrow.dueDate;
 
         return existBorrow;
     }
 
     static fromRow(row) {
-
         return new Borrow({
             id: row.id,
-            book_id: row.book_id,
-            user_id: row.user_id,
-            borrow_date: row.borrow_date,
-            due_date: row.due_date,
-            return_date: row.return_date,
+            bookId: row.book_id,
+            userId: row.user_id,
+            borrowDate: row.borrow_date,
+            dueDate: row.due_date,
+            returnDate: row.return_date,
             status: row.status
         });
-
     }
 }
