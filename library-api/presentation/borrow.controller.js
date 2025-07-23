@@ -1,16 +1,29 @@
 import express from 'express'
 import { BorrowService } from '../domain/borrow/borrow.service.js';
+import { BookService } from '../domain/book/book.service.js';
 import { Roles } from '../domain/constants/roles.js';
 import { authorize } from '../infrastructure/middlewares/authorize.middleware.js';
 import { BorrowApplication } from '../application/borrow.application.js';
 import { BorrowRepository } from '../domain/borrow/borrow.repository.js';
 import { BorrowValidator } from '../domain/borrow/borrow.validator.js';
+import { UserRepository } from '../domain/user/user.repository.js';
+import { BookRepository } from '../domain/book/book.repository.js';
+import { UserService } from '../domain/user/user.service.js';
+
 
 const router = express.Router();
+
+const userRepository = new UserRepository()
+const bookRepository = new BookRepository();
 const borrowRepository = new BorrowRepository();
-const borrowValidator = new BorrowValidator()
+
+const borrowValidator = new BorrowValidator();
+
 const borrowService = new BorrowService(borrowRepository, borrowValidator);
-const borrowApplication = new BorrowApplication(borrowRepository, borrowService);
+const userService = new UserService(userRepository);
+const bookService = new BookService(bookRepository);
+
+const borrowApplication = new BorrowApplication(borrowService, userService, bookService);
 
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
@@ -27,7 +40,7 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
             return res.json(result);
         }
 
-        const result = await borrowService.getAllBorrows();
+        const result = await borrowApplication.getAllBorrows();
 
         if (!result.success) {
 
@@ -46,7 +59,7 @@ router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, re
 
     try {
 
-        const result = await borrowService.getBorrowsWithOverdue();
+        const result = await borrowApplication.getBorrowsWithOverdue();
 
         if (!result.success) {
 
@@ -65,7 +78,7 @@ router.get('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) =
 
     try {
 
-        const result = await borrowService.getBorrowsById(req.params.id);
+        const result = await borrowApplication.getBorrowsById(req.params.id);
 
         if (!result.success) {
 
@@ -102,7 +115,7 @@ router.patch('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res)
 
     try {
 
-        const result = await borrowService.returnBorrow(req.params.id)
+        const result = await borrowApplication.returnBorrow(req.params.id)
 
         if (!result.success) {
 
@@ -116,4 +129,5 @@ router.patch('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res)
         res.status(500).json({ success: false, message: err.message });
     }
 });
+
 export default router;

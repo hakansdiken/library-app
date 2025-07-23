@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
-import { UserDTO } from './user.dto.js';
 import { UserFactory } from './user.factory.js';
+import { UserUpdateRequestDTO } from '../../dtos/user/user-update.dto.js';
 
 export class UserService {
     constructor(userRepository, userValidator) {
@@ -32,8 +32,8 @@ export class UserService {
 
         return {
             success: true,
-            message: "User registered successfully.",
-            data: UserDTO.from(savedUser)
+            message: 'User registered successfully',
+            data: savedUser
         };
     }
 
@@ -56,8 +56,37 @@ export class UserService {
 
         return {
             success: true,
-            message: "Login successful.",
-            data: UserDTO.from(user)
+            message: 'User login successfully',
+            data: user
+        };
+    }
+
+    async createUser(data) {
+
+        const existingUser = await this.userRepository.findByEmail(data.email);
+
+        if (existingUser) {
+
+            return { success: false, message: 'Email is already registered.' };
+        }
+
+        const validation = await this.userValidator.validateForRegister(data);
+
+        if (!validation.success) {
+
+            return validation;
+        }
+
+        const hashedPassword = await bcrypt.hash(data.password, 10);
+
+        const user = UserFactory.create(data, hashedPassword)
+
+        const savedUser = await this.userRepository.save(user);
+
+        return {
+            success: true,
+            message: 'User created successfully',
+            data: savedUser
         };
     }
 
@@ -67,30 +96,11 @@ export class UserService {
 
         return {
             success: true,
-            message: "Users fetched successfully.",
-            data: users.map(user => UserDTO.from(user))
-        }
+            message: 'Users fetched successfully',
+            data: users
+        };
     }
 
-
-    async getUserByEmail(email) {
-
-        const user = await this.userRepository.findByEmail(email);
-
-        if (!user) {
-
-            return {
-                success: false,
-                message: "User not found!"
-            };
-        }
-
-        return {
-            success: true,
-            message: "User fetched successfully.",
-            data: users.map(user => UserDTO.from(user))
-        }
-    }
 
     async getUserById(id) {
 
@@ -105,9 +115,9 @@ export class UserService {
 
         return {
             success: true,
-            message: "User fetched successfully.",
-            data: UserDTO.from(user)
-        }
+            message: 'User fetched successfully',
+            data: user
+        };
     }
 
     async updateUser(id, data) {
@@ -118,29 +128,38 @@ export class UserService {
 
             return {
                 success: false,
-                message: "User not found!"
+                message: 'User not found!'
             };
         }
 
-        const validation = await this.userValidator.validateForRegister(data);
+        const existingUser = await this.userRepository.findByEmail(data.email);
+
+        if (existingUser && existingUser.id !== id) {
+
+            return { success: false, message: 'Email is already registered by another user.' };
+        }
+
+        const dto = new UserUpdateRequestDTO(data);
+
+        const validation = await this.userValidator.validateForUpdate(dto);
 
         if (!validation.success) {
 
             return validation;
         }
 
-        const updatedUser = await UserFactory.update(user, data);
+        const updatedUser = await UserFactory.update(user, dto);
 
         const savedUser = await this.userRepository.save(updatedUser);
 
         return {
             success: true,
-            message: "User updated successfully.",
-            data: UserDTO.from(savedUser)
+            message: 'User updated successfully',
+            data: savedUser
         };
     }
 
-    async deleteUser(email) {
+    async deleteUser(id) {
 
         const user = await this.userRepository.findById(id);
 
@@ -152,7 +171,7 @@ export class UserService {
             }
         }
 
-        await this.userRepository.delete(email);
+        await this.userRepository.delete(id);
 
         return {
             success: true,

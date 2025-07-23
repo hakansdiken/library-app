@@ -12,6 +12,7 @@ export function authorize(allowedRoles = [], allowSelf = false) {
         const userRole = req.session?.role;
         const requestedId = req.params?.id;
 
+        console.log("SESSION:", req.session);
         if (!userRole) {
 
             return res.status(401).json({ success: false, message: "Unauthorized." });

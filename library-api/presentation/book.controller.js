@@ -4,17 +4,19 @@ import { BookRepository } from '../domain/book/book.repository.js';
 import { Roles } from '../domain/constants/roles.js';
 import { authorize } from '../infrastructure/middlewares/authorize.middleware.js';
 import { BookValidator } from '../domain/book/book.validator.js';
+import { BookApplication } from '../application/book.application.js'
 
 const router = express.Router();
 const bookRepository = new BookRepository();
 const bookValidator = new BookValidator();
 const bookService = new BookService(bookRepository, bookValidator);
+const bookApplication = new BookApplication(bookService);
 
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN, Roles.MEMBER]), async (req, res) => {
 
     try {
 
-        const result = await bookService.getAllBooks();
+        const result = await bookApplication.getAllBooks();
 
         if (!result.success) {
 
@@ -32,7 +34,7 @@ router.get('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN, Roles.MEMBER]), asyn
 
     try {
 
-        const result = await bookService.getBookById(req.params.id);
+        const result = await bookApplication.getBookById(req.params.id);
 
         if (!result.success) {
 
@@ -53,7 +55,7 @@ router.post('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => 
     try {
 
         const bookData = req.body;
-        const result = await bookService.createBook(bookData);
+        const result = await bookApplication.createBook(bookData);
 
         if (!result.success) {
 
@@ -72,7 +74,7 @@ router.put('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) =
 
     try {
 
-        const result = await bookService.updateBook(req.params.id, req.body);
+        const result = await bookApplication.updateBook(req.params.id, req.body);
 
         if (!result.success) {
 
@@ -91,7 +93,7 @@ router.delete('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res
 
     try {
 
-        const result = await bookService.deleteBook(req.params.id);
+        const result = await bookApplication.deleteBook(req.params.id);
 
         if (!result.success) {
 

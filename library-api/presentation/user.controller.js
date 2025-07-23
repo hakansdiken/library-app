@@ -3,16 +3,19 @@ import { UserRepository } from '../domain/user/user.repository.js';
 import { UserService } from '../domain/user/user.service.js';
 import { authorize } from '../infrastructure/middlewares/authorize.middleware.js';
 import { Roles } from '../domain/constants/roles.js';
-
+import { UserApplication } from '../application/user.application.js';
+import { UserValidator } from '../domain/user/user.validator.js'
 const router = express.Router();
 const userRepository = new UserRepository();
-const userService = new UserService(userRepository);
+const userValidator = new UserValidator();
+const userService = new UserService(userRepository,userValidator);
+const userApplication = new UserApplication(userService);
 
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
 
-        const result = await userService.getAllUsers();
+        const result = await userApplication.getAllUsers();
 
         if (!result.success) {
 
@@ -27,11 +30,35 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
     }
 });
 
+router.post('/', authorize([Roles.ADMIN]), async (req, res) => {
+
+    try {
+
+        const currentUserRole = req.userRole;
+        const userData = req.body;
+
+        const result = await userApplication.createUser(userData, currentUserRole);
+
+        if (!result.success) {
+
+            return res.status(400).json(result);
+        }
+
+        return res.status(201).json(result);
+
+    } catch (err) {
+
+        return res.status(500).json({ success: false, message: err.message });
+    }
+}
+);
+
+
 router.get('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res) => {
 
     try {
 
-        const result = await userService.getUserById(req.params.id);
+        const result = await userApplication.getUserById(req.params.id);
 
         if (!result.success) {
 
@@ -50,7 +77,7 @@ router.put('/:id', authorize([Roles.ADMIN], true), async (req, res) => {
 
     try {
 
-        const result = await userService.updateUser(req.params.id, req.body)
+        const result = await userApplication.updateUser(req.params.id, req.body)
 
         if (!result.success) {
 
@@ -70,7 +97,7 @@ router.delete('/:id', authorize([Roles.ADMIN]), async (req, res) => {
 
     try {
 
-        const result = await userService.deleteUser(req.params.id);
+        const result = await userApplication.deleteUser(req.params.id);
 
         if (!result.success) {
 

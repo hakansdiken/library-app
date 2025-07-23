@@ -1,7 +1,4 @@
-import { BookRepository } from './book.repository.js';
-import { BookValidator } from './book.validator.js';
 import { BookFactory } from './book.factory.js';
-import { BookDTO } from './book.dto.js';
 
 export class BookService {
     constructor(bookRepository, bookValidator) {
@@ -10,13 +7,15 @@ export class BookService {
     }
 
     async createBook(data) {
-
+        
+        console.log("data:" + data)
         const validation = this.bookValidator.validateForCreate(data);
 
         if (!validation.success) {
 
             return validation;
         }
+
 
         const book = BookFactory.create(data);
 
@@ -25,7 +24,7 @@ export class BookService {
         return {
             success: true,
             message: "Book created successfully.",
-            data: BookDTO.from(savedBook)
+            data: savedBook
         };
     }
 
@@ -36,7 +35,7 @@ export class BookService {
         return {
             success: true,
             message: "Books fetched successfully.",
-            data: books.map(book => BookDTO.from(book))
+            data: books
         };
     }
 
@@ -55,7 +54,7 @@ export class BookService {
         return {
             success: true,
             message: "Book fetched successfully.",
-            data: BookDTO.from(book)
+            data: book
         };
     }
 
@@ -83,7 +82,7 @@ export class BookService {
         return {
             success: true,
             message: "Book updated successfully.",
-            data: BookDTO.from(savedBook)
+            data: savedBook
         };
     }
 

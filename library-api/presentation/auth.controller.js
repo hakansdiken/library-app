@@ -2,11 +2,13 @@ import express from 'express';
 import { UserRepository } from '../domain/user/user.repository.js';
 import { UserService } from '../domain/user/user.service.js';
 import { UserValidator } from '../domain/user/user.validator.js';
+import { UserApplication } from '../application/user.application.js';
 
 const router = express.Router();
 const userRepository = new UserRepository();
 const userValidator = new UserValidator();
 const userService = new UserService(userRepository, userValidator);
+const userApplication = new UserApplication(userService);
 
 router.post('/register', async (req, res) => {
 
@@ -14,13 +16,13 @@ router.post('/register', async (req, res) => {
 
     try {
 
-        const result = await userService.register(userData);
+        const result = await userApplication.register(userData);
 
         if (!result.success) {
 
             return res.status(400).json(result);
         }
-
+        
         return res.status(201).json(result);
 
     } catch (err) {
@@ -36,7 +38,7 @@ router.post('/login', async (req, res) => {
 
     try {
 
-        const result = await userService.login(email, password);
+        const result = await userApplication.login(email, password);
 
         if (!result.success) {
 

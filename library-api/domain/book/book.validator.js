@@ -61,6 +61,7 @@ export class BookValidator {
   }
 
   validateForUpdate(data) {
+    
     if (data.title && typeof data.title !== 'string') {
       return { success: false, message: "Title must be a string." };
     }

@@ -1,5 +1,4 @@
 import { BorrowStatus } from "../constants/borrow-status.js";
-import { BorrowDTO } from "./borrow.dto.js";
 import { BorrowFactory } from "./borrow.factory.js";
 
 export class BorrowService {
@@ -30,7 +29,7 @@ export class BorrowService {
         return {
             success: true,
             message: "Borrow created successfully.",
-            data: BorrowDTO.from(savedBorrow)
+            data: savedBorrow
         }
     }
 
@@ -50,11 +49,11 @@ export class BorrowService {
 
     //     const savedBorrow = await this.borrowRepository.save(updatedBorrow);
 
-    //     return {
-    //         success: true,
-    //         message: "Borrow updated successfully.",
-    //         data: BorrowDTO.from(savedBorrow)
-    //     };
+        // return {
+        //     success: false,
+        //     message: "This book already borrowed.",
+        //     data: savedBorrow
+        // }
     // }
 
     async returnBorrow(id) {
@@ -81,9 +80,9 @@ export class BorrowService {
 
         return {
             success: true,
-            message: "Borrow marked as returned.",
-            data: BorrowDTO.from(savedBorrow)
-        };
+            message: "Borrow marked 'returned' succesfully",
+            data: savedBorrow
+        }
     }
 
     async getAllBorrows() {
@@ -92,9 +91,9 @@ export class BorrowService {
 
         return {
             success: true,
-            message: "Borrows received successfully.",
-            data: borrows.map(borrow => BorrowDTO.from(borrow))
-        };
+            message: "Borrows fetched succesfully.",
+            data: borrows
+        }
     }
 
     async getBorrowsById(id) {
@@ -103,9 +102,9 @@ export class BorrowService {
 
         return {
             success: true,
-            message: "Borrow fetched successfully.",
-            data: BorrowDTO.from(borrow)
-        };
+            message: "Borrow fetched succesfully.",
+            data: borrow
+        }
     }
 
     async getBorrowsByBookId(bookId) {
@@ -114,9 +113,9 @@ export class BorrowService {
 
         return {
             success: true,
-            message: "Borrow fetched successfully.",
-            data: borrows.map(borrow => BorrowDTO.from(borrow))
-        };
+            message: "Borrows fetched succesfully.",
+            data: borrows
+        }
     }
 
     async getBorrowsByUserId(userId) {
@@ -125,9 +124,9 @@ export class BorrowService {
 
         return {
             success: true,
-            message: "Borrow fetched successfully.",
-            data: borrows.map(borrow => BorrowDTO.from(borrow))
-        };
+            message: "Borrows fetched succesfully.",
+            data: borrows
+        }
     }
 
     async getBorrowsWithOverdue() {
@@ -136,8 +135,8 @@ export class BorrowService {
 
         return {
             success: true,
-            message: "Overdue borrows fetched successfully.",
-            data: borrows.map(borrow => BorrowDTO.from(borrow))
-        };
+            message: "Overdue borrows fetched succesfully.",
+            data: borrows
+        }
     }
 }

@@ -1,0 +1,14 @@
+export class BookUpdateRequestDTO {
+
+  constructor({  title, author, description, publisher, publicationYear, pageCount, isbn, deweyCode }) {
+
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.publisher = publisher;
+        this.publicationYear = publicationYear;
+        this.pageCount = pageCount;
+        this.isbn = isbn;
+        this.deweyCode = deweyCode
+    }
+}
