@@ -1,3 +1,20 @@
-<mat-toolbar>
-  <span>Library</span>
+<mat-toolbar color="primary" class="custom-toolbar">
+  <span class="logo">Library</span>
+
+  <span class="spacer"></span>
+
+  <button mat-button (click)="goToBooks()">Books</button>
+  <button mat-button (click)="goToBorrows()">Borrows</button>
+
+
+  <span class="spacer"></span>
+
+  <button mat-icon-button (click)="goToProfile()" aria-label="Profile">
+    <mat-icon>person</mat-icon>
+  </button>
+
+  <button mat-icon-button (click)="logout()" aria-label="Logout">
+    <mat-icon>logout</mat-icon>
+  </button>
+
 </mat-toolbar>
