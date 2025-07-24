@@ -14,7 +14,16 @@ export class BorrowRepository {
 
     async findAll() {
 
-        const result = await pool.query("SELECT * FROM borrows ORDER BY borrow_date DESC");
+        const result = await pool.query(`
+            SELECT
+                b.id, b.book_id, b.user_id, b.borrow_date, b.due_date, b.return_date, b.status,
+                u.id AS user_id, u.name AS user_name, u.surname AS user_surname, u.email AS user_email,
+                bk.id AS book_id, bk.title AS book_title
+                FROM borrows b
+                JOIN users u ON b.user_id = u.id
+                JOIN books bk ON b.book_id = bk.id
+                ORDER BY b.borrow_date DESC`
+        );
 
         if (result.rows.length === 0) return [];
 
@@ -23,7 +32,21 @@ export class BorrowRepository {
 
     async findByUserId(user_id) {
 
-        const result = await pool.query("SELECT * FROM borrows WHERE user_id = $1", [user_id]);
+        const result = await pool.query(`
+            SELECT 
+                b.*, 
+                u.id AS user_id,
+                u.name AS user_name,
+                u.surname AS user_surname,
+                u.email AS user_email,
+                bk.id AS book_id,
+                bk.title AS book_title
+            FROM borrows b
+            JOIN users u ON b.user_id = u.id
+            JOIN books bk ON b.book_id = bk.id
+            WHERE b.user_id = $1
+            ORDER BY b.borrow_date DESC`, [user_id]);
+
 
         if (result.rows.length === 0) return [];
 
@@ -102,6 +125,10 @@ export class BorrowRepository {
 
     _mapToEntity(row) {
 
+        if (row.user_name && row.book_title) {
+
+            return BorrowFactory.fromRowWithJoin(row);
+        }
         return BorrowFactory.fromRow(row);
     }
 }

@@ -38,6 +38,28 @@ export class BorrowFactory {
         });
     }
 
+    static fromRowWithJoin(row) {
+        return new Borrow({
+            id: row.id,
+            bookId: row.book_id,
+            userId: row.user_id,
+            borrowDate: row.borrow_date,
+            dueDate: row.due_date,
+            returnDate: row.return_date,
+            status: row.status,
+            book: {
+                id: row.book_id,
+                title: row.book_title
+            },
+            user: {
+                id: row.user_id,
+                name: row.user_name,
+                surname: row.user_surname,
+                email: row.user_email
+            }
+        });
+    }
+
     static toRow(borrow) {
         return {
             id: borrow.id,

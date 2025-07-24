@@ -22,7 +22,7 @@ router.post('/register', async (req, res) => {
 
             return res.status(400).json(result);
         }
-        
+
         return res.status(201).json(result);
 
     } catch (err) {
@@ -43,7 +43,7 @@ router.post('/login', async (req, res) => {
         if (!result.success) {
 
             const statusCode = result.message === "User not found!" ? 404 : 400;
-            
+
             return res.status(statusCode).json(result);
         }
 
@@ -97,5 +97,27 @@ router.post('/logout', (req, res) => {
         });
     });
 });
+
+router.get('/me', (req, res) => {
+
+    if (!req.session.userId) {
+
+        return res.status(401).json({
+            success: false,
+            message: 'Unauthorized',
+        });
+    }
+
+    const user = {
+        id: req.session.userId,
+        role: req.session.role,
+    };
+
+    return res.status(200).json({
+        success: true,
+        data: user,
+    });
+});
+
 
 export default router;

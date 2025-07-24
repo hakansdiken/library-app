@@ -8,7 +8,9 @@ export default class Borrow {
     borrowDate,
     dueDate,
     returnDate = null,
-    status
+    status,
+    book = null,
+    user = null
   }) {
     this.id = id;
     this.bookId = bookId;
@@ -17,16 +19,18 @@ export default class Borrow {
     this.dueDate = dueDate;
     this.returnDate = returnDate;
     this.status = status ?? BorrowStatus.BORROWED;
+    this.book = book;
+    this.user = user;
   }
 
   markReturned(returnDate = new Date()) {
-    
+
     this.returnDate = returnDate;
     this.status = BorrowStatus.RETURNED;
   }
 
   isOverdue(currentDate = new Date()) {
-
+    
     return (
       this.status === BorrowStatus.BORROWED && new Date(this.dueDate) < currentDate
     );
