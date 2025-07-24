@@ -16,11 +16,22 @@ export class AuthService {
 
   register(data: RegisterRequest): Observable<ApiResponse<User>> {
 
-    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.REGISTER}`, data, { withCredentials: true })
+    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.REGISTER}`, data, { withCredentials: true });
   }
 
   login(data: LoginRequest): Observable<ApiResponse<User>> {
 
-    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.LOGIN}`, data, { withCredentials: true })
+    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.LOGIN}`, data, { withCredentials: true });
+  }
+
+  logout(): Observable<ApiResponse<null>> {
+
+    return this.http.post<ApiResponse<null>>(`${API_ENDPOINTS.AUTH.LOGOUT}`, {}, { withCredentials: true });
+  }
+
+  getCurrentUser(): Observable<ApiResponse<User>> {
+
+    return this.http.get<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.ME}`, { withCredentials: true });
+
   }
 }
