@@ -27,12 +27,15 @@
     <mat-error *ngIf="passwordInput.errors?.['required'] && (passwordInput.dirty || passwordInput.touched)">
       Password is required.
     </mat-error>
-    
+
   </mat-form-field>
 
-  <button mat-raised-button color="primary" type="submit">
-    Log In
-  </button>
+  <div class="submit-container">
+    <button mat-raised-button color="primary" type="submit">
+      Log In
+    </button>
+  </div>
+
 </form>
 
 <mat-error *ngIf="serverErrorMessage">

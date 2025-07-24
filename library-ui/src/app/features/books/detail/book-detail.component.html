@@ -1,1 +1,21 @@
-<p>book-detail works!</p>
+<mat-card *ngIf="book" class="book-detail-card mat-elevation-z6">
+  <mat-card-header>
+    <mat-card-title class="book-title">{{ book.title }}</mat-card-title>
+    <mat-card-subtitle class="book-author">{{ book.author }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="book-info-grid">
+      <div><strong>Publisher:</strong> {{ book.publisher }}</div>
+      <div><strong>Year:</strong> {{ book.publicationYear }}</div>
+      <div><strong>Pages:</strong> {{ book.pageCount }}</div>
+      <div><strong>ISBN:</strong> {{ book.isbn }}</div>
+      <div><strong>Dewey Code:</strong> {{ book.deweyCode }}</div>
+    </div>
+
+    <div class="book-description">
+      <h3>Description</h3>
+      <p>{{ book.description || 'No description available.' }}</p>
+    </div>
+  </mat-card-content>
+</mat-card>

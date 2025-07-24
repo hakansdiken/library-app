@@ -17,9 +17,11 @@
     height: 60vh;
     width: 50vh;
     gap: 10px;
-    padding-right: 1rem;
+    padding: 1rem;
+    position: relative; 
 }
-.success-message{
+
+.success-message {
     color: green;
 }
 
@@ -27,7 +29,15 @@ button {
     color: white;
     font-weight: 600;
 }
-
+.submit-container {
+    position: absolute; 
+    bottom: 0;         
+    left: 0;            
+    width: 100%;        
+    display: flex;
+    justify-content: center;
+    padding-bottom: 1rem;
+}
 button:hover {
     background-color: #e8ebff;
 }

@@ -18,9 +18,9 @@ export class BookService {
     return this.http.get<ApiResponse<Book[]>>(API_ENDPOINTS.BOOKS.ROOT, { withCredentials: true });
   }
 
-  getBookById(id: string): Observable<Book> {
+  getBookById(id: string): Observable<ApiResponse<Book>> {
 
-    return this.http.get<Book>(API_ENDPOINTS.BOOKS.BY_ID(id), { withCredentials: true });
+    return this.http.get<ApiResponse<Book>>(API_ENDPOINTS.BOOKS.BY_ID(id), { withCredentials: true });
   }
 
   createBook(book: CreateBook): Observable<Book> {

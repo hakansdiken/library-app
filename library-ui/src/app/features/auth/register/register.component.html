@@ -50,9 +50,11 @@
         </mat-error>
     </mat-form-field>
 
-    <button mat-raised-button type="submit">
-        Submit
-    </button>
+ <div class="submit-container">
+        <button mat-raised-button type="submit">
+            Submit
+        </button>
+    </div>
 </form>
 
 <mat-error *ngIf="serverErrorMessage">

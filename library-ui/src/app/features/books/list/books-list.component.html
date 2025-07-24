@@ -1,6 +1,6 @@
-<h2 class="section-title">Kitap Listesi</h2>
+<h2 class="section-title">Book List</h2>
 
-<div class="button-container">
+<div class="button-container" *ngIf="userRole !== 'member'">
   <button mat-raised-button (click)="openCreateDialog()">Add Book</button>
 </div>
 
@@ -18,7 +18,7 @@
       <p><strong>Dewey Code:</strong> {{ book.deweyCode }}</p>
 
       <div class="operations-container">
-        <button mat-flat-button>Borrow</button>
+        <button mat-flat-button [hidden]="userRole === 'member'">Borrow</button>
         <button mat-raised-button (click)="goToBookDetail(book.id)">Detail</button>
       </div>
 

@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { BookCreateComponent } from '../create/book-create.component';
 import { MatDialog } from '@angular/material/dialog';
+import { AuthService } from '../../../core/services/auth/auth.service';
+import { UserRole } from '../../../core/models/enums/user-role.enum';
 
 @Component({
   selector: 'app-books-list',
@@ -17,29 +19,22 @@ import { MatDialog } from '@angular/material/dialog';
 export class BooksListComponent implements OnInit {
 
   books: Book[] = [];
-
-  constructor(private bookService: BookService, private router: Router, private dialog: MatDialog) { }
+  userRole: string = UserRole.Member;
+  
+  constructor(private bookService: BookService, private authService: AuthService, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
+
+    this.authService.getCurrentUser().subscribe((res) => {
+      this.userRole = res.data.role ?? UserRole.Member;
+    });
+
     this.loadBooks()
   }
 
   goToBookDetail(bookId: string) {
 
     this.router.navigate([`/books/${bookId}`]);
-  }
-
-  openCreateDialog() {
-    const dialogRef = this.dialog.open(BookCreateComponent, {
-      width: '400px',
-      //data: {} 
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log("")
-      }
-    });
   }
 
 
@@ -54,6 +49,20 @@ export class BooksListComponent implements OnInit {
       error: (err) => {
 
         console.error('Error:', err);
+      }
+    });
+  }
+
+  openCreateDialog() {
+
+    const dialogRef = this.dialog.open(BookCreateComponent, {
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result) {
+        this.loadBooks();
       }
     });
   }
