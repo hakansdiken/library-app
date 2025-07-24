@@ -1,5 +1,6 @@
 import { pool } from "../../infrastructure/database.js";
 import { BookFactory } from "./book.factory.js";
+
 export class BookRepository {
 
     async findById(id) {
@@ -22,36 +23,33 @@ export class BookRepository {
 
     async save(book) {
 
-        const values = [
-            book.title,
-            book.author,
-            book.publisher,
-            book.publication_year,
-            book.page_count,
-            book.isbn,
-            book.dewey_code,
-            book.description,
-            book.updated_at,
-        ]
+        const row = BookFactory.toRow(book);
 
         if (!book.id) {
 
             const result = await pool.query(
                 `INSERT INTO books (
-                    title, author, publisher, publication_year, page_count, isbn,  dewey_code, description, updated_at, created_at) 
+                    title, author, publisher, publication_year, page_count, isbn, dewey_code, description, updated_at, created_at) 
                     VALUES (
                     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
                     ) RETURNING *`,
                 [
-                    ...values,
-                    book.created_at
+                    row.title,
+                    row.author,
+                    row.publisher,
+                    row.publication_year,
+                    row.page_count,
+                    row.isbn,
+                    row.dewey_code,
+                    row.description,
+                    row.updated_at,
+                    row.created_at,
                 ]
             );
 
             return this._mapToEntity(result.rows[0]);
 
         } else {
-
             const result = await pool.query(
                 `UPDATE books SET 
                     title = $1, 
@@ -60,13 +58,21 @@ export class BookRepository {
                     publication_year = $4,
                     page_count = $5, 
                     isbn = $6, 
-                    dewey_code= $7,
+                    dewey_code = $7,
                     description = $8, 
                     updated_at = $9
                     WHERE id = $10 
                     RETURNING *`,
                 [
-                    ...values,
+                    row.title,
+                    row.author,
+                    row.publisher,
+                    row.publication_year,
+                    row.page_count,
+                    row.isbn,
+                    row.dewey_code,
+                    row.description,
+                    row.updated_at,
                     book.id,
                 ]
             );
@@ -81,6 +87,7 @@ export class BookRepository {
     }
 
     _mapToEntity(row) {
+
         return BookFactory.fromRow(row);
     }
 }

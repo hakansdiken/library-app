@@ -21,10 +21,9 @@ export class BorrowRepository {
         return result.rows.map(row => this._mapToEntity(row));
     }
 
-
     async findByUserId(user_id) {
 
-        const result = await pool.query("SELECT * FROM borrows WHERE user_id = $1", [user_id])
+        const result = await pool.query("SELECT * FROM borrows WHERE user_id = $1", [user_id]);
 
         if (result.rows.length === 0) return [];
 
@@ -33,7 +32,7 @@ export class BorrowRepository {
 
     async findByBookId(book_id) {
 
-        const result = await pool.query("SELECT * FROM borrows WHERE book_id = $1", [book_id])
+        const result = await pool.query("SELECT * FROM borrows WHERE book_id = $1", [book_id]);
 
         if (result.rows.length === 0) return [];
 
@@ -42,7 +41,7 @@ export class BorrowRepository {
 
     async findAllWithOverdue() {
 
-        const result = await pool.query("SELECT * FROM borrows WHERE status = $1 AND due_date < NOW()", ["borrowed"])
+        const result = await pool.query("SELECT * FROM borrows WHERE status = $1 AND due_date < NOW()", ["borrowed"]);
 
         if (result.rows.length === 0) return [];
 
@@ -50,28 +49,24 @@ export class BorrowRepository {
     }
 
     async save(borrow) {
-
-        const values = [
-            borrow.book_id,
-            borrow.user_id,
-            borrow.borrow_date,
-            borrow.due_date,
-            borrow.return_date,
-            borrow.status
-        ];
+        const row = BorrowFactory.toRow(borrow);
 
         if (!borrow.id) {
-
             const result = await pool.query(
-
                 `INSERT INTO borrows (
-                book_id, user_id, borrow_date, due_date, return_date, status) 
-                VALUES (
-                $1, $2, $3, $4, $5, $6
+                    book_id, user_id, borrow_date, due_date, return_date, status
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6
                 ) RETURNING *`,
-                values
+                [
+                    row.book_id,
+                    row.user_id,
+                    row.borrow_date,
+                    row.due_date,
+                    row.return_date,
+                    row.status
+                ]
             );
-
             return this._mapToEntity(result.rows[0]);
 
         } else {
@@ -86,16 +81,23 @@ export class BorrowRepository {
                     status = $6 
                     WHERE id = $7 
                     RETURNING *`,
-                [...values, borrow.id]
+                [
+                    row.book_id,
+                    row.user_id,
+                    row.borrow_date,
+                    row.due_date,
+                    row.return_date,
+                    row.status,
+                    borrow.id
+                ]
             );
-
             return this._mapToEntity(result.rows[0]);
         }
     }
 
     async delete(id) {
 
-        await pool.query("DELETE FROM borrows WHERE id = $1", [id])
+        await pool.query("DELETE FROM borrows WHERE id = $1", [id]);
     }
 
     _mapToEntity(row) {

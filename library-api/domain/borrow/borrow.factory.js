@@ -5,7 +5,6 @@ export class BorrowFactory {
 
     static create(data) {
         const borrowDate = new Date();
-
         const dueDate = new Date();
         dueDate.setDate(borrowDate.getDate() + 14);
 
@@ -37,5 +36,17 @@ export class BorrowFactory {
             returnDate: row.return_date,
             status: row.status
         });
+    }
+
+    static toRow(borrow) {
+        return {
+            id: borrow.id,
+            book_id: borrow.bookId,
+            user_id: borrow.userId,
+            borrow_date: borrow.borrowDate,
+            due_date: borrow.dueDate,
+            return_date: borrow.returnDate,
+            status: borrow.status
+        };
     }
 }

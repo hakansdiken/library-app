@@ -46,4 +46,20 @@ export class BookFactory {
             updatedAt: row.updated_at
         });
     }
+
+    static toRow(book) {
+        return {
+            id: book.id,
+            title: book.title,
+            author: book.author,
+            publisher: book.publisher,
+            publication_year: book.publicationYear,
+            page_count: book.pageCount,
+            isbn: book.isbn,
+            description: book.description,
+            dewey_code: book.deweyCode,
+            created_at: book.createdAt,
+            updated_at: book.updatedAt
+        };
+    }
 }

@@ -30,21 +30,23 @@ export class UserRepository {
 
     async save(user) {
 
+        const row = UserFactory.toRow(user);
+
         if (!user.id) {
 
             const result = await pool.query(
-                `INSERT INTO 
-                    users (name, surname, email, password, role, created_at, updated_at)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
-                    RETURNING *`,
+                `INSERT INTO users 
+                (name, surname, email, password, role, created_at, updated_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)
+                 RETURNING *`,
                 [
-                    user.name,
-                    user.surname,
-                    user.email,
-                    user.password,
-                    user.role,
-                    user.created_at,
-                    user.updated_at
+                    row.name,
+                    row.surname,
+                    row.email,
+                    row.password,
+                    row.role,
+                    row.created_at,
+                    row.updated_at
                 ]
             );
 
@@ -54,32 +56,31 @@ export class UserRepository {
 
             const result = await pool.query(
                 `UPDATE users SET 
-                    name = $1, surname = $2, email = $3, password = $4, role = $5, updated_at = $6
-                    WHERE id = $7 
-                    RETURNING *`,
+                name = $1, surname = $2, email = $3, password = $4, role = $5, updated_at = $6
+                WHERE id = $7
+                RETURNING *`,
                 [
-                    user.name,
-                    user.surname,
-                    user.email,
-                    user.password,
-                    user.role,
-                    user.updated_at,
-                    user.id
+                    row.name,
+                    row.surname,
+                    row.email,
+                    row.password,
+                    row.role,
+                    row.updated_at,
+                    row.id
                 ]
             );
 
             return this._mapToEntity(result.rows[0]);
         }
-
     }
 
     async delete(id) {
 
         await pool.query("DELETE FROM users WHERE id = $1", [id]);
-
     }
 
     _mapToEntity(row) {
+
         return UserFactory.fromRow(row);
     }
 }
