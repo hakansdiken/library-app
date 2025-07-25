@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { API_ENDPOINTS } from '../../../../constants/api-endpoints';
 import { Book } from '../../models/book/book.model';
 import { ApiResponse } from '../../models/generic.model';
-import { CreateBook } from '../../models/book/book.create.model';
+import { CreateBook } from '../../models/book/book-create.model';
 
 @Injectable({
   providedIn: 'root'

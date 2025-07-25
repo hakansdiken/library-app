@@ -5,19 +5,12 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, RouterOutlet, NavbarComponent],
+  imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'library-ui';
-
-  constructor(private router: Router) { }
-
-  shouldShowNavbar(): boolean {
-
-    const hideOnRoutes = ['/auth'];
-
-    return !hideOnRoutes.some(route => this.router.url.includes(route));
-  }
+  
+  constructor() { }
 }

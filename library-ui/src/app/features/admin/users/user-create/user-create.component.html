@@ -1,0 +1,67 @@
+<h2 mat-dialog-name>Add New user</h2>
+
+<form class="create-container" #createForm="ngForm" (ngSubmit)="createUser(createForm)">
+
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Name</mat-label>
+        <input matInput required [(ngModel)]="user.name" name="name" #nameInput="ngModel" />
+        <mat-error *ngIf="nameInput.errors?.['required'] && (nameInput.dirty || nameInput.touched)">
+            Name is required.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Surname</mat-label>
+        <input matInput required [(ngModel)]="user.surname" name="surname" #surnameInput="ngModel" />
+        <mat-error *ngIf="surnameInput.errors?.['required'] && (surnameInput.dirty || surnameInput.touched)">
+            Surname is required.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput required pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$" [(ngModel)]="user.email"
+            name="email" #emailInput="ngModel" />
+
+        <mat-error *ngIf="emailInput.errors?.['required'] && (emailInput.dirty || emailInput.touched)">
+            Email is required.
+        </mat-error>
+
+        <mat-error *ngIf="emailInput.errors?.['pattern'] && (emailInput.dirty || emailInput.touched)">
+            Please enter a valid email address.
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Role</mat-label>
+        <mat-select [(ngModel)]="user.role" name="role">
+            <mat-option *ngFor="let role of userRoles" [value]="role">
+                {{ role }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="outline" class="full-width">
+
+        <mat-label>Password</mat-label>
+        <input matInput type="password" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$" minlength="8"
+            [(ngModel)]="user.password" name="password" #passwordInput="ngModel" />
+
+        <mat-error *ngIf="passwordInput.errors?.['required'] && (passwordInput.dirty || passwordInput.touched)">
+            Password is required.
+        </mat-error>
+
+        <mat-error *ngIf="passwordInput.errors?.['minlength'] && (passwordInput.dirty || passwordInput.touched)">
+            Password must be at least 8 characters.
+        </mat-error>
+
+        <mat-error *ngIf="passwordInput.errors?.['pattern'] && (passwordInput.dirty || passwordInput.touched)">
+            Password include at least one uppercase letter, one lowercase letter, and one number.
+        </mat-error>
+    </mat-form-field>
+    <div>
+        <button mat-button type="submit" [disabled]="createForm.invalid">Add</button>
+        <button mat-button type="button">Cancel</button>
+    </div>
+</form>

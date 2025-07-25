@@ -1,0 +1,43 @@
+.admin-container {
+    height: 100vh;
+}
+
+.sidenav {
+    background-color: #001048;
+    padding: 8px 0;
+    color: white;
+}
+
+.sidenav-header {
+    text-align: center;
+    font-weight: bold;
+    justify-content: center;
+}
+
+.logout-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px
+}
+
+.top-toolbar {
+    position: sticky;
+}
+
+.admin-content {
+    padding: 24px;
+    background-color: #e4e4e45b;
+    min-height: 100vh;
+}
+
+.sidenav mat-icon {
+    color: white;
+}
+
+.sidenav span {
+    color: white;
+}
+
+.logout-button mat-icon {
+    color: black;
+}

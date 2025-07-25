@@ -5,7 +5,7 @@ import { RegisterRequest } from '../../models/auth/register.model';
 import { LoginRequest } from '../../models/auth/login.model';
 import { API_ENDPOINTS } from '../../../../constants/api-endpoints';
 import { ApiResponse } from '../../models/generic.model';
-import { User } from '../../models/auth/user.model';
+import { User } from '../../models/user/user.model';
 
 @Injectable({
   providedIn: 'root'
