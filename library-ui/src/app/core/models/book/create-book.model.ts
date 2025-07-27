@@ -7,4 +7,5 @@ export interface CreateBook {
   isbn: string;
   deweyCode: string;
   pageCount: number;
+  isBorrowed?: boolean;
 }

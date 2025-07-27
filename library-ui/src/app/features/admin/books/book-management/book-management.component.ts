@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { Book } from '../../../../core/models/book/book.model';
-import { BookCreateComponent } from '../../../../shared/components/book-create/book-create.component';
+import { BookFormComponent } from '../../../../shared/components/book-form/book-form.component';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({
@@ -64,13 +64,33 @@ export class BookManagementComponent implements OnInit {
 
   openCreateDialog() {
 
-    const dialogRef = this.dialog.open(BookCreateComponent, {
+    const dialogRef = this.dialog.open(BookFormComponent, {
+
       width: '600px',
+      data: { mode: 'create' }
     });
 
     dialogRef.afterClosed().subscribe(result => {
 
       if (result) {
+
+        this.loadBooks();
+      }
+    });
+  }
+
+  openEditDialog(book: Book) {
+
+    const dialogRef = this.dialog.open(BookFormComponent, {
+
+      width: '600px',
+      data: { mode: 'edit', book: book }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result) {
+
         this.loadBooks();
       }
     });

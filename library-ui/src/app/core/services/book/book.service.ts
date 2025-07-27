@@ -5,6 +5,7 @@ import { API_ENDPOINTS } from '../../../../constants/api-endpoints';
 import { Book } from '../../models/book/book.model';
 import { ApiResponse } from '../../models/generic.model';
 import { CreateBook } from '../../models/book/create-book.model';
+import { UpdateBook } from '../../models/book/update-book.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class BookService {
     return this.http.delete<void>(API_ENDPOINTS.BOOKS.DELETE(id), { withCredentials: true });
   }
 
-  editBook(id: string, book: Book): Observable<Book> {
+  editBook(id: string, book: UpdateBook): Observable<Book> {
 
     return this.http.put<Book>(API_ENDPOINTS.BOOKS.EDIT(id), book, { withCredentials: true });
   }

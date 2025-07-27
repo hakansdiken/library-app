@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-import { BookCreateComponent } from '../../../../shared/components/book-create/book-create.component';
+import { BookFormComponent } from '../../../../shared/components/book-form/book-form.component';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { UserRole } from '../../../../core/models/enums/user-role.enum';
@@ -60,7 +60,7 @@ export class BooksListComponent implements OnInit {
 
   openCreateDialog() {
 
-    const dialogRef = this.dialog.open(BookCreateComponent, {
+    const dialogRef = this.dialog.open(BookFormComponent, {
       width: '600px',
     });
 
