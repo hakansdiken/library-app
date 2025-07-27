@@ -10,7 +10,7 @@ export class BorrowApplication {
     }
 
     async createBorrow(data) {
-        
+
         const user = await this.userService.getUserById(data.userId);
         if (!user) return { success: false, message: 'User not found' };
 
@@ -24,6 +24,8 @@ export class BorrowApplication {
         if (!result.success) {
             return result;
         }
+
+        await this.bookService.updateIsBorrowed(data.bookId, true);
 
         return {
             success: true,
@@ -79,6 +81,7 @@ export class BorrowApplication {
     }
 
     async getBorrowsByUserId(userId) {
+
         const user = await this.userService.getUserById(userId);
 
         if (!user) return { success: false, message: "User not found." };
@@ -116,7 +119,11 @@ export class BorrowApplication {
         if (!result.success) {
             return result;
         }
-        
+
+        const bookId = result.data.bookId;
+
+        await this.bookService.updateIsBorrowed(bookId, false);
+
         return {
             success: true,
             message: result.message,

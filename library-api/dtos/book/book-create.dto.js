@@ -1,6 +1,6 @@
 export class BookCreateRequestDTO {
     
-  constructor({  title, author, description, publisher, publicationYear, pageCount, isbn, deweyCode }) {
+  constructor({  title, author, description, publisher, publicationYear, pageCount, isbn, deweyCode, isBorrowed }) {
     
     this.title = title;
     this.author = author;
@@ -10,5 +10,6 @@ export class BookCreateRequestDTO {
     this.pageCount = pageCount;
     this.isbn = isbn;
     this.deweyCode = deweyCode;
+    this.isBorrowed = isBorrowed;
   }
 }

@@ -10,4 +10,5 @@ export interface Book {
     pageCount: number;
     createdAt: Date;
     updatedAt: Date;
+    isBorrowed?: boolean;
 }

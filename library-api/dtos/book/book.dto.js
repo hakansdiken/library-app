@@ -1,6 +1,6 @@
 export class BookResponseDTO {
 
-  constructor({ id, title, author, description, publisher, publicationYear, pageCount, isbn, deweyCode }) {
+  constructor({ id, title, author, description, publisher, publicationYear, pageCount, isbn, deweyCode, isBorrowed }) {
 
     this.id = id;
     this.title = title;
@@ -10,6 +10,7 @@ export class BookResponseDTO {
     this.publicationYear = publicationYear;
     this.pageCount = pageCount;
     this.isbn = isbn;
-    this.deweyCode = deweyCode
+    this.deweyCode = deweyCode;
+    this.isBorrowed = isBorrowed;
   }
 }

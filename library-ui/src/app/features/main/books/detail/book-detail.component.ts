@@ -42,7 +42,7 @@ export class BookDetailComponent implements OnInit {
         this.book = response.data;
       },
       error: (err) => {
-        console.error('Error:', err);
+        console.error('Error:', err.error.message);
       }
     });
   }

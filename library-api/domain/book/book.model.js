@@ -9,6 +9,7 @@ export default class Book {
     isbn,
     deweyCode,
     description,
+    isBorrowed = false,
     createdAt = new Date(),
     updatedAt = new Date(),
   }) {
@@ -23,5 +24,6 @@ export default class Book {
     this.description = description;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.isBorrowed = isBorrowed;
   }
 }

@@ -1,9 +1,10 @@
 .book-detail-card {
   max-width: 700px;
   margin: 30px auto;
-  padding: 24px;
-  background: linear-gradient(rgb(207, 233, 247),rgb(203, 203, 255));
-  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background-color: #d8e7fc;
 }
 
 .book-title {
@@ -30,7 +31,7 @@
   background-color: #ffffff;
   padding: 8px 12px;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .book-description {
@@ -38,6 +39,6 @@
   background-color: #ffffff;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 
 }

@@ -12,6 +12,7 @@ export class BookFactory {
             isbn: data.isbn,
             deweyCode: data.deweyCode,
             description: data.description,
+            isBorrowed: data.isBorrowed,
             createdAt: new Date(),
             updatedAt: new Date(),
         });
@@ -27,6 +28,7 @@ export class BookFactory {
         existBook.description = data.description ?? existBook.description;
         existBook.deweyCode = data.deweyCode ?? existBook.deweyCode;
         existBook.updatedAt = new Date();
+        existBook.isBorrowed = data.isBorrowed ?? existBook.isBorrowed;
 
         return existBook;
     }
@@ -43,7 +45,8 @@ export class BookFactory {
             description: row.description,
             deweyCode: row.dewey_code,
             createdAt: row.created_at,
-            updatedAt: row.updated_at
+            updatedAt: row.updated_at,
+            isBorrowed: row.is_borrowed
         });
     }
 
@@ -59,7 +62,8 @@ export class BookFactory {
             description: book.description,
             dewey_code: book.deweyCode,
             created_at: book.createdAt,
-            updated_at: book.updatedAt
+            updated_at: book.updatedAt,
+            is_borrowed: book.isBorrowed
         };
     }
 }

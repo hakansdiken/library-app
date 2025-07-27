@@ -7,7 +7,7 @@ export class BookService {
     }
 
     async createBook(data) {
-        
+
         const validation = this.bookValidator.validateForCreate(data);
 
         if (!validation.success) {
@@ -83,6 +83,22 @@ export class BookService {
             message: "Book updated successfully.",
             data: savedBook
         };
+    }
+
+    async updateIsBorrowed(bookId, isBorrowed) {
+
+        const book = await this.bookRepository.findById(bookId);
+
+        if (!book) {
+            return {
+                success: false,
+                message: "Book not found!"
+            };
+        }
+
+        book.isBorrowed = isBorrowed;
+
+        return this.bookRepository.save(book);
     }
 
     async deleteBook(id) {
