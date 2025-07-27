@@ -94,7 +94,7 @@ router.get('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) =
 
 });
 
-router.post('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res) => {
+router.post('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
     try {
 
         const result = await borrowApplication.createBorrow(req.body);

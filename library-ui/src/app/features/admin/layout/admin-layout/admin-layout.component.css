@@ -1,11 +1,13 @@
 .admin-container {
     height: 100vh;
+
 }
 
 .sidenav {
     background-color: #001048;
-    padding: 8px 0;
     color: white;
+    width: 15vw;
+    border-radius: 0%;
 }
 
 .sidenav-header {

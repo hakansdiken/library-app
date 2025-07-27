@@ -1,19 +1,19 @@
 import { Component } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogClose, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { BookService } from '../../../../core/services/book/book.service';
-import { CreateBook } from '../../../../core/models/book/book-create.model';
+import { BookService } from '../../../core/services/book/book.service';
+import { CreateBook } from '../../../core/models/book/create-book.model';
 
 @Component({
   selector: 'app-book-create',
   standalone: true,
   templateUrl: './book-create.component.html',
   styleUrls: ['./book-create.component.css'],
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatDialogClose],
 })
 
 export class BookCreateComponent {

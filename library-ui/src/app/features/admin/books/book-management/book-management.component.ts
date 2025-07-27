@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { Book } from '../../../../core/models/book/book.model';
-import { BookCreateComponent } from '../../../main/books/create/book-create.component';
+import { BookCreateComponent } from '../../../../shared/components/book-create/book-create.component';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({

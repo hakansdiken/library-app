@@ -5,31 +5,34 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-import { BookCreateComponent } from '../create/book-create.component';
-import { MatDialog } from '@angular/material/dialog';
+import { BookCreateComponent } from '../../../../shared/components/book-create/book-create.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { UserRole } from '../../../../core/models/enums/user-role.enum';
+import { UserSelectDialogComponent } from '../../../../shared/components/user-select-dialog/user-select-dialog.component';
 
 @Component({
   selector: 'app-books-list',
-  imports: [CommonModule, MatCardModule, MatButtonModule],
+  standalone: true,
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatDialogModule],
   templateUrl: './books-list.component.html',
   styleUrl: './books-list.component.css'
 })
 export class BooksListComponent implements OnInit {
 
+
   books: Book[] = [];
   userRole: string = UserRole.Member;
-  
+
   constructor(private bookService: BookService, private authService: AuthService, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
 
-    this.authService.getCurrentUser().subscribe((res) => {
-      this.userRole = res.data.role ?? UserRole.Member;
-    });
+    const role = localStorage.getItem('userRole') as UserRole;
 
-    this.loadBooks()
+    this.userRole = role ?? UserRole.Member;
+
+    this.loadBooks();
   }
 
   goToBookDetail(bookId: string) {
@@ -61,6 +64,18 @@ export class BooksListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
 
+      if (result) {
+        this.loadBooks();
+      }
+    });
+  }
+
+  openLendDialog() {
+    const dialogRef = this.dialog.open(UserSelectDialogComponent, {
+      width: '600px',
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.loadBooks();
       }

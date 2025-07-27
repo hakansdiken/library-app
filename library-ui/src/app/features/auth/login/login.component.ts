@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +8,7 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 import { LoginRequest } from '../../../core/models/auth/login.model';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Roles } from '../../../../constants/roles';
 
 @Component({
   selector: 'app-login',
@@ -39,7 +40,24 @@ export class LoginComponent {
 
       next: (res) => {
 
-        this.router.navigate(['/books']);
+        const role = res.data.role;
+        const userId = res.data.id;
+
+        if (role) {
+          localStorage.setItem('userRole', role);
+        }
+        
+        if (userId) {
+          localStorage.setItem('userId', userId);
+        }
+
+        if (role === Roles.ADMIN) {
+
+          this.router.navigate(['/admin']);
+        } else {
+
+          this.router.navigate(['/books']);
+        }
 
       },
       error: (err) => {

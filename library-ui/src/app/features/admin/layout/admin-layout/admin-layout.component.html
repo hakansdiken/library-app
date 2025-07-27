@@ -1,5 +1,5 @@
 <mat-sidenav-container class="admin-container">
-    <mat-sidenav class="sidenav" mode="side" opened>
+  <mat-sidenav #drawer class="sidenav" mode="side" opened>
     <h2 class="sidenav-header">
       Admin Panel
     </h2>
@@ -28,10 +28,15 @@
         <mat-icon>logout</mat-icon>
       </button>
     </div>
+
   </mat-sidenav>
 
   <mat-sidenav-content>
+
     <div class="admin-content">
+      <button mat-icon-button (click)="drawer.toggle()" aria-label="Toggle sidenav">
+        <mat-icon>menu</mat-icon>
+      </button>
       <router-outlet></router-outlet>
     </div>
   </mat-sidenav-content>

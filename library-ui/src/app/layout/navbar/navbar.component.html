@@ -9,6 +9,10 @@
 
   <span class="spacer"></span>
 
+  <button mat-icon-button *ngIf="isAdmin()" (click)="goToAdmin()" aria-label="Admin">
+    <mat-icon>manage_accounts</mat-icon>
+  </button>
+
   <button mat-icon-button (click)="goToProfile()" aria-label="Profile">
     <mat-icon>person</mat-icon>
   </button>
