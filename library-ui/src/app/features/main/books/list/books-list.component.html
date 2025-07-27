@@ -18,7 +18,7 @@
       <p><strong>Dewey Code:</strong> {{ book.deweyCode }}</p>
 
       <div class="operations-container">
-        <button mat-flat-button [hidden]="userRole === 'member'" (click)="openLendDialog()">Lend</button>
+        <button mat-flat-button [hidden]="userRole === 'member'" (click)="openLendDialog(book)">Lend</button>
         <button mat-raised-button (click)="goToBookDetail(book.id)">Detail</button>
       </div>
 
