@@ -1,6 +1,5 @@
 .admin-container {
     height: 100vh;
-
 }
 
 .sidenav {
@@ -22,24 +21,9 @@
     margin-top: 10px
 }
 
-.top-toolbar {
-    position: sticky;
-}
 
 .admin-content {
     padding: 24px;
     background-color: #e4e4e45b;
     min-height: 100vh;
-}
-
-.sidenav mat-icon {
-    color: white;
-}
-
-.sidenav span {
-    color: white;
-}
-
-.logout-button mat-icon {
-    color: black;
 }

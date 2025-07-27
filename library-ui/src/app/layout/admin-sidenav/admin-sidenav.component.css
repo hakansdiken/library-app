@@ -1,0 +1,23 @@
+.admin-header {
+    text-align: center;
+    font-weight: bold;
+    justify-content: center;
+}
+
+.logout-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px
+}
+
+mat-icon {
+    color: white;
+}
+
+span {
+    color: white;
+}
+
+.logout-button mat-icon {
+    color: black;
+}

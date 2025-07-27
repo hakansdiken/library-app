@@ -1,34 +1,7 @@
 <mat-sidenav-container class="admin-container">
+  
   <mat-sidenav #drawer class="sidenav" mode="side" opened>
-    <h2 class="sidenav-header">
-      Admin Panel
-    </h2>
-
-    <mat-nav-list>
-      <a mat-list-item>
-        <mat-icon>dashboard</mat-icon>
-        <span>Dashboard</span>
-      </a>
-      <a mat-list-item (click)="goToBooks()">
-        <mat-icon>menu_book</mat-icon>
-        <span>Books</span>
-      </a>
-      <a mat-list-item (click)="goToUsers()">
-        <mat-icon>people</mat-icon>
-        <span>Users</span>
-      </a>
-      <a mat-list-item (click)="goToBorrows()">
-        <mat-icon>library_books</mat-icon>
-        <span>Borrows</span>
-      </a>
-    </mat-nav-list>
-
-    <div class="logout-button">
-      <button mat-mini-fab color="warn" (click)="logout()" matTooltip="Logout">
-        <mat-icon>logout</mat-icon>
-      </button>
-    </div>
-
+    <app-admin-sidenav></app-admin-sidenav>
   </mat-sidenav>
 
   <mat-sidenav-content>
