@@ -1,9 +1,10 @@
 export interface User {
-    id?: string;
+    id: string;
     name: string;
     surname: string;
     email: string;
-    role?: 'admin' | 'librarian' | 'member';
+    role: string;
+    createdAt?: string; 
 }
 
 export interface UserWithPassword {
@@ -13,4 +14,6 @@ export interface UserWithPassword {
     email: string;
     password?: string;
     role?: 'admin' | 'librarian' | 'member';
+    createdAt?: string;
+
 }

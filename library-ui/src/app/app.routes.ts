@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ADMIN_ROUTES } from './features/admin/admin.routes';
 import { AUTH_ROUTES } from './features/auth/auth.routes';
 import { MAIN_ROUTES } from './features/main/main.routes';
+import { AdminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
     {
@@ -19,6 +20,7 @@ export const routes: Routes = [
     },
     {
         path: 'admin',
+        canActivate: [AdminGuard],
         children: ADMIN_ROUTES,
     }
 ];

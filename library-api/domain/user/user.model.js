@@ -5,7 +5,9 @@ export default class User {
         surname,
         email,
         password,
-        role
+        role,
+        createdAt,
+        updatedAt
     }) {
         this.id = id;
         this.name = name;
@@ -13,6 +15,7 @@ export default class User {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt
     }
-
 }
