@@ -5,6 +5,7 @@ import { ApiResponse } from '../../models/generic.model';
 import { User } from '../../models/user/user.model';
 import { API_ENDPOINTS } from '../../../../constants/api-endpoints';
 import { CreateUser } from '../../models/user/create-user.model';
+import { UpdateUser } from '../../models/user/update-user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +34,8 @@ export class UserService {
     return this.http.delete<void>(`${API_ENDPOINTS.USERS.DELETE(id)}`, { withCredentials: true });
   }
 
+  editUser(id: string, user: UpdateUser): Observable<User> {
 
+    return this.http.put<User>(API_ENDPOINTS.USERS.EDIT(id), user, { withCredentials: true });
+  }
 }
