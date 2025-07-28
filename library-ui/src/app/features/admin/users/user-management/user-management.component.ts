@@ -7,6 +7,8 @@ import { User } from '../../../../core/models/user/user.model';
 import { UserService } from '../../../../core/services/user/user.service';
 import { UserCreateComponent } from '../user-create/user-create.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { UserEditComponent } from '../user-edit/user-edit.component';
 
 
 @Component({
@@ -16,7 +18,8 @@ import { MatDialog } from '@angular/material/dialog';
     CommonModule,
     MatCardModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatIconModule
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css'
@@ -65,6 +68,22 @@ export class UserManagementComponent implements OnInit {
       }
     });
   }
+  openEditDialog(user: User) {
+
+    const dialogRef = this.dialog.open(UserEditComponent, {
+      width: '600px',
+      data: { mode: 'edit', user: user }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result) {
+
+        this.loadUsers();
+      }
+    });
+  }
+
 
   deleteUser(userId: string): void {
 
