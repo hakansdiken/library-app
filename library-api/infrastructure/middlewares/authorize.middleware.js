@@ -10,7 +10,7 @@ export function authorize(allowedRoles = [], allowSelf = false) {
 
         const userId = req.session?.userId;
         const userRole = req.session?.role;
-        const requestedId = req.params?.id;
+        const requestedId = req.params?.id || req.query?.userId || req.body?.userId;
         
         if (!userRole) {
 

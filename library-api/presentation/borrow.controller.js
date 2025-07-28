@@ -25,7 +25,7 @@ const bookService = new BookService(bookRepository);
 
 const borrowApplication = new BorrowApplication(borrowService, userService, bookService);
 
-router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
+router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res) => {
 
     try {
         const { userId, bookId } = req.query;
