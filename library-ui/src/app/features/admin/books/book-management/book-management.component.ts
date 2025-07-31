@@ -37,8 +37,7 @@ export class BookManagementComponent implements OnInit {
 
       next: (res) => {
 
-        console.log("book" + res)
-        this.books = res.data;
+        this.books = res.data ?? [];
         this.isLoading = false;
 
       },
@@ -57,7 +56,7 @@ export class BookManagementComponent implements OnInit {
       },
       error: (err) => {
 
-        console.log("Error:" + err.message)
+        console.error("Error:" + err.message)
       }
     });
   }

@@ -45,7 +45,7 @@ export class UserManagementComponent implements OnInit {
 
       next: (res) => {
 
-        this.users = res.data;
+        this.users = res.data ?? [];
         this.isLoading = false;
       },
       error: () => {
@@ -94,7 +94,7 @@ export class UserManagementComponent implements OnInit {
       },
       error: (err) => {
 
-        console.log("Error:" + err.message)
+        console.error("Error:" + err.message)
       }
     });
   }

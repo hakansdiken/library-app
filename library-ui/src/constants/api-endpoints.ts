@@ -30,5 +30,4 @@ export const API_ENDPOINTS = {
     EDIT: (id: string) => `${API_BASE_URL}/borrows/${id}`,
     RETURN: (id: string) => `${API_BASE_URL}/borrows/${id}`
   },
-
 };

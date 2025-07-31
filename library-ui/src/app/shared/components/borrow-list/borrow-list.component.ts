@@ -16,47 +16,59 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './borrow-list.component.html',
   styleUrls: ['./borrow-list.component.css']
 })
-
 export class BorrowListComponent implements OnInit {
 
   borrows: Borrow[] = [];
+  displayedColumns: string[] = ['userName', 'userEmail', 'bookTitle', 'status', 'borrowDate', 'returnDate'];
 
-  constructor(private borrowService: BorrowService) { }
-
-  displayedColumns = ['userName', 'userEmail', 'bookTitle', 'status', 'borrowDate', 'returnDate'];
+  constructor(private borrowService: BorrowService, private authService: AuthService) { }
 
   ngOnInit(): void {
-
     this.loadBorrows();
   }
 
   loadBorrows() {
+    const user = this.authService.getUser();
 
-    const role = localStorage.getItem('userRole') as UserRole;
-    const userId = localStorage.getItem('userId');
+    if (!user) {
 
-    if ((role === UserRole.Librarian || role === UserRole.Admin)) {
+      this.borrows = [];
+      return;
+    }
 
-      this.borrowService.getBorrows().subscribe(borrowRes => {
+    const { role, id: userId } = user;
 
-        if (!this.displayedColumns.includes('actions')) {
+    if (role === UserRole.Librarian || role === UserRole.Admin) {
 
-          this.displayedColumns.push('actions');
+      if (!this.displayedColumns.includes('actions')) {
+
+        this.displayedColumns = [...this.displayedColumns, 'actions'];
+      }
+
+      this.borrowService.getBorrows().subscribe({
+        next: borrowRes => {
+          this.borrows = borrowRes.data ?? [];
+        },
+        error: err => {
+          console.error('Error: ', err);
         }
-        this.borrows = borrowRes.data;
       });
+
     } else if (role === UserRole.Member && userId) {
 
-      this.borrowService.getBorrowsByUser(userId).subscribe(borrowRes => {
-        this.borrows = borrowRes.data;
+      this.borrowService.getBorrowsByUser(userId).subscribe({
+        next: borrowRes => {
+          this.borrows = borrowRes.data ?? [];
+        },
+        error: err => {
+          console.error('Error: ', err);
+        }
       });
 
     } else {
-
       this.borrows = [];
     }
   }
-
 
   markAsReturned(borrowId: string) {
     this.borrowService.markReturned(borrowId).subscribe({
@@ -64,8 +76,8 @@ export class BorrowListComponent implements OnInit {
         this.loadBorrows();
       },
       error: err => {
-        console.log("Error:" + err.error.message)
+        console.error("Error: ", err.error.message);
       }
-    })
+    });
   }
 }

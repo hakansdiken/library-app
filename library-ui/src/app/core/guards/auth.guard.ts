@@ -2,12 +2,12 @@ import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { AuthService } from '../services/auth/auth.service';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AdminGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
 
   constructor(private authService: AuthService, private router: Router) { }
 
@@ -16,13 +16,14 @@ export class AdminGuard implements CanActivate {
     return this.authService.getCurrentUser().pipe(
       map(res => {
 
-        if (res.success && res.data?.role === 'admin') {
+        if (res.success) {
+
+          this.authService.setUser(res.data);
 
           return true;
-          
         } else {
 
-          this.router.navigate(['/books']);
+          this.router.navigate(['/auth']);
 
           return false;
         }

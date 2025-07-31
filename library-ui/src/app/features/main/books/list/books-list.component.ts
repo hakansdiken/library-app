@@ -27,13 +27,12 @@ export class BooksListComponent implements OnInit {
   books: Book[] = [];
   userRole: string = UserRole.Member;
 
-  constructor(private bookService: BookService, private borrowService: BorrowService, private router: Router, private dialog: MatDialog) { }
+  constructor(private bookService: BookService, private borrowService: BorrowService, private authService: AuthService, private router: Router, private dialog: MatDialog) { }
 
   ngOnInit(): void {
+    const currentUser = this.authService.getUser();
 
-    const role = localStorage.getItem('userRole') as UserRole;
-
-    this.userRole = role ?? UserRole.Member;
+    this.userRole = currentUser?.role ?? UserRole.Member;
 
     this.loadBooks();
   }
@@ -49,7 +48,7 @@ export class BooksListComponent implements OnInit {
 
       next: (response) => {
 
-        this.books = response.data;
+        this.books = response.data ?? [];
       },
       error: (err) => {
 

@@ -68,7 +68,7 @@ export class UserEditComponent implements OnInit {
         this.dialogRef.close(updatedUser);
       },
       error: (err) => {
-        console.log("Error: " + err);
+        console.error("Error: " + err);
       }
     });
   }

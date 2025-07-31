@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
 import { Roles } from '../../../constants/roles';
 import { CommonModule } from '@angular/common';
+import { UserRole } from '../../core/models/enums/user-role.enum';
 
 @Component({
   selector: 'app-navbar',
@@ -20,8 +21,12 @@ export class NavbarComponent {
 
   constructor(private router: Router, private authService: AuthService) { }
 
-  ngOnInit() {
-    this.userRole = this.authService.getRole();
+  ngOnInit(): void {
+    
+    const currentUser = this.authService.getUser();
+
+    this.userRole = currentUser?.role ?? UserRole.Member;
+
   }
 
   isAdmin(): boolean {

@@ -39,7 +39,7 @@ export class UserSelectDialogComponent implements OnInit {
 
       next: res => {
 
-        this.users = res.data;
+        this.users = res.data ?? [];
         this.isLoading = false;
       },
       error: () => {

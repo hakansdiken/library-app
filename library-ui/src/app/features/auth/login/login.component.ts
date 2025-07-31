@@ -21,6 +21,7 @@ import { Roles } from '../../../../constants/roles';
 export class LoginComponent {
 
   serverErrorMessage: string | null = null
+
   loginData: LoginRequest = {
     email: '',
     password: ''
@@ -32,49 +33,36 @@ export class LoginComponent {
   onSubmit(loginForm: NgForm) {
 
     if (loginForm.invalid) {
-
       return;
     }
 
     this.authService.login(this.loginData).subscribe({
-
       next: (res) => {
 
+        if (!res.data) {
+          return;
+        }
         const role = res.data.role;
-        const userId = res.data.id;
-
-        if (role) {
-          localStorage.setItem('userRole', role);
-        }
-        
-        if (userId) {
-          localStorage.setItem('userId', userId);
-        }
 
         if (role === Roles.ADMIN) {
 
           this.router.navigate(['/admin']);
         } else {
-
+          
           this.router.navigate(['/books']);
         }
-
       },
       error: (err) => {
-
         if (err.status === 400 && err.error?.message) {
-
           this.serverErrorMessage = err.error.message;
-
         } else if (err.status === 404 && err.error?.message) {
-
           this.serverErrorMessage = err.error.message;
-
         } else {
           this.serverErrorMessage = "Unexpected error occurred.";
         }
       }
     });
   }
+
 
 }

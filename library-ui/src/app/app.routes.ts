@@ -3,6 +3,7 @@ import { ADMIN_ROUTES } from './features/admin/admin.routes';
 import { AUTH_ROUTES } from './features/auth/auth.routes';
 import { MAIN_ROUTES } from './features/main/main.routes';
 import { AdminGuard } from './core/guards/admin.guard';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -16,6 +17,7 @@ export const routes: Routes = [
     },
     {
         path: '',
+        canActivate: [AuthGuard],
         children: MAIN_ROUTES,
     },
     {

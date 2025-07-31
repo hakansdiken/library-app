@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import {  MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -18,17 +19,20 @@ export class ProfileComponent implements OnInit {
 
   user: User | null = null;
 
-  constructor(private userService: UserService) { }
+  currentUser: User | null = null;
+
+  constructor(private userService: UserService, private authService: AuthService) { }
 
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getUser();
 
-    const userId = localStorage.getItem('userId')
+    if (this.currentUser && this.currentUser.id) {
 
-    if (userId) {
-      this.loadUser(userId);
+      this.loadUser(this.currentUser.id);
     }
   }
+
 
   loadUser(id: string) {
     this.userService.getUserById(id).subscribe({
