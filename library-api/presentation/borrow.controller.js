@@ -28,19 +28,19 @@ const borrowApplication = new BorrowApplication(borrowService, userService, book
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res) => {
 
     try {
-        const { userId, bookId } = req.query;
+        const { userId, bookId, page = 1, limit = 10 } = req.query;
 
         if (userId) {
-            const result = await borrowApplication.getBorrowsByUserId(userId);
+            const result = await borrowApplication.getBorrowsByUserId(userId, page, limit);
             return res.json(result);
         }
 
         if (bookId) {
-            const result = await borrowApplication.getBorrowsByBookId(bookId);
+            const result = await borrowApplication.getBorrowsByBookId(bookId, page, limit);
             return res.json(result);
         }
 
-        const result = await borrowApplication.getAllBorrows();
+        const result = await borrowApplication.getAllBorrows(page, limit);
 
         if (!result.success) {
 
@@ -58,8 +58,9 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res
 router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
+        const {page = 1, limit = 10 } = req.query;
 
-        const result = await borrowApplication.getBorrowsWithOverdue();
+        const result = await borrowApplication.getBorrowsWithOverdue(page, limit);
 
         if (!result.success) {
 

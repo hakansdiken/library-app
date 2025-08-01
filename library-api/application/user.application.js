@@ -53,9 +53,9 @@ export class UserApplication {
         };
     }
 
-    async getAllUsers() {
+    async getAllUsers(page, limit) {
 
-        const result = await this.userService.getAllUsers();
+        const result = await this.userService.getAllUsers(page, limit);
 
         if (!result.success) {
             return result;
@@ -64,7 +64,8 @@ export class UserApplication {
         return {
             success: true,
             message: "Users fetched successfully.",
-            data: result.data.map(user => new UserResponseDTO(user))
+            data: result.data.map(user => new UserResponseDTO(user)),
+            pagination: result.pagination
         };
     }
 
@@ -78,12 +79,12 @@ export class UserApplication {
         return {
             success: true,
             message: "User fetched successfully.",
-            data: new UserResponseDTO(result.data) 
+            data: new UserResponseDTO(result.data)
         };
     }
 
     async updateUser(id, data) {
-        
+
         const dto = new UserUpdateRequestDTO(data);
         const result = await this.userService.updateUser(id, dto);
 

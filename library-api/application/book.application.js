@@ -12,7 +12,7 @@ export class BookApplication {
 
         const dto = new BookCreateRequestDTO(data)
         const result = await this.bookService.createBook(dto);
-        
+
         if (!result.success) {
 
             return result;
@@ -25,9 +25,9 @@ export class BookApplication {
         };
     }
 
-    async getAllBooks() {
+    async getAllBooks(page, limit) {
 
-        const result = await this.bookService.getAllBooks();
+        const result = await this.bookService.getAllBooks(page, limit);
 
         if (!result.success) {
 
@@ -37,7 +37,8 @@ export class BookApplication {
         return {
             success: true,
             message: result.message,
-            data: result.data.map(book => new BookResponseDTO(book))
+            data: result.data.map(book => new BookResponseDTO(book)),
+            pagination: result.pagination
         };
     }
 

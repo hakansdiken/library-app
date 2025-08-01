@@ -12,14 +12,46 @@ export class BookRepository {
         return this._mapToEntity(result.rows[0]);
     }
 
-    async findAll() {
+    async findAll(page, limit) {
+        
+        const offset = (page - 1) * limit;
 
-        const result = await pool.query("SELECT * FROM books ORDER BY created_at DESC");
+        const countResult = await pool.query("SELECT COUNT(*) FROM books");
+        const totalItems = Number(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalItems / limit);
 
-        if (result.rows.length === 0) return [];
+        const result = await pool.query(
+            "SELECT * FROM books ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+            [limit, offset]
+        );
 
-        return result.rows.map(row => this._mapToEntity(row));
+        if (result.rows.length === 0) {
+            return {
+                books: [],
+                pagination: {
+                    totalItems,
+                    currentPage: page,
+                    totalPages,
+                    itemsPerPage: limit,
+                    hasNextPage: false,
+                    hasPrevPage: false
+                }
+            };
+        }
+
+        return {
+            books: result.rows.map(row => this._mapToEntity(row)),
+            pagination: {
+                totalItems,
+                currentPage: page,
+                totalPages,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        };
     }
+
 
     async save(book) {
 

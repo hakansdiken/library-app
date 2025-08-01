@@ -21,11 +21,44 @@ export class UserRepository {
         return this._mapToEntity(result.rows[0]);
     }
 
-    async findAll() {
+    async findAll(page, limit) {    
 
-        const result = await pool.query("SELECT * FROM users ORDER BY created_at DESC");
+        const offset = (page - 1) * limit;
 
-        return result.rows.map(row => this._mapToEntity(row));
+        const countResult = await pool.query("SELECT COUNT(*) FROM users")
+        const totalItems = Number(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalItems / limit)
+
+        const result = await pool.query(
+            "SELECT * FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+            [limit, offset]
+        );
+
+        if (result.rows.length === 0) {
+            return {
+                users: [],
+                pagination: {
+                    totalItems,
+                    currentPage: page,
+                    totalPages,
+                    itemsPerPage: limit,
+                    hasNextPage: false,
+                    hasPrevPage: false
+                }
+            }
+        }
+
+        return {
+            users: result.rows.map(row => this._mapToEntity(row)),
+            pagination: {
+                totalItems,
+                currentPage: page,
+                totalPages,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        }
     }
 
     async save(user) {

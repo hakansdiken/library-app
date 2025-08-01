@@ -49,11 +49,11 @@ export class BorrowService {
 
     //     const savedBorrow = await this.borrowRepository.save(updatedBorrow);
 
-        // return {
-        //     success: false,
-        //     message: "This book already borrowed.",
-        //     data: savedBorrow
-        // }
+    // return {
+    //     success: false,
+    //     message: "This book already borrowed.",
+    //     data: savedBorrow
+    // }
     // }
 
     async returnBorrow(id) {
@@ -85,14 +85,32 @@ export class BorrowService {
         }
     }
 
-    async getAllBorrows() {
+    async getAllBorrows(page, limit) {
 
-        const borrows = await this.borrowRepository.findAll();
+        page = Number(page);
+        limit = Number(limit);
+
+        if (isNaN(page) || page < 1) {
+            return {
+                success: false,
+                message: "Page number must be a positive integer."
+            };
+        }
+
+        if (isNaN(limit) || limit < 1) {
+            return {
+                success: false,
+                message: "Limit must be a positive integer."
+            };
+        }
+
+        const data = await this.borrowRepository.findAll(page, limit);
 
         return {
             success: true,
             message: "Borrows fetched succesfully.",
-            data: borrows
+            data: data.borrows,
+            pagination: data.pagination
         }
     }
 
@@ -107,36 +125,91 @@ export class BorrowService {
         }
     }
 
-    async getBorrowsByBookId(bookId) {
+    async getBorrowsByBookId(bookId, page, limit) {
 
-        const borrows = await this.borrowRepository.findByBookId(bookId);
+        page = Number(page);
+        limit = Number(limit);
+
+        if (isNaN(page) || page < 1) {
+            return {
+                success: false,
+                message: "Page number must be a positive integer."
+            };
+        }
+
+        if (isNaN(limit) || limit < 1) {
+            return {
+                success: false,
+                message: "Limit must be a positive integer."
+            };
+        }
+
+        const data = await this.borrowRepository.findByBookId(bookId, page, limit);
 
         return {
             success: true,
             message: "Borrows fetched succesfully.",
-            data: borrows
+            data: data.borrows,
+            pagination: data.pagination
         }
     }
 
-    async getBorrowsByUserId(userId) {
+    async getBorrowsByUserId(userId, page, limit) {
 
-        const borrows = await this.borrowRepository.findByUserId(userId);
+
+        page = Number(page);
+        limit = Number(limit);
+
+        if (isNaN(page) || page < 1) {
+            return {
+                success: false,
+                message: "Page number must be a positive integer."
+            };
+        }
+
+        if (isNaN(limit) || limit < 1) {
+            return {
+                success: false,
+                message: "Limit must be a positive integer."
+            };
+        }
+
+        const data = await this.borrowRepository.findByUserId(userId, page, limit);
 
         return {
             success: true,
             message: "Borrows fetched succesfully.",
-            data: borrows
+            data: data.borrows,
+            pagination: data.pagination
         }
     }
 
-    async getBorrowsWithOverdue() {
+    async getBorrowsWithOverdue(page, limit) {
 
-        const borrows = await this.borrowRepository.findAllWithOverdue();
+        page = Number(page);
+        limit = Number(limit);
+
+        if (isNaN(page) || page < 1) {
+            return {
+                success: false,
+                message: "Page number must be a positive integer."
+            };
+        }
+
+        if (isNaN(limit) || limit < 1) {
+            return {
+                success: false,
+                message: "Limit must be a positive integer."
+            };
+        }
+
+        const data = await this.borrowRepository.findAllWithOverdue(page, limit);
 
         return {
             success: true,
             message: "Overdue borrows fetched succesfully.",
-            data: borrows
+            data: data.borrows,
+            pagination: data.pagination
         }
     }
 }

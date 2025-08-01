@@ -48,8 +48,9 @@ export class BorrowApplication {
         };
     }
 
-    async getAllBorrows() {
-        const result = await this.borrowService.getAllBorrows();
+    async getAllBorrows( page, limit) {
+
+        const result = await this.borrowService.getAllBorrows(page, limit);
 
         if (!result.success) {
             return result;
@@ -58,16 +59,17 @@ export class BorrowApplication {
         return {
             success: true,
             message: result.message,
-            data: result.data.map(borrow => new BorrowResponseDTO(borrow))
+            data: result.data.map(borrow => new BorrowResponseDTO(borrow)),
+            pagination: result.pagination
         };
     }
 
-    async getBorrowsByBookId(bookId) {
+    async getBorrowsByBookId(bookId, page, limit) {
         const book = await this.bookService.getBookById(bookId);
 
         if (!book) return { success: false, message: "Book not found." };
 
-        const result = await this.borrowService.getBorrowsByBookId(bookId);
+        const result = await this.borrowService.getBorrowsByBookId(bookId , page, limit);
 
         if (!result.success) {
             return result;
@@ -76,17 +78,18 @@ export class BorrowApplication {
         return {
             success: true,
             message: result.message,
-            data: result.data.map(borrow => new BorrowResponseDTO(borrow))
+            data: result.data.map(borrow => new BorrowResponseDTO(borrow)),
+            pagination: result.pagination
         };
     }
 
-    async getBorrowsByUserId(userId) {
+    async getBorrowsByUserId(userId, page , limit) {
 
         const user = await this.userService.getUserById(userId);
 
         if (!user) return { success: false, message: "User not found." };
 
-        const result = await this.borrowService.getBorrowsByUserId(userId);
+        const result = await this.borrowService.getBorrowsByUserId(userId, page, limit);
 
         if (!result.success) {
             return result;
@@ -95,12 +98,13 @@ export class BorrowApplication {
         return {
             success: true,
             message: result.message,
-            data: result.data.map(borrow => new BorrowResponseDTO(borrow))
+            data: result.data.map(borrow => new BorrowResponseDTO(borrow)),
+            pagination: result.pagination
         };
     }
 
-    async getBorrowsWithOverdue() {
-        const result = await this.borrowService.getBorrowsWithOverdue();
+    async getBorrowsWithOverdue(page, limit) {
+        const result = await this.borrowService.getBorrowsWithOverdue(page, limit);
 
         if (!result.success) {
             return result;
@@ -109,7 +113,8 @@ export class BorrowApplication {
         return {
             success: true,
             message: result.message,
-            data: result.data.map(borrow => new BorrowResponseDTO(borrow))
+            data: result.data.map(borrow => new BorrowResponseDTO(borrow)),
+            pagination: result.pagination
         };
     }
 

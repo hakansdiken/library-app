@@ -90,14 +90,32 @@ export class UserService {
         };
     }
 
-    async getAllUsers() {
+    async getAllUsers(page, limit) {
 
-        const users = await this.userRepository.findAll();
+        page = Number(page);
+        limit = Number(limit);
+
+        if (isNaN(page) || page < 1) {
+            return {
+                success: false,
+                message: "Page number must be a positive integer."
+            };
+        }
+
+        if (isNaN(limit) || limit < 1) {
+            return {
+                success: false,
+                message: "Limit must be a positive integer."
+            };
+        }
+
+        const data = await this.userRepository.findAll(page, limit);
 
         return {
             success: true,
             message: 'Users fetched successfully',
-            data: users
+            data: data.users,
+            pagination: data.pagination,
         };
     }
 

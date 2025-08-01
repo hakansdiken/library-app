@@ -5,21 +5,24 @@ import { authorize } from '../infrastructure/middlewares/authorize.middleware.js
 import { Roles } from '../domain/constants/roles.js';
 import { UserApplication } from '../application/user.application.js';
 import { UserValidator } from '../domain/user/user.validator.js'
+
 const router = express.Router();
 const userRepository = new UserRepository();
 const userValidator = new UserValidator();
-const userService = new UserService(userRepository,userValidator);
+const userService = new UserService(userRepository, userValidator);
 const userApplication = new UserApplication(userService);
 
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
 
-        const result = await userApplication.getAllUsers();
+        const { page = 1, limit = 10 } = req.query;
+
+        const result = await userApplication.getAllUsers(page, limit);
 
         if (!result.success) {
 
-            return res.status(500).json(result);
+            return res.status(400).json(result);
         }
 
         return res.status(200).json(result);

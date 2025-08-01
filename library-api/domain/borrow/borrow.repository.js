@@ -12,63 +12,187 @@ export class BorrowRepository {
         return this._mapToEntity(result.rows[0]);
     }
 
-    async findAll() {
+    async findAll(page, limit) {
+
+        const offset = (page - 1) * limit;
+        const countResult = await pool.query("SELECT COUNT(*) from borrows")
+        const totalItems = Number(countResult.rows[0].count)
+        const totalPages = Math.ceil(totalItems / limit);
 
         const result = await pool.query(`
-            SELECT
-                b.id, b.book_id, b.user_id, b.borrow_date, b.due_date, b.return_date, b.status,
-                u.id AS user_id, u.name AS user_name, u.surname AS user_surname, u.email AS user_email,
-                bk.id AS book_id, bk.title AS book_title
+                SELECT
+                    b.id, b.book_id, b.user_id, b.borrow_date, b.due_date, b.return_date, b.status,
+                    u.id AS user_id, u.name AS user_name, u.surname AS user_surname, u.email AS user_email,
+                    bk.id AS book_id, bk.title AS book_title
                 FROM borrows b
-                JOIN users u ON b.user_id = u.id
-                JOIN books bk ON b.book_id = bk.id
-                ORDER BY b.borrow_date DESC`
+                LEFT JOIN users u ON b.user_id = u.id
+                LEFT JOIN books bk ON b.book_id = bk.id
+                ORDER BY b.borrow_date DESC 
+                LIMIT $1 OFFSET $2`,
+            [limit, offset]);
+
+
+        if (result.rows.length === 0) {
+            return {
+                borrows: result.rows.map(row => this._mapToEntity(row)),
+                pagination: {
+                    totalPages,
+                    currentPage: page,
+                    totalItems,
+                    itemsPerPage: limit,
+                    hasNextPage: false,
+                    hasPrevPage: false
+                }
+            }
+        };
+
+        return {
+            borrows: result.rows.map(row => this._mapToEntity(row)),
+            pagination: {
+                totalPages,
+                currentPage: page,
+                totalItems,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        }
+    }
+
+    async findByUserId(user_id, page, limit) {
+        const offset = (page - 1) * limit;
+
+        const countResult = await pool.query(`
+        SELECT COUNT(*) FROM borrows WHERE user_id = $1
+    `, [user_id]);
+
+        const totalItems = Number(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalItems / limit);
+
+        const result = await pool.query(`
+        SELECT 
+            b.*, 
+            u.id AS user_id,
+            u.name AS user_name,
+            u.surname AS user_surname,
+            u.email AS user_email,
+            bk.id AS book_id,
+            bk.title AS book_title
+        FROM borrows b
+        JOIN users u ON b.user_id = u.id
+        JOIN books bk ON b.book_id = bk.id
+        WHERE b.user_id = $1
+        ORDER BY b.borrow_date DESC
+        LIMIT $2 OFFSET $3
+    `, [user_id, limit, offset]);
+
+        if (result.rows.length === 0) {
+            return {
+                borrows: result.rows.map(row => this._mapToEntity(row)),
+                pagination: {
+                    totalPages,
+                    currentPage: page,
+                    totalItems,
+                    itemsPerPage: limit,
+                    hasNextPage: false,
+                    hasPrevPage: false
+                }
+            }
+        };
+        return {
+            borrows: result.rows.map(row => this._mapToEntity(row)),
+            pagination: {
+                totalItems,
+                currentPage: page,
+                totalPages,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        };
+    }
+
+    async findByBookId(book_id, page, limit) {
+        const offset = (page - 1) * limit;
+
+        const countResult = await pool.query(
+            "SELECT COUNT(*) FROM borrows WHERE book_id = $1",
+            [book_id]);
+
+        const totalItems = Number(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalItems / limit);
+
+        const result = await pool.query(`
+        SELECT 
+            b.*, 
+            u.id AS user_id,
+            u.name AS user_name,
+            u.surname AS user_surname,
+            u.email AS user_email,
+            bk.id AS book_id,
+            bk.title AS book_title
+        FROM borrows b
+        JOIN users u ON b.user_id = u.id
+        JOIN books bk ON b.book_id = bk.id
+        WHERE b.book_id = $1
+        ORDER BY b.borrow_date DESC
+        LIMIT $2 OFFSET $3
+    `, [book_id, limit, offset]);
+
+        return {
+            borrows: result.rows.map(row => this._mapToEntity(row)),
+            pagination: {
+                totalItems,
+                currentPage: page,
+                totalPages,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        };
+    }
+
+    async findAllWithOverdue(page, limit) {
+        const offset = (page - 1) * limit;
+
+        const countResult = await pool.query(
+            "SELECT COUNT(*) FROM borrows WHERE book_id = $1"
+            , [book_id]);
+
+        const totalItems = Number(countResult.rows[0].count);
+        const totalPages = Math.ceil(totalItems / limit);
+
+
+        const result = await pool.query(
+            "SELECT * FROM borrows WHERE status = $1 AND due_date < NOW() LIMIT $2 OFFSET $3", 
+            ["borrowed", limit, offset]
         );
 
-        if (result.rows.length === 0) return [];
+        if (result.rows.length === 0) {
+            return {
+                borrows: result.rows.map(row => this._mapToEntity(row)),
+                pagination: {
+                    totalPages,
+                    currentPage: page,
+                    totalItems,
+                    itemsPerPage: limit,
+                    hasNextPage: false,
+                    hasPrevPage: false
+                }
+            }
+        };
 
-        return result.rows.map(row => this._mapToEntity(row));
-    }
-
-    async findByUserId(user_id) {
-
-        const result = await pool.query(`
-            SELECT 
-                b.*, 
-                u.id AS user_id,
-                u.name AS user_name,
-                u.surname AS user_surname,
-                u.email AS user_email,
-                bk.id AS book_id,
-                bk.title AS book_title
-            FROM borrows b
-            JOIN users u ON b.user_id = u.id
-            JOIN books bk ON b.book_id = bk.id
-            WHERE b.user_id = $1
-            ORDER BY b.borrow_date DESC`, [user_id]);
-
-
-        if (result.rows.length === 0) return [];
-
-        return result.rows.map(row => this._mapToEntity(row));
-    }
-
-    async findByBookId(book_id) {
-
-        const result = await pool.query("SELECT * FROM borrows WHERE book_id = $1", [book_id]);
-
-        if (result.rows.length === 0) return [];
-
-        return result.rows.map(row => this._mapToEntity(row));
-    }
-
-    async findAllWithOverdue() {
-
-        const result = await pool.query("SELECT * FROM borrows WHERE status = $1 AND due_date < NOW()", ["borrowed"]);
-
-        if (result.rows.length === 0) return [];
-
-        return result.rows.map(row => this._mapToEntity(row));
+        return {
+            borrows: result.rows.map(row => this._mapToEntity(row)),
+            pagination: {
+                totalItems,
+                currentPage: page,
+                totalPages,
+                itemsPerPage: limit,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
+        };
     }
 
     async save(borrow) {
