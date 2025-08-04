@@ -3,8 +3,15 @@
 <div class="button-container" *ngIf="userRole !== 'member'">
   <button mat-raised-button class="round-button" (click)="openCreateDialog()">+</button>
 </div>
+<div class="paginator-container">
+  <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+</div>
+
 
 <div class="books-container">
+
   <mat-card *ngFor="let book of books" class="book-card">
     <mat-card-header>
       <mat-card-title>{{ book.title }}</mat-card-title>
@@ -24,5 +31,9 @@
       </div>
 
     </mat-card-content>
+
   </mat-card>
+  <div *ngIf="books.length === 0">
+    <p style="text-align: center;">You have no user records.</p>
+  </div>
 </div>

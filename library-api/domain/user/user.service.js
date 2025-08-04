@@ -95,7 +95,7 @@ export class UserService {
         page = Number(page);
         limit = Number(limit);
 
-        if (isNaN(page) || page < 1) {
+        if (isNaN(page) || page < 0) {
             return {
                 success: false,
                 message: "Page number must be a positive integer."
@@ -189,7 +189,14 @@ export class UserService {
             }
         }
 
-        await this.userRepository.delete(id);
+        const result = await this.userRepository.delete(id);
+
+        if (!result.success) {
+            return {
+                success: false,
+                message: "This user currently has book.",
+            }
+        }
 
         return {
             success: true,

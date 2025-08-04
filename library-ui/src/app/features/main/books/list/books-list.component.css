@@ -36,6 +36,12 @@
     margin: 8px;
 }
 
+.paginator-container {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
 .round-button {
     border-radius: 50%;
     width: 48px;

@@ -32,7 +32,7 @@ export class BookService {
         page = Number(page);
         limit = Number(limit);
 
-        if (isNaN(page) || page < 1) {
+        if (isNaN(page) || page < 0) {
             return {
                 success: false,
                 message: "Page number must be a positive integer."
@@ -131,7 +131,15 @@ export class BookService {
             };
         }
 
-        await this.bookRepository.delete(id);
+        const result = await this.bookRepository.delete(id);
+
+        if (!result.success) {
+
+            return {
+                success: false,
+                message: "This book currently borrowed",
+            }
+        }
 
         return {
             success: true,

@@ -1,4 +1,5 @@
 import { pool } from "../../infrastructure/database.js";
+import { BorrowStatus } from "../constants/borrow-status.js";
 import { BookFactory } from "./book.factory.js";
 
 export class BookRepository {
@@ -13,8 +14,8 @@ export class BookRepository {
     }
 
     async findAll(page, limit) {
-        
-        const offset = (page - 1) * limit;
+
+        const offset = page * limit;
 
         const countResult = await pool.query("SELECT COUNT(*) FROM books");
         const totalItems = Number(countResult.rows[0].count);
@@ -30,7 +31,7 @@ export class BookRepository {
                 books: [],
                 pagination: {
                     totalItems,
-                    currentPage: page,
+                    pageIndex: page,
                     totalPages,
                     itemsPerPage: limit,
                     hasNextPage: false,
@@ -43,11 +44,11 @@ export class BookRepository {
             books: result.rows.map(row => this._mapToEntity(row)),
             pagination: {
                 totalItems,
-                currentPage: page,
+                pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
                 hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
+                hasPrevPage: page > 0
             }
         };
     }
@@ -117,8 +118,19 @@ export class BookRepository {
     }
 
     async delete(id) {
+        // Eğer kitap borrowed ise silinmesin
+        const borrowedCount = await pool.query(
+            "SELECT COUNT(*) FROM borrows WHERE book_id = $1 AND status = $2",
+            [id, BorrowStatus.BORROWED]
+        );
+
+        if (Number(borrowedCount.rows[0].count) > 0) {
+            return { success: false };
+        }
 
         await pool.query("DELETE FROM books WHERE id = $1", [id]);
+
+        return { success: true };
     }
 
     _mapToEntity(row) {

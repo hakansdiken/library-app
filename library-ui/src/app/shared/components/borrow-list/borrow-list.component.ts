@@ -8,11 +8,13 @@ import { UserRole } from '../../../core/models/enums/user-role.enum';
 import { AuthService } from '../../../core/services/auth/auth.service';
 import { BorrowService } from '../../../core/services/borrow/borrow.service';
 import { MatButtonModule } from '@angular/material/button';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { User } from '../../../core/models/user/user.model';
 
 @Component({
   selector: 'app-borrow-list',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatCardModule, MatDividerModule, MatButtonModule],
+  imports: [CommonModule, MatTableModule, MatCardModule, MatDividerModule, MatButtonModule, MatPaginatorModule],
   templateUrl: './borrow-list.component.html',
   styleUrls: ['./borrow-list.component.css']
 })
@@ -20,18 +22,22 @@ export class BorrowListComponent implements OnInit {
 
   borrows: Borrow[] = [];
   displayedColumns: string[] = ['userName', 'userEmail', 'bookTitle', 'status', 'borrowDate', 'returnDate'];
+  pageIndex: number = 0;
+  itemsPerPage: number = 10;
+  totalItems?: number;
 
   constructor(private borrowService: BorrowService, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.loadBorrows();
+
+    this.pageIndex = 0;
+    this.authService.currentUser$.subscribe(user => {
+      this.loadBorrows(user);
+    });
   }
 
-  loadBorrows() {
-    const user = this.authService.getUser();
-
+  loadBorrows(user?: User | null): void {
     if (!user) {
-
       this.borrows = [];
       return;
     }
@@ -45,22 +51,34 @@ export class BorrowListComponent implements OnInit {
         this.displayedColumns = [...this.displayedColumns, 'actions'];
       }
 
-      this.borrowService.getBorrows().subscribe({
-        next: borrowRes => {
-          this.borrows = borrowRes.data ?? [];
+      this.borrowService.getBorrows(this.pageIndex, this.itemsPerPage).subscribe({
+        next: (res) => {
+
+          this.borrows = res.data ?? [];
+
+          this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
+          this.totalItems = Number(res.pagination?.totalItems);
+          this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
         },
-        error: err => {
-          console.error("Error: ", err.error.message);
+        error: (err) => {
+          console.error('Error:', err.error?.message);
         }
       });
 
     } else if (role === UserRole.Member && userId) {
 
-      this.borrowService.getBorrowsByUser(userId).subscribe({
-        next: borrowRes => {
-          this.borrows = borrowRes.data ?? [];
+      this.borrowService.getBorrowsByUser(userId, this.pageIndex, this.itemsPerPage).subscribe({
+
+        next: (res) => {
+
+          this.borrows = res.data ?? [];
+
+          this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
+          this.totalItems = Number(res.pagination?.totalItems);
+          this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
         },
-        error: err => {
+        error: (err) => {
+
           console.error('Error:', err.error?.message);
         }
       });
@@ -70,8 +88,11 @@ export class BorrowListComponent implements OnInit {
     }
   }
 
+
   markAsReturned(borrowId: string) {
+
     this.borrowService.markReturned(borrowId).subscribe({
+
       next: res => {
         this.loadBorrows();
       },
@@ -79,5 +100,11 @@ export class BorrowListComponent implements OnInit {
         console.error("Error: ", err.error.message);
       }
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.itemsPerPage = event.pageSize;
+    this.loadBorrows();
   }
 }

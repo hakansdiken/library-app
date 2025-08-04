@@ -13,11 +13,12 @@ import { UserSelectDialogComponent } from '../../../../shared/components/user-se
 import { BorrowService } from '../../../../core/services/borrow/borrow.service';
 import { User } from '../../../../core/models/user/user.model';
 import { CreateBorrow } from '../../../../core/models/borrow/create-borrow.model';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-books-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatDialogModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatDialogModule, MatPaginatorModule],
   templateUrl: './books-list.component.html',
   styleUrl: './books-list.component.css'
 })
@@ -26,6 +27,9 @@ export class BooksListComponent implements OnInit {
 
   books: Book[] = [];
   userRole: string = UserRole.Member;
+  pageIndex: number = 0;
+  itemsPerPage: number = 10;
+  totalItems?: number;
 
   constructor(private bookService: BookService, private borrowService: BorrowService, private authService: AuthService, private router: Router, private dialog: MatDialog) { }
 
@@ -44,11 +48,14 @@ export class BooksListComponent implements OnInit {
 
   loadBooks() {
 
-    this.bookService.getBooks().subscribe({
+    this.bookService.getBooks(this.pageIndex, this.itemsPerPage).subscribe({
 
-      next: (response) => {
+      next: (res) => {
 
-        this.books = response.data ?? [];
+        this.books = res.data ?? [];
+        this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
+        this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
+        this.totalItems = Number(res.pagination?.totalItems);
       },
       error: (err) => {
 
@@ -112,4 +119,9 @@ export class BooksListComponent implements OnInit {
     });
   }
 
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.itemsPerPage = event.pageSize;
+    this.loadBooks();
+  }
 }

@@ -13,14 +13,19 @@ export class BorrowService {
 
   constructor(private http: HttpClient) { }
 
-  getBorrows(): Observable<ApiResponse<Borrow[]>> {
+  getBorrows(page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
 
-    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.ROOT}`, { withCredentials: true });
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.ROOT(page, limit)}`, { withCredentials: true });
   }
 
-  getBorrowsByUser(userId: string): Observable<ApiResponse<Borrow[]>> {
+  getBorrowsByUser(userId: string, page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
 
-    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_USERID(userId)}`, { withCredentials: true });
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_USERID(userId, page, limit)}`, { withCredentials: true });
+  }
+
+  getBorrowsByBook(bookId: string, page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
+
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_BOOKID(bookId, page, limit)}`, { withCredentials: true });
   }
 
   markReturned(borrowId: string): Observable<ApiResponse<Borrow>> {

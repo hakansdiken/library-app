@@ -41,15 +41,17 @@
         </td>
       </ng-container>
 
-
       <!-- Header and Row Declarations -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
     </table>
+    <div *ngIf="users.length === 0">
+      <p style=" text-align: center;">You have no user records.</p>
+    </div>
+    <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="itemsPerPage"
+      [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPageChange($event)">
+    </mat-paginator>
   </mat-card>
 
-  <div *ngIf="users.length === 0">
-    <p>You have no user records.</p>
-  </div>
 </div>

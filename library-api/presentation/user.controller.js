@@ -16,7 +16,7 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
 
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 0, limit = 10 } = req.query;
 
         const result = await userApplication.getAllUsers(page, limit);
 

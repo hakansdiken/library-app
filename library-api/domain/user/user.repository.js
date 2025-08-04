@@ -1,4 +1,5 @@
 import { pool } from '../../infrastructure/database.js';
+import { BorrowStatus } from '../constants/borrow-status.js';
 import { UserFactory } from './user.factory.js';
 
 export class UserRepository {
@@ -21,9 +22,9 @@ export class UserRepository {
         return this._mapToEntity(result.rows[0]);
     }
 
-    async findAll(page, limit) {    
+    async findAll(page, limit) {
 
-        const offset = (page - 1) * limit;
+        const offset = page * limit;
 
         const countResult = await pool.query("SELECT COUNT(*) FROM users")
         const totalItems = Number(countResult.rows[0].count);
@@ -39,7 +40,7 @@ export class UserRepository {
                 users: [],
                 pagination: {
                     totalItems,
-                    currentPage: page,
+                    pageIndex: page,
                     totalPages,
                     itemsPerPage: limit,
                     hasNextPage: false,
@@ -52,11 +53,11 @@ export class UserRepository {
             users: result.rows.map(row => this._mapToEntity(row)),
             pagination: {
                 totalItems,
-                currentPage: page,
+                pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
                 hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
+                hasPrevPage: page > 0
             }
         }
     }
@@ -109,7 +110,18 @@ export class UserRepository {
 
     async delete(id) {
 
+        const borrowedCount = await pool.query(
+            "SELECT COUNT(*) FROM borrows WHERE user_id = $1 AND status = $2",
+            [id, BorrowStatus.BORROWED]
+        );
+
+        if (Number(borrowedCount.rows[0].count) > 0) {
+            return { success: false };
+        }
+
         await pool.query("DELETE FROM users WHERE id = $1", [id]);
+
+        return { success: true };
     }
 
     _mapToEntity(row) {

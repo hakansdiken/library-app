@@ -8,11 +8,12 @@ import { MatTableModule } from '@angular/material/table';
 import { Book } from '../../../../core/models/book/book.model';
 import { BookFormComponent } from '../../../../shared/components/book-form/book-form.component';
 import { MatCardModule } from '@angular/material/card';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-book-management',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatCardModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatCardModule, MatPaginatorModule],
   templateUrl: './book-management.component.html',
   styleUrl: './book-management.component.css'
 })
@@ -20,29 +21,31 @@ export class BookManagementComponent implements OnInit {
 
   books: Book[] = [];
   displayedColumns: string[] = ['title', 'author', 'publisher', 'publicationYear', 'actions'];
-  isLoading = false;
+  pageIndex: number = 0;
+  itemsPerPage: number = 10;
+  totalItems?: number;
 
 
   constructor(private bookService: BookService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-
+    this.pageIndex = 0;
     this.loadBooks();
   }
 
 
   loadBooks() {
-    this.isLoading = true;
-    this.bookService.getBooks().subscribe({
+    this.bookService.getBooks(this.pageIndex, this.itemsPerPage).subscribe({
 
       next: (res) => {
 
         this.books = res.data ?? [];
-        this.isLoading = false;
-
+        this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
+        this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
+        this.totalItems = Number(res.pagination?.totalItems);
       },
-      error: () => {
-        this.isLoading = false;
+      error: (err) => {
+        console.error('Error: ', err.error?.message)
       }
     });
   }
@@ -93,5 +96,11 @@ export class BookManagementComponent implements OnInit {
         this.loadBooks();
       }
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.itemsPerPage = event.pageSize;
+    this.loadBooks();
   }
 }

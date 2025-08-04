@@ -10,9 +10,7 @@ export class BorrowService {
 
     async createBorrow(data) {
 
-        const existBorrows = await this.borrowRepository.findByBookId(data.bookId);
-
-        const isBorrowed = existBorrows.some(borrow => borrow.status === BorrowStatus.BORROWED);
+        const isBorrowed = await this.borrowRepository.isBookCurrentlyBorrowed(data.bookId);
 
         if (isBorrowed) {
             return {
@@ -22,9 +20,7 @@ export class BorrowService {
         }
 
         const borrow = BorrowFactory.create(data);
-
         const savedBorrow = await this.borrowRepository.save(borrow);
-
 
         return {
             success: true,
@@ -90,7 +86,7 @@ export class BorrowService {
         page = Number(page);
         limit = Number(limit);
 
-        if (isNaN(page) || page < 1) {
+        if (isNaN(page) || page < 0) {
             return {
                 success: false,
                 message: "Page number must be a positive integer."
@@ -130,7 +126,7 @@ export class BorrowService {
         page = Number(page);
         limit = Number(limit);
 
-        if (isNaN(page) || page < 1) {
+        if (isNaN(page) || page < 0) {
             return {
                 success: false,
                 message: "Page number must be a positive integer."
@@ -160,7 +156,7 @@ export class BorrowService {
         page = Number(page);
         limit = Number(limit);
 
-        if (isNaN(page) || page < 1) {
+        if (isNaN(page) || page < 0) {
             return {
                 success: false,
                 message: "Page number must be a positive integer."
@@ -189,7 +185,7 @@ export class BorrowService {
         page = Number(page);
         limit = Number(limit);
 
-        if (isNaN(page) || page < 1) {
+        if (isNaN(page) || page < 0) {
             return {
                 success: false,
                 message: "Page number must be a positive integer."

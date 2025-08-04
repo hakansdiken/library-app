@@ -1,4 +1,5 @@
 import { pool } from "../../infrastructure/database.js";
+import { BorrowStatus } from "../constants/borrow-status.js";
 import { BorrowFactory } from "./borrow.factory.js";
 
 export class BorrowRepository {
@@ -14,7 +15,7 @@ export class BorrowRepository {
 
     async findAll(page, limit) {
 
-        const offset = (page - 1) * limit;
+        const offset = page * limit;
         const countResult = await pool.query("SELECT COUNT(*) from borrows")
         const totalItems = Number(countResult.rows[0].count)
         const totalPages = Math.ceil(totalItems / limit);
@@ -37,7 +38,7 @@ export class BorrowRepository {
                 borrows: result.rows.map(row => this._mapToEntity(row)),
                 pagination: {
                     totalPages,
-                    currentPage: page,
+                    pageIndex: page,
                     totalItems,
                     itemsPerPage: limit,
                     hasNextPage: false,
@@ -50,17 +51,17 @@ export class BorrowRepository {
             borrows: result.rows.map(row => this._mapToEntity(row)),
             pagination: {
                 totalPages,
-                currentPage: page,
+                pageIndex: page,
                 totalItems,
                 itemsPerPage: limit,
                 hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
+                hasPrevPage: page > 0
             }
         }
     }
 
     async findByUserId(user_id, page, limit) {
-        const offset = (page - 1) * limit;
+        const offset = page * limit;
 
         const countResult = await pool.query(`
         SELECT COUNT(*) FROM borrows WHERE user_id = $1
@@ -91,7 +92,7 @@ export class BorrowRepository {
                 borrows: result.rows.map(row => this._mapToEntity(row)),
                 pagination: {
                     totalPages,
-                    currentPage: page,
+                    pageIndex: page,
                     totalItems,
                     itemsPerPage: limit,
                     hasNextPage: false,
@@ -103,17 +104,17 @@ export class BorrowRepository {
             borrows: result.rows.map(row => this._mapToEntity(row)),
             pagination: {
                 totalItems,
-                currentPage: page,
+                pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
                 hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
+                hasPrevPage: page > 0
             }
         };
     }
 
     async findByBookId(book_id, page, limit) {
-        const offset = (page - 1) * limit;
+        const offset = page * limit;
 
         const countResult = await pool.query(
             "SELECT COUNT(*) FROM borrows WHERE book_id = $1",
@@ -143,29 +144,30 @@ export class BorrowRepository {
             borrows: result.rows.map(row => this._mapToEntity(row)),
             pagination: {
                 totalItems,
-                currentPage: page,
+                pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
                 hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
+                hasPrevPage: page > 0
             }
         };
     }
 
     async findAllWithOverdue(page, limit) {
-        const offset = (page - 1) * limit;
+        const offset = page * limit;
 
         const countResult = await pool.query(
-            "SELECT COUNT(*) FROM borrows WHERE book_id = $1"
-            , [book_id]);
+            "SELECT COUNT(*) FROM borrows WHERE status = $1 AND due_date < NOW()",
+            [BorrowStatus.BORROWED]
+        );
 
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit);
 
 
         const result = await pool.query(
-            "SELECT * FROM borrows WHERE status = $1 AND due_date < NOW() LIMIT $2 OFFSET $3", 
-            ["borrowed", limit, offset]
+            "SELECT * FROM borrows WHERE status = $1 AND due_date < NOW() LIMIT $2 OFFSET $3",
+            [BorrowStatus.BORROWED, limit, offset]
         );
 
         if (result.rows.length === 0) {
@@ -173,7 +175,7 @@ export class BorrowRepository {
                 borrows: result.rows.map(row => this._mapToEntity(row)),
                 pagination: {
                     totalPages,
-                    currentPage: page,
+                    pageIndex: page,
                     totalItems,
                     itemsPerPage: limit,
                     hasNextPage: false,
@@ -186,11 +188,11 @@ export class BorrowRepository {
             borrows: result.rows.map(row => this._mapToEntity(row)),
             pagination: {
                 totalItems,
-                currentPage: page,
+                pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
                 hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
+                hasPrevPage: page > 0
             }
         };
     }
@@ -246,6 +248,19 @@ export class BorrowRepository {
 
         await pool.query("DELETE FROM borrows WHERE id = $1", [id]);
     }
+
+    async isBookCurrentlyBorrowed(bookId) {
+
+        const result = await pool.query( //eşleşen ilk kaydı getirmesi yeterli ondan SELECT 1 ... LIMIT 1
+            `SELECT 1 FROM borrows
+                WHERE book_id = $1 AND status = $2
+                LIMIT 1`,
+            [bookId, BorrowStatus.BORROWED]
+        );
+
+        return result.rowCount > 0;
+    }
+
 
     _mapToEntity(row) {
 

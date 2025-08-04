@@ -48,7 +48,7 @@ export class BorrowApplication {
         };
     }
 
-    async getAllBorrows( page, limit) {
+    async getAllBorrows(page, limit) {
 
         const result = await this.borrowService.getAllBorrows(page, limit);
 

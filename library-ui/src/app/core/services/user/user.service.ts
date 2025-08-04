@@ -14,9 +14,9 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getAllUsers(): Observable<ApiResponse<User[]>> {
+  getAllUsers(page?: number, limit?: number): Observable<ApiResponse<User[]>> {
 
-    return this.http.get<ApiResponse<User[]>>(`${API_ENDPOINTS.USERS.ROOT}`, { withCredentials: true });
+    return this.http.get<ApiResponse<User[]>>(`${API_ENDPOINTS.USERS.ROOT(page, limit)}`, { withCredentials: true });
   }
 
   getUserById(id: string): Observable<ApiResponse<User>> {
@@ -38,4 +38,5 @@ export class UserService {
 
     return this.http.put<User>(API_ENDPOINTS.USERS.EDIT(id), user, { withCredentials: true });
   }
+  
 }

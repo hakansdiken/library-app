@@ -14,9 +14,9 @@ export class BookService {
 
   constructor(private http: HttpClient) { }
 
-  getBooks(): Observable<ApiResponse<Book[]>> {
+  getBooks(page?:number, limit?:number): Observable<ApiResponse<Book[]>> {
 
-    return this.http.get<ApiResponse<Book[]>>(API_ENDPOINTS.BOOKS.ROOT, { withCredentials: true });
+    return this.http.get<ApiResponse<Book[]>>(API_ENDPOINTS.BOOKS.ROOT(page, limit), { withCredentials: true });
   }
 
   getBookById(id: string): Observable<ApiResponse<Book>> {

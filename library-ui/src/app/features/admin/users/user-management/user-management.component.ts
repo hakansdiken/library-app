@@ -9,6 +9,7 @@ import { UserCreateComponent } from '../user-create/user-create.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { UserEditComponent } from '../user-edit/user-edit.component';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 
 @Component({
@@ -19,7 +20,8 @@ import { UserEditComponent } from '../user-edit/user-edit.component';
     MatCardModule,
     MatTableModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatPaginatorModule
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css'
@@ -28,29 +30,35 @@ export class UserManagementComponent implements OnInit {
 
   users: User[] = [];
   displayedColumns: string[] = ['userName', 'userEmail', 'userRole', 'actions'];
-  isLoading = false;
+  pageIndex: number = 0;
+  itemsPerPage: number = 10;
+  // totalPages?: number;
+  // hasPrevPage?: boolean = false;
+  // hasNextPage?: boolean = false;
+  totalItems?: number;
+
 
   constructor(private userService: UserService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-
+    this.pageIndex = 0;
     this.loadUsers();
   }
 
   loadUsers() {
 
-    this.isLoading = true;
-
-    this.userService.getAllUsers().subscribe({
+    this.userService.getAllUsers(this.pageIndex, this.itemsPerPage).subscribe({
 
       next: (res) => {
 
         this.users = res.data ?? [];
-        this.isLoading = false;
+        
+        this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
+        this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
+        this.totalItems = Number(res.pagination?.totalItems);
       },
-      error: () => {
-
-        this.isLoading = false;
+      error: (err) => {
+        console.error(err.error?.message)
       }
     });
   }
@@ -84,7 +92,6 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-
   deleteUser(userId: string): void {
 
     this.userService.deleteUser(userId).subscribe({
@@ -94,8 +101,14 @@ export class UserManagementComponent implements OnInit {
       },
       error: (err) => {
 
-        console.error("Error:" + err.message)
+        console.error("Error:" + err.error?.message)
       }
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.itemsPerPage = event.pageSize;
+    this.loadUsers();
   }
 }
