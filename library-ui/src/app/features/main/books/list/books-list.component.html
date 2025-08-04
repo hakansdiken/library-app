@@ -4,11 +4,10 @@
   <button mat-raised-button class="round-button" (click)="openCreateDialog()">+</button>
 </div>
 <div class="paginator-container">
-  <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"
-    (page)="onPageChange($event)">
+  <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="itemsPerPage"
+    [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPageChange($event)">
   </mat-paginator>
 </div>
-
 
 <div class="books-container">
 
@@ -23,6 +22,9 @@
       <p><strong>Page Count:</strong> {{ book.pageCount }}</p>
       <p><strong>ISBN:</strong> {{ book.isbn }}</p>
       <p><strong>Dewey Code:</strong> {{ book.deweyCode }}</p>
+      <p [ngClass]="book.isBorrowed ? 'text-red' : 'text-green'">
+        {{ book.isBorrowed ? 'Borrowed' : 'Available' }}
+      </p>
 
       <div class="operations-container">
         <button mat-flat-button [hidden]="userRole === 'member'" [disabled]="book.isBorrowed"

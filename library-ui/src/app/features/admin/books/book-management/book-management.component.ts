@@ -20,7 +20,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 export class BookManagementComponent implements OnInit {
 
   books: Book[] = [];
-  displayedColumns: string[] = ['title', 'author', 'publisher', 'publicationYear', 'actions'];
+  displayedColumns: string[] = ['title', 'author', 'publisher', 'publicationYear', 'isBorrowed', 'actions'];
   pageIndex: number = 0;
   itemsPerPage: number = 10;
   totalItems?: number;

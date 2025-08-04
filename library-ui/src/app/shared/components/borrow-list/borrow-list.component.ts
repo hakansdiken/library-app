@@ -26,12 +26,15 @@ export class BorrowListComponent implements OnInit {
   itemsPerPage: number = 10;
   totalItems?: number;
 
+  currentUser?: User | null;
+
   constructor(private borrowService: BorrowService, private authService: AuthService) { }
 
   ngOnInit(): void {
 
     this.pageIndex = 0;
     this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
       this.loadBorrows(user);
     });
   }
@@ -94,7 +97,7 @@ export class BorrowListComponent implements OnInit {
     this.borrowService.markReturned(borrowId).subscribe({
 
       next: res => {
-        this.loadBorrows();
+        this.loadBorrows(this.currentUser);
       },
       error: err => {
         console.error("Error: ", err.error.message);
@@ -105,6 +108,6 @@ export class BorrowListComponent implements OnInit {
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.itemsPerPage = event.pageSize;
-    this.loadBorrows();
+    this.loadBorrows(this.currentUser);
   }
 }

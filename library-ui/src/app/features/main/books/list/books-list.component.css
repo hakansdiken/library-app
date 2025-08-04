@@ -92,3 +92,15 @@ mat-card-content p {
 mat-card-content strong {
     color: #222;
 }
+
+.text-red {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+}
+
+.text-green {
+    color: green;
+    font-weight: bold;
+    text-align: center;
+}
