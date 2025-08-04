@@ -49,7 +49,7 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> Actions </th>
         <td mat-cell *matCellDef="let borrow">
-          <button mat-raised-button [disabled]="borrow.status === 'returned'" (click)="markAsReturned(borrow.id)">
+          <button mat-raised-button [hidden]="borrow.status === 'returned'" (click)="markAsReturned(borrow.id)">
             Returned
           </button>
         </td>

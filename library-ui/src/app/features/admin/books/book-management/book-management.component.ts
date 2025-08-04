@@ -9,6 +9,7 @@ import { Book } from '../../../../core/models/book/book.model';
 import { BookFormComponent } from '../../../../shared/components/book-form/book-form.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { DeleteItemComponent } from '../../../../shared/components/delete-component/delete-item.component';
 
 @Component({
   selector: 'app-book-management',
@@ -94,6 +95,25 @@ export class BookManagementComponent implements OnInit {
       if (result) {
 
         this.loadBooks();
+      }
+    });
+  }
+
+  openDeleteDialog(book: Book) {
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+
+      width: '400px',
+      data: {
+        title: 'Delete Book',
+        message: `Are you sure you want to delete ${book.title}?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result) {
+
+        this.deleteBook(book.id);
       }
     });
   }

@@ -51,7 +51,7 @@ export class UserManagementComponent implements OnInit {
     this.userService.getAllUsers(this.pageIndex, this.itemsPerPage).subscribe({
 
       next: (res) => {
-        console.log(res.data)
+
         this.users = res.data ?? [];
 
         this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
