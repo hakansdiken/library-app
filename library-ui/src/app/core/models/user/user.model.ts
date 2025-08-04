@@ -1,10 +1,13 @@
+import { UserRole } from "../enums/user-role.enum";
+
 export interface User {
     id: string;
     name: string;
     surname: string;
     email: string;
     role: string;
-    createdAt?: string; 
+    createdAt?: string;
+    canBeDeleted: boolean;
 }
 
 export interface UserWithPassword {
@@ -13,7 +16,7 @@ export interface UserWithPassword {
     surname: string;
     email: string;
     password?: string;
-    role?: 'admin' | 'librarian' | 'member';
+    role?: UserRole.Admin | UserRole.Librarian | UserRole.Member;
     createdAt?: string;
-
+    canBeDeleted: boolean;
 }

@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { UserEditComponent } from '../user-edit/user-edit.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { DeleteItemComponent } from '../../../../shared/components/delete-component/delete-item.component';
 
 
 @Component({
@@ -50,9 +51,9 @@ export class UserManagementComponent implements OnInit {
     this.userService.getAllUsers(this.pageIndex, this.itemsPerPage).subscribe({
 
       next: (res) => {
-
+        console.log(res.data)
         this.users = res.data ?? [];
-        
+
         this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
         this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
         this.totalItems = Number(res.pagination?.totalItems);
@@ -96,7 +97,6 @@ export class UserManagementComponent implements OnInit {
 
     this.userService.deleteUser(userId).subscribe({
       next: () => {
-
         this.loadUsers();
       },
       error: (err) => {
@@ -104,6 +104,23 @@ export class UserManagementComponent implements OnInit {
         console.error("Error:" + err.error?.message)
       }
     });
+  }
+
+  openDeleteDialog(user: User) {
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+      width: '400px',
+      data: {
+        title: 'Delete User',
+        message: `Are you sure you want to delete ${user.name} ${user.surname}?`
+      }
+    });
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result) {
+
+        this.deleteUser(user.id);
+      }
+    })
   }
 
   onPageChange(event: PageEvent): void {

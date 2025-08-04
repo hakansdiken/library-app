@@ -29,9 +29,18 @@ export class UserRepository {
         const countResult = await pool.query("SELECT COUNT(*) FROM users")
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit)
-
-        const result = await pool.query(
-            "SELECT * FROM users ORDER BY created_at DESC LIMIT $1 OFFSET $2",
+        // borrowun statusu borrowed ise canBeDeleted false olcak. 
+        const result = await pool.query(`
+                SELECT 
+                    u.*,  
+                    NOT EXISTS (
+                    SELECT 1 
+                    FROM borrows 
+                    WHERE user_id = u.id AND status = 'borrowed'
+                    ) AS "canBeDeleted"
+                    FROM users u
+                    ORDER BY u.created_at  
+                    DESC LIMIT $1 OFFSET $2;`,
             [limit, offset]
         );
 

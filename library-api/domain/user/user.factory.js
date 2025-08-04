@@ -33,7 +33,8 @@ export class UserFactory {
             role: row.role,
             password: row.password,
             createdAt: row.created_at,
-            updatedAt: row.updated_at
+            updatedAt: row.updated_at,
+            canBeDeleted: row.canBeDeleted
         });
     }
 

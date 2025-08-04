@@ -7,7 +7,8 @@ export default class User {
         password,
         role,
         createdAt,
-        updatedAt
+        updatedAt,
+        canBeDeleted
     }) {
         this.id = id;
         this.name = name;
@@ -16,6 +17,7 @@ export default class User {
         this.password = password;
         this.role = role;
         this.createdAt = createdAt;
-        this.updatedAt = updatedAt
+        this.updatedAt = updatedAt;
+        this.canBeDeleted = canBeDeleted;
     }
 }
