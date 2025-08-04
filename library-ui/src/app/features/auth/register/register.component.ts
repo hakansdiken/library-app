@@ -50,7 +50,7 @@ export class RegisterComponent {
       },
       error: (err) => {
 
-        console.error("error:", err);
+        console.error("Error: ", err.error?.message);
 
         if (err.status === 400 && err.error?.message) {
 

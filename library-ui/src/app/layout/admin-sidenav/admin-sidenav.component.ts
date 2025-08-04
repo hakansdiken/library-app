@@ -47,7 +47,7 @@ export class AdminSidenavComponent {
 
       error: (err) => {
 
-        console.error('Logout failed:', err);
+        console.error('Logout failed:', err.error?.message);
       }
     });
   }

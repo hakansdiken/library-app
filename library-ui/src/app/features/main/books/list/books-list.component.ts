@@ -52,7 +52,7 @@ export class BooksListComponent implements OnInit {
       },
       error: (err) => {
 
-        console.error('Error:', err);
+        console.error('Error:', err.error?.message);
       }
     });
   }
@@ -107,7 +107,7 @@ export class BooksListComponent implements OnInit {
         this.loadBooks();
       },
       error: (err) => {
-        console.error('Error:', err.error.message);
+        console.error('Error: ', err.error?.message);
       }
     });
   }

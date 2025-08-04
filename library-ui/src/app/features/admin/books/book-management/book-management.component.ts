@@ -56,7 +56,7 @@ export class BookManagementComponent implements OnInit {
       },
       error: (err) => {
 
-        console.error("Error:" + err.message)
+        console.error("Error:" + err.error?.message)
       }
     });
   }

@@ -82,7 +82,7 @@ export class BookFormComponent implements OnInit {
           this.dialogRef.close(updatedBook);
         },
         error: (err) => {
-          console.error('Error:', err);
+          console.error('Error:', err.error?.message);
         }
       });
 
@@ -94,7 +94,7 @@ export class BookFormComponent implements OnInit {
           this.dialogRef.close(createdBook);
         },
         error: (err) => {
-          console.error('Error:', err);
+          console.error('Error:', err.error?.message);
         }
       });
     }

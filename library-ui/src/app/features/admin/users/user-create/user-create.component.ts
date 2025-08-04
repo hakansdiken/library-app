@@ -47,7 +47,7 @@ export class UserCreateComponent {
 
     this.userService.createUser(this.user).subscribe({
       next: (createdUser) => this.dialogRef.close(createdUser),
-      error: (err) => console.error(err),
+      error: (err) => console.error(err.error?.message),
     });
   }
 }

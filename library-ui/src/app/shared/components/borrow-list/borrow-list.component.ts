@@ -50,7 +50,7 @@ export class BorrowListComponent implements OnInit {
           this.borrows = borrowRes.data ?? [];
         },
         error: err => {
-          console.error('Error: ', err);
+          console.error("Error: ", err.error.message);
         }
       });
 
@@ -61,7 +61,7 @@ export class BorrowListComponent implements OnInit {
           this.borrows = borrowRes.data ?? [];
         },
         error: err => {
-          console.error('Error: ', err);
+          console.error('Error:', err.error?.message);
         }
       });
 

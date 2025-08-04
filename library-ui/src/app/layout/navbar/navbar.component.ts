@@ -22,7 +22,7 @@ export class NavbarComponent {
   constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
-    
+
     const currentUser = this.authService.getUser();
 
     this.userRole = currentUser?.role ?? UserRole.Member;
@@ -61,7 +61,7 @@ export class NavbarComponent {
 
       error: (err) => {
 
-        console.error('Logout failed:', err);
+        console.error('Logout failed:', err.error?.message);
       }
     });
   }

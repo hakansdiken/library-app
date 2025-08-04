@@ -43,7 +43,7 @@ export class ProfileComponent implements OnInit {
       },
       error: (err) => {
 
-        console.error('Error:', err?.error?.message);
+        console.error('Error:', err.error?.message);
       },
     })
   }
