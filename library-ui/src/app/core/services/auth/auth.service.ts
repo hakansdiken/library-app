@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { RegisterRequest } from '../../models/auth/register.model';
@@ -14,9 +14,10 @@ import { User } from '../../models/user/user.model';
 })
 export class AuthService {
 
-  currentUser: User | null = null;
+  private currentUserSubject = new BehaviorSubject<User | null>(null); // Oturumdaki kullanıcı bilgisini tutan, başlangıçta null olan Observable değişken.
+  currentUser$ = this.currentUserSubject.asObservable(); // Dışarıya sadece subscribe olunabilen, yani okunabilen Observable olarak açılıyor.
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient) { }
 
   register(data: RegisterRequest): Observable<ApiResponse<User>> {
 
@@ -27,7 +28,8 @@ export class AuthService {
 
     return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.LOGIN}`, data, { withCredentials: true }).pipe(
       tap((res) => {
-        this.currentUser = res.data;
+
+        this.currentUserSubject.next(res.data);
       })
     );
   }
@@ -35,24 +37,29 @@ export class AuthService {
   logout(): Observable<ApiResponse<null>> {
 
     return this.http.post<ApiResponse<null>>(`${API_ENDPOINTS.AUTH.LOGOUT}`, {}, { withCredentials: true }).pipe(
+
       tap(() => {
-        this.currentUser = null;
+
+        this.currentUserSubject.next(null);
       })
     );
   }
 
   getCurrentUser(): Observable<ApiResponse<User>> {
-    
-    return this.http.get<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.ME}`, { withCredentials: true })
+
+    return this.http.get<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.ME}`, { withCredentials: true }).pipe(
+      tap(res => {
+
+        this.currentUserSubject.next(res.data);
+      })
+    );
   }
 
   setUser(user: User | null) {
-
-    this.currentUser = user;
+    this.currentUserSubject.next(user);
   }
 
-  getUser() {
-
-    return this.currentUser;
+  getUser(): User | null {
+    return this.currentUserSubject.value;
   }
 }
