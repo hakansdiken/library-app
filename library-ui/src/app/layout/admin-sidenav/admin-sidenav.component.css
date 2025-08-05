@@ -34,3 +34,8 @@ span {
 .logout-button mat-icon {
     color: black;
 }
+.item-content {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* ikon ile yazı arası */
+}
