@@ -115,8 +115,14 @@ export class BookService {
         }
 
         book.isBorrowed = isBorrowed;
+        
+        const savedBook = await this.bookRepository.save(book);
 
-        return this.bookRepository.save(book);
+        return {
+            success: true,
+            message: "Book status updated successfully.",
+            data: savedBook
+        };
     }
 
     async deleteBook(id) {

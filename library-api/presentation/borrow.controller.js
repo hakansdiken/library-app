@@ -1,15 +1,16 @@
 import express from 'express'
-import { BorrowService } from '../domain/borrow/borrow.service.js';
-import { BookService } from '../domain/book/book.service.js';
 import { Roles } from '../domain/constants/roles.js';
 import { authorize } from '../infrastructure/middlewares/authorize.middleware.js';
-import { BorrowApplication } from '../application/borrow.application.js';
 import { BorrowRepository } from '../domain/borrow/borrow.repository.js';
-import { BorrowValidator } from '../domain/borrow/borrow.validator.js';
 import { UserRepository } from '../domain/user/user.repository.js';
 import { BookRepository } from '../domain/book/book.repository.js';
+import { BorrowValidator } from '../domain/borrow/borrow.validator.js';
+import { BorrowService } from '../domain/borrow/borrow.service.js';
+import { BookService } from '../domain/book/book.service.js';
 import { UserService } from '../domain/user/user.service.js';
-
+import { BorrowApplication } from '../application/borrow.application.js';
+import { BookApplication } from '../application/book.application.js'
+import { UserApplication } from '../application/user.application.js'
 
 const router = express.Router();
 
@@ -23,7 +24,10 @@ const borrowService = new BorrowService(borrowRepository, borrowValidator);
 const userService = new UserService(userRepository);
 const bookService = new BookService(bookRepository);
 
-const borrowApplication = new BorrowApplication(borrowService, userService, bookService);
+const bookApplication = new BookApplication(bookService);
+const userApplication = new UserApplication(userService)
+
+const borrowApplication = new BorrowApplication(borrowService, userApplication, bookApplication);
 
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res) => {
 
@@ -58,7 +62,7 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res
 router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
-        const {page = 0, limit = 10 } = req.query;
+        const { page = 0, limit = 10 } = req.query;
 
         const result = await borrowApplication.getBorrowsWithOverdue(page, limit);
 

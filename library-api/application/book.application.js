@@ -75,6 +75,13 @@ export class BookApplication {
         };
     }
 
+    async updateIsBorrowed(id, isBorrowed) {
+
+        const result = await this.bookService.updateIsBorrowed(id, isBorrowed)
+
+        return result;
+    }
+
     async deleteBook(id) {
 
         const result = this.bookService.deleteBook(id)

@@ -3,18 +3,18 @@ import { BorrowResponseDTO } from "../dtos/borrow/borrow.dto.js";
 
 export class BorrowApplication {
 
-    constructor(borrowService, userService, bookService) {
+    constructor(borrowService, userApplication, bookApplication) {
         this.borrowService = borrowService;
-        this.userService = userService;
-        this.bookService = bookService;
+        this.userApplication = userApplication;
+        this.bookApplication = bookApplication;
     }
 
     async createBorrow(data) {
 
-        const user = await this.userService.getUserById(data.userId);
+        const user = await this.userApplication.getUserById(data.userId);
         if (!user) return { success: false, message: 'User not found' };
 
-        const book = await this.bookService.getBookById(data.bookId);
+        const book = await this.bookApplication.getBookById(data.bookId);
         if (!book) return { success: false, message: 'Book not found' };
 
         const dto = new BorrowCreateRequestDTO(data);
@@ -25,7 +25,7 @@ export class BorrowApplication {
             return result;
         }
 
-        await this.bookService.updateIsBorrowed(data.bookId, true);
+        await this.bookApplication.updateIsBorrowed(data.bookId, true);
 
         return {
             success: true,
@@ -65,11 +65,11 @@ export class BorrowApplication {
     }
 
     async getBorrowsByBookId(bookId, page, limit) {
-        const book = await this.bookService.getBookById(bookId);
+        const book = await this.bookApplication.getBookById(bookId);
 
         if (!book) return { success: false, message: "Book not found." };
 
-        const result = await this.borrowService.getBorrowsByBookId(bookId , page, limit);
+        const result = await this.borrowService.getBorrowsByBookId(bookId, page, limit);
 
         if (!result.success) {
             return result;
@@ -83,7 +83,7 @@ export class BorrowApplication {
         };
     }
 
-    async getBorrowsByUserId(userId, page , limit) {
+    async getBorrowsByUserId(userId, page, limit) {
 
         const user = await this.userService.getUserById(userId);
 
@@ -127,7 +127,7 @@ export class BorrowApplication {
 
         const bookId = result.data.bookId;
 
-        await this.bookService.updateIsBorrowed(bookId, false);
+        await this.bookApplication.updateIsBorrowed(bookId, false);
 
         return {
             success: true,
