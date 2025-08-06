@@ -25,7 +25,7 @@ const userService = new UserService(userRepository);
 const bookService = new BookService(bookRepository);
 
 const bookApplication = new BookApplication(bookService);
-const userApplication = new UserApplication(userService)
+const userApplication = new UserApplication(userService);
 
 const borrowApplication = new BorrowApplication(borrowService, userApplication, bookApplication);
 
@@ -59,7 +59,7 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res
     }
 });
 
-router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
+router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN],true), async (req, res) => {
 
     try {
         const { page = 0, limit = 10 } = req.query;

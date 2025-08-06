@@ -165,8 +165,17 @@ export class BorrowRepository {
         const totalPages = Math.ceil(totalItems / limit);
 
 
-        const result = await pool.query(
-            "SELECT * FROM borrows WHERE status = $1 AND due_date < NOW() LIMIT $2 OFFSET $3",
+        const result = await pool.query(`
+                SELECT
+                    b.id, b.book_id, b.user_id, b.borrow_date, b.due_date, b.return_date, b.status,
+                    u.id AS user_id, u.name AS user_name, u.surname AS user_surname, u.email AS user_email,
+                    bk.id AS book_id, bk.title AS book_title
+                FROM borrows b
+                LEFT JOIN users u ON b.user_id = u.id
+                LEFT JOIN books bk ON b.book_id = bk.id
+                WHERE status = $1 AND due_date < NOW() 
+                ORDER BY b.borrow_date DESC
+                LIMIT $2 OFFSET $3`,
             [BorrowStatus.BORROWED, limit, offset]
         );
 

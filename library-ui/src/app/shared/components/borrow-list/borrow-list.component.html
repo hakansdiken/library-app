@@ -1,5 +1,12 @@
 <h2 class="section-title">Borrow List</h2>
 
+<div class="button-container">
+  <button mat-raised-button *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'librarian'"
+    (click)="toggleOverdue()">
+    {{ isOverdueMode ? 'All Borrows' : 'Overdue Borrows' }}
+  </button>
+</div>
+
 <div class="borrow-container">
 
   <mat-card>
@@ -28,7 +35,7 @@
       <!-- Status Column -->
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef> Status </th>
-        <td mat-cell *matCellDef="let borrow"> {{ borrow.status }} </td>
+        <td mat-cell *matCellDef="let borrow"> {{ borrow.status === 'returned' ? 'Returned' : 'Borrowed' }}</td>
       </ng-container>
 
       <!-- Borrow Date Column -->

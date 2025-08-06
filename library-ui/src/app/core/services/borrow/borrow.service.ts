@@ -28,6 +28,11 @@ export class BorrowService {
     return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_BOOKID(bookId, page, limit)}`, { withCredentials: true });
   }
 
+  getOverdueBorrows(page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
+
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.OVERDUE(page, limit)}`, { withCredentials: true });
+  }
+
   markReturned(borrowId: string): Observable<ApiResponse<Borrow>> {
 
     return this.http.patch<ApiResponse<Borrow>>(`${API_ENDPOINTS.BORROWS.RETURN(borrowId)}`, {}, { withCredentials: true })

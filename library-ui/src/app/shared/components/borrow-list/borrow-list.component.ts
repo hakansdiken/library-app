@@ -27,77 +27,77 @@ export class BorrowListComponent implements OnInit {
   totalItems?: number;
 
   currentUser?: User | null;
+  isOverdueMode: boolean = false;
 
   constructor(private borrowService: BorrowService, private authService: AuthService) { }
 
   ngOnInit(): void {
 
-    this.pageIndex = 0;
     this.authService.currentUser$.subscribe(user => {
+
       this.currentUser = user;
-      this.loadBorrows(user);
+
+      if (user) {
+        this.loadBorrows(user);
+      }
     });
   }
 
-  loadBorrows(user?: User | null): void {
-    if (!user) {
-      this.borrows = [];
-      return;
-    }
+  loadBorrows(user: User, overdueMode: boolean = false): void {
+
+    if (this.isOverdueMode === overdueMode && this.borrows.length > 0) return;
+
+    this.isOverdueMode = overdueMode;
 
     const { role, id: userId } = user;
 
-    if (role === UserRole.Librarian || role === UserRole.Admin) {
+    if (!this.displayedColumns.includes('actions') && (role === UserRole.Librarian || role === UserRole.Admin)) { //actions kolumu varsa eklemesin
 
-      if (!this.displayedColumns.includes('actions')) {
+      this.displayedColumns = [...this.displayedColumns, 'actions'];
+    }
 
-        this.displayedColumns = [...this.displayedColumns, 'actions'];
+    const serviceCall = overdueMode
+      ? this.borrowService.getOverdueBorrows(this.pageIndex, this.itemsPerPage)
+      : (role === UserRole.Librarian || role === UserRole.Admin)
+        ? this.borrowService.getBorrows(this.pageIndex, this.itemsPerPage)
+        : this.borrowService.getBorrowsByUser(userId, this.pageIndex, this.itemsPerPage);
+
+    serviceCall.subscribe({
+
+      next: (res) => {
+
+        this.borrows = res.data ?? [];
+
+        this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
+        this.totalItems = Number(res.pagination?.totalItems);
+        this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
+      },
+      error: (err) => {
+        console.error('Error:', err.error?.message);
       }
+    });
+  }
 
-      this.borrowService.getBorrows(this.pageIndex, this.itemsPerPage).subscribe({
-        next: (res) => {
+  toggleOverdue(): void {
 
-          this.borrows = res.data ?? [];
+    if (this.currentUser) {
 
-          this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
-          this.totalItems = Number(res.pagination?.totalItems);
-          this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
-        },
-        error: (err) => {
-          console.error('Error:', err.error?.message);
-        }
-      });
+      this.pageIndex = 0;
 
-    } else if (role === UserRole.Member && userId) {
+      this.loadBorrows(this.currentUser, !this.isOverdueMode);
 
-      this.borrowService.getBorrowsByUser(userId, this.pageIndex, this.itemsPerPage).subscribe({
-
-        next: (res) => {
-
-          this.borrows = res.data ?? [];
-
-          this.pageIndex = Number(res.pagination?.pageIndex ?? 0);
-          this.totalItems = Number(res.pagination?.totalItems);
-          this.itemsPerPage = Number(res.pagination?.itemsPerPage ?? 10);
-        },
-        error: (err) => {
-
-          console.error('Error:', err.error?.message);
-        }
-      });
-
-    } else {
-      this.borrows = [];
     }
   }
 
-
-  markAsReturned(borrowId: string) {
-
+  markAsReturned(borrowId: string): void {
     this.borrowService.markReturned(borrowId).subscribe({
+      next: () => {
+        console.log('Mark returned success');
+        console.log(this.currentUser)
+        if (this.currentUser) {
 
-      next: res => {
-        this.loadBorrows(this.currentUser);
+          this.loadBorrows(this.currentUser, this.isOverdueMode);
+        }
       },
       error: err => {
         console.error("Error: ", err.error.message);
@@ -106,8 +106,13 @@ export class BorrowListComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent): void {
+
     this.pageIndex = event.pageIndex;
     this.itemsPerPage = event.pageSize;
-    this.loadBorrows(this.currentUser);
+
+    if (this.currentUser) {
+
+      this.loadBorrows(this.currentUser, this.isOverdueMode);
+    }
   }
 }

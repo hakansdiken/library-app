@@ -85,7 +85,7 @@ export class BorrowApplication {
 
     async getBorrowsByUserId(userId, page, limit) {
 
-        const user = await this.userService.getUserById(userId);
+        const user = await this.userApplication.getUserById(userId);
 
         if (!user) return { success: false, message: "User not found." };
 
