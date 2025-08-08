@@ -42,13 +42,15 @@ export class LoginComponent {
         if (!res.data) {
           return;
         }
+        this.authService.setUser(res.data);
+
         const role = res.data.role;
 
         if (role === Roles.ADMIN) {
 
           this.router.navigate(['/admin']);
         } else {
-          
+
           this.router.navigate(['/books']);
         }
       },
@@ -63,6 +65,4 @@ export class LoginComponent {
       }
     });
   }
-
-
 }

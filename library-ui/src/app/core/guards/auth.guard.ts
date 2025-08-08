@@ -9,7 +9,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class AuthGuard implements CanActivate {
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService) { }
 
   canActivate(): Observable<boolean> {
     const cachedUser = this.authService.getUser();
@@ -23,7 +23,9 @@ export class AuthGuard implements CanActivate {
 
         if (res.success) {
 
-          this.authService.setUser(res.data);
+          if (res.data) {
+            this.authService.setUser(res.data);
+          }
 
           return true;
         } else {

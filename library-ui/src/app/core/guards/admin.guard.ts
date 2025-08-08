@@ -28,10 +28,15 @@ export class AdminGuard implements CanActivate {
     }
 
     return this.authService.getCurrentUser().pipe(
-
+      // canActivate() sadece Observable<boolean> istediği için burada servisi bir 
       map(res => {
 
         if (res.success && res.data?.role === 'admin') {
+
+          if (res.data) {
+
+            this.authService.setUser(res.data);
+          }
 
           return true; //Mevcut Observable içindeki değeri değiştiriyoruz.
 

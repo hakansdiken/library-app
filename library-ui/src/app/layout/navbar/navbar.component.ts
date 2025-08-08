@@ -56,6 +56,7 @@ export class NavbarComponent {
 
       next: () => {
 
+        this.authService.setUser(null)
         this.router.navigate(['/auth']);
       },
 

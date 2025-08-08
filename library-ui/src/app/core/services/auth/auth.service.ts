@@ -14,8 +14,7 @@ import { User } from '../../models/user/user.model';
 })
 export class AuthService {
 
-  private currentUserSubject = new BehaviorSubject<User | null>(null); // Oturumdaki kullanıcı bilgisini tutan, başlangıçta null olan Observable değişken.
-  currentUser$ = this.currentUserSubject.asObservable(); // Dışarıya sadece subscribe olunabilen, yani okunabilen Observable olarak açılıyor.
+  private currentUser: User | null = null;
 
   constructor(private http: HttpClient) { }
 
@@ -26,40 +25,31 @@ export class AuthService {
 
   login(data: LoginRequest): Observable<ApiResponse<User>> {
 
-    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.LOGIN}`, data, { withCredentials: true }).pipe(
-      tap((res) => {
-
-        this.currentUserSubject.next(res.data);
-      })
-    );
+    return this.http.post<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.LOGIN}`, data, { withCredentials: true })
   }
 
   logout(): Observable<ApiResponse<null>> {
 
-    return this.http.post<ApiResponse<null>>(`${API_ENDPOINTS.AUTH.LOGOUT}`, {}, { withCredentials: true }).pipe(
-
-      tap(() => {
-
-        this.currentUserSubject.next(null);
-      })
-    );
+    return this.http.post<ApiResponse<null>>(`${API_ENDPOINTS.AUTH.LOGOUT}`, {}, { withCredentials: true })
   }
 
   getCurrentUser(): Observable<ApiResponse<User>> {
 
-    return this.http.get<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.ME}`, { withCredentials: true }).pipe(
-      tap(res => {
-
-        this.currentUserSubject.next(res.data);
-      })
-    );
+    return this.http.get<ApiResponse<User>>(`${API_ENDPOINTS.AUTH.ME}`, { withCredentials: true })
   }
 
   setUser(user: User | null) {
-    this.currentUserSubject.next(user);
+
+    this.currentUser = user;
   }
 
   getUser(): User | null {
-    return this.currentUserSubject.value;
+
+    return this.currentUser;
+  }
+
+  getUserRole() {
+
+    return this.currentUser?.role;
   }
 }
