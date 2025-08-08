@@ -32,20 +32,15 @@ export class BorrowListComponent implements OnInit {
   constructor(private borrowService: BorrowService, private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getUser();
 
-    this.authService.currentUser$.subscribe(user => {
+    if (this.currentUser) {
 
-      this.currentUser = user;
-
-      if (user) {
-        this.loadBorrows(user);
-      }
-    });
+      this.loadBorrows(this.currentUser);
+    }
   }
 
   loadBorrows(user: User, overdueMode: boolean = false): void {
-
-    if (this.isOverdueMode === overdueMode && this.borrows.length > 0) return;
 
     this.isOverdueMode = overdueMode;
 
@@ -92,8 +87,7 @@ export class BorrowListComponent implements OnInit {
   markAsReturned(borrowId: string): void {
     this.borrowService.markReturned(borrowId).subscribe({
       next: () => {
-        console.log('Mark returned success');
-        console.log(this.currentUser)
+        
         if (this.currentUser) {
 
           this.loadBorrows(this.currentUser, this.isOverdueMode);

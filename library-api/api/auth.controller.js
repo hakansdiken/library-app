@@ -59,13 +59,13 @@ router.post('/login', async (req, res) => {
             req.session.userId = result.data.id;
             req.session.role = result.data.role;
 
-            res.status(200).json(result);
+            return res.status(200).json(result);
         });
 
 
     } catch (error) {
 
-        res.status(500).json({ success: false, message: error.message });
+        return res.status(500).json({ success: false, message: error.message });
     }
 });
 
@@ -100,21 +100,21 @@ router.post('/logout', (req, res) => {
 
 router.get('/me', (req, res) => {
 
-  if (!req.session?.userId) {
+    if (!req.session?.userId) {
 
-    return res.status(401).json({
-      success: false,
-      message: 'Not authenticated'
-    });
-  }
-
-  return res.status(200).json({
-    success: true,
-    data: {
-      id: req.session.userId,
-      role: req.session.role
+        return res.status(401).json({
+            success: false,
+            message: 'Not authenticated'
+        });
     }
-  });
+
+    return res.status(200).json({
+        success: true,
+        data: {
+            id: req.session.userId,
+            role: req.session.role
+        }
+    });
 });
 
 export default router;

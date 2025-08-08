@@ -36,30 +36,30 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res
 
         if (userId) {
             const result = await borrowApplication.getBorrowsByUserId(userId, page, limit);
-            return res.json(result);
+            return res.status(200).json(result);
         }
 
         if (bookId) {
             const result = await borrowApplication.getBorrowsByBookId(bookId, page, limit);
-            return res.json(result);
+            return res.status(200).json(result);
         }
 
         const result = await borrowApplication.getAllBorrows(page, limit);
 
         if (!result.success) {
 
-            return res.status(400).json(result);
+            return res.status(404).json(result);
         }
 
-        return res.json(result);
+        return res.status(200).json(result);
 
     } catch (err) {
 
-        res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: err.message });
     }
 });
 
-router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN],true), async (req, res) => {
+router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res) => {
 
     try {
         const { page = 0, limit = 10 } = req.query;
@@ -71,11 +71,11 @@ router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN],true), async (re
             return res.status(400).json(result);
         }
 
-        return res.json(result);
+        return res.status(200).json(result);
 
     } catch (err) {
 
-        res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: err.message });
     }
 });
 
@@ -90,11 +90,11 @@ router.get('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) =
             return res.status(404).json(result);
         }
 
-        res.status(200).json(result);
+        return res.status(200).json(result);
 
     } catch (err) {
 
-        res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: err.message });
     }
 
 });
@@ -108,11 +108,12 @@ router.post('/', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => 
 
             return res.status(400).json(result);
         }
-        res.status(201).json(result);
+
+        return res.status(201).json(result);
 
     } catch (err) {
 
-        res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: err.message });
     }
 });
 
@@ -127,11 +128,11 @@ router.patch('/:id', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res)
             return res.status(404).json(result);
         }
 
-        res.status(200).json(result);
+        return res.status(200).json(result);
 
     } catch (err) {
 
-        res.status(500).json({ success: false, message: err.message });
+        return res.status(500).json({ success: false, message: err.message });
     }
 });
 

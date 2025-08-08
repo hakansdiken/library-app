@@ -42,6 +42,7 @@ export class AdminSidenavComponent {
 
       next: () => {
 
+        this.authService.setUser(null)
         this.router.navigate(['/auth']);
       },
 

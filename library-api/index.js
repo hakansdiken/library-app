@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv'
-import bookController from './presentation/book.controller.js';
-import authController from './presentation/auth.controller.js';
-import userController from './presentation/user.controller.js';
-import borrowController from './presentation/borrow.controller.js'
+import bookController from './api/book.controller.js';
+import authController from './api/auth.controller.js';
+import userController from './api/user.controller.js';
+import borrowController from './api/borrow.controller.js'
 import { sessionMiddleware } from './infrastructure/middlewares/session.middleware.js';
 
 dotenv.config();
