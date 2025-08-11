@@ -32,19 +32,19 @@ const borrowApplication = new BorrowApplication(borrowService, userApplication, 
 router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res) => {
 
     try {
-        const { userId, bookId, page = 0, limit = 10 } = req.query;
+        const { userId, bookId, page = 0, limit = 10, search = ''  } = req.query;
 
         if (userId) {
-            const result = await borrowApplication.getBorrowsByUserId(userId, page, limit);
+            const result = await borrowApplication.getBorrowsByUserId(userId, page, limit, search);
             return res.status(200).json(result);
         }
 
         if (bookId) {
-            const result = await borrowApplication.getBorrowsByBookId(bookId, page, limit);
+            const result = await borrowApplication.getBorrowsByBookId(bookId, page, limit, search);
             return res.status(200).json(result);
         }
 
-        const result = await borrowApplication.getAllBorrows(page, limit);
+        const result = await borrowApplication.getAllBorrows(page, limit, search);
 
         if (!result.success) {
 
@@ -62,9 +62,9 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN], true), async (req, res
 router.get('/overdue', authorize([Roles.ADMIN, Roles.LIBRARIAN]), async (req, res) => {
 
     try {
-        const { page = 0, limit = 10 } = req.query;
+        const { page = 0, limit = 10, search = '' } = req.query;
 
-        const result = await borrowApplication.getBorrowsWithOverdue(page, limit);
+        const result = await borrowApplication.getBorrowsWithOverdue(page, limit, search);
 
         if (!result.success) {
 

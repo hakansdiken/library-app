@@ -48,9 +48,9 @@ export class BorrowApplication {
         };
     }
 
-    async getAllBorrows(page, limit) {
+    async getAllBorrows(page, limit, search) {
 
-        const result = await this.borrowService.getAllBorrows(page, limit);
+        const result = await this.borrowService.getAllBorrows(page, limit, search);
 
         if (!result.success) {
             return result;
@@ -64,12 +64,12 @@ export class BorrowApplication {
         };
     }
 
-    async getBorrowsByBookId(bookId, page, limit) {
+    async getBorrowsByBookId(bookId, page, limit, search) {
         const book = await this.bookApplication.getBookById(bookId);
 
         if (!book) return { success: false, message: "Book not found." };
 
-        const result = await this.borrowService.getBorrowsByBookId(bookId, page, limit);
+        const result = await this.borrowService.getBorrowsByBookId(bookId, page, limit, search);
 
         if (!result.success) {
             return result;
@@ -83,13 +83,13 @@ export class BorrowApplication {
         };
     }
 
-    async getBorrowsByUserId(userId, page, limit) {
+    async getBorrowsByUserId(userId, page, limit, search) {
 
         const user = await this.userApplication.getUserById(userId);
 
         if (!user) return { success: false, message: "User not found." };
 
-        const result = await this.borrowService.getBorrowsByUserId(userId, page, limit);
+        const result = await this.borrowService.getBorrowsByUserId(userId, page, limit, search);
 
         if (!result.success) {
             return result;
@@ -103,8 +103,8 @@ export class BorrowApplication {
         };
     }
 
-    async getBorrowsWithOverdue(page, limit) {
-        const result = await this.borrowService.getBorrowsWithOverdue(page, limit);
+    async getBorrowsWithOverdue(page, limit, search) {
+        const result = await this.borrowService.getBorrowsWithOverdue(page, limit, search);
 
         if (!result.success) {
             return result;

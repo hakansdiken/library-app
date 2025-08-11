@@ -13,29 +13,47 @@ export class BorrowRepository {
         return this._mapToEntity(result.rows[0]);
     }
 
-    async findAll(page, limit) {
-
+    async findAll(page, limit, search) {
         const offset = page * limit;
-        const countResult = await pool.query("SELECT COUNT(*) from borrows")
-        const totalItems = Number(countResult.rows[0].count)
+        const searchValue = `%${search || ''}%`;
+
+        const countResult = await pool.query(`
+        SELECT COUNT(*)
+        FROM borrows b
+        JOIN users u ON b.user_id = u.id
+        JOIN books bk ON b.book_id = bk.id
+        WHERE
+            u.name ILIKE $1
+            OR u.surname ILIKE $1
+            OR u.email ILIKE $1
+            OR bk.title ILIKE $1
+            OR bk.author ILIKE $1
+    `, [searchValue]);
+
+        const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit);
 
         const result = await pool.query(`
-                SELECT
-                    b.id, b.book_id, b.user_id, b.borrow_date, b.due_date, b.return_date, b.status,
-                    u.id AS user_id, u.name AS user_name, u.surname AS user_surname, u.email AS user_email,
-                    bk.id AS book_id, bk.title AS book_title
-                FROM borrows b
-                LEFT JOIN users u ON b.user_id = u.id
-                LEFT JOIN books bk ON b.book_id = bk.id
-                ORDER BY b.borrow_date DESC 
-                LIMIT $1 OFFSET $2`,
-            [limit, offset]);
-
+        SELECT
+            b.*,
+            u.id AS user_id, u.name AS user_name, u.surname AS user_surname, u.email AS user_email,
+            bk.id AS book_id, bk.title AS book_title
+        FROM borrows b
+        JOIN users u ON b.user_id = u.id
+        JOIN books bk ON b.book_id = bk.id
+        WHERE
+            u.name ILIKE $3
+            OR u.surname ILIKE $3
+            OR u.email ILIKE $3
+            OR bk.title ILIKE $3
+            OR bk.author ILIKE $3
+        ORDER BY b.borrow_date DESC
+        LIMIT $1 OFFSET $2
+    `, [limit, offset, searchValue]);
 
         if (result.rows.length === 0) {
             return {
-                borrows: result.rows.map(row => this._mapToEntity(row)),
+                borrows: [],
                 pagination: {
                     totalPages,
                     pageIndex: page,
@@ -44,8 +62,8 @@ export class BorrowRepository {
                     hasNextPage: false,
                     hasPrevPage: false
                 }
-            }
-        };
+            };
+        }
 
         return {
             borrows: result.rows.map(row => this._mapToEntity(row)),
@@ -54,18 +72,28 @@ export class BorrowRepository {
                 pageIndex: page,
                 totalItems,
                 itemsPerPage: limit,
-                hasNextPage: page < totalPages,
+                hasNextPage: page < totalPages - 1,
                 hasPrevPage: page > 0
             }
-        }
+        };
     }
 
-    async findByUserId(user_id, page, limit) {
+
+    async findByUserId(user_id, page, limit, search) {
         const offset = page * limit;
+        const searchValue = `%${search || ''}%`;
 
         const countResult = await pool.query(`
-        SELECT COUNT(*) FROM borrows WHERE user_id = $1
-    `, [user_id]);
+        SELECT COUNT(*) 
+        FROM borrows b
+        JOIN users u ON b.user_id = u.id
+        JOIN books bk ON b.book_id = bk.id
+        WHERE b.user_id = $1
+          AND (
+              bk.title ILIKE $2
+              OR bk.author ILIKE $2
+          )
+    `, [user_id, searchValue]);
 
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit);
@@ -83,13 +111,17 @@ export class BorrowRepository {
         JOIN users u ON b.user_id = u.id
         JOIN books bk ON b.book_id = bk.id
         WHERE b.user_id = $1
+          AND (
+              bk.title ILIKE $4
+              OR bk.author ILIKE $4
+          )
         ORDER BY b.borrow_date DESC
         LIMIT $2 OFFSET $3
-    `, [user_id, limit, offset]);
+    `, [user_id, limit, offset, searchValue]);
 
         if (result.rows.length === 0) {
             return {
-                borrows: result.rows.map(row => this._mapToEntity(row)),
+                borrows: [],
                 pagination: {
                     totalPages,
                     pageIndex: page,
@@ -98,8 +130,9 @@ export class BorrowRepository {
                     hasNextPage: false,
                     hasPrevPage: false
                 }
-            }
-        };
+            };
+        }
+
         return {
             borrows: result.rows.map(row => this._mapToEntity(row)),
             pagination: {
@@ -107,18 +140,29 @@ export class BorrowRepository {
                 pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
-                hasNextPage: page < totalPages,
+                hasNextPage: page < totalPages - 1,
                 hasPrevPage: page > 0
             }
         };
     }
 
-    async findByBookId(book_id, page, limit) {
-        const offset = page * limit;
 
-        const countResult = await pool.query(
-            "SELECT COUNT(*) FROM borrows WHERE book_id = $1",
-            [book_id]);
+    async findByBookId(book_id, page, limit, search) {
+        const offset = page * limit;
+        const searchValue = `%${search || ''}%`;
+
+        const countResult = await pool.query(`
+            SELECT COUNT(*)
+            FROM borrows b
+            JOIN users u ON b.user_id = u.id
+            JOIN books bk ON b.book_id = bk.id
+            WHERE b.book_id = $1
+            AND (
+                u.name ILIKE $2
+                OR u.surname ILIKE $2
+                OR u.email ILIKE $2
+            )
+    `, [book_id, searchValue]);
 
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit);
@@ -136,9 +180,14 @@ export class BorrowRepository {
         JOIN users u ON b.user_id = u.id
         JOIN books bk ON b.book_id = bk.id
         WHERE b.book_id = $1
+          AND (
+              u.name ILIKE $4
+              OR u.surname ILIKE $4
+              OR u.email ILIKE $4
+          )
         ORDER BY b.borrow_date DESC
         LIMIT $2 OFFSET $3
-    `, [book_id, limit, offset]);
+    `, [book_id, limit, offset, searchValue]);
 
         return {
             borrows: result.rows.map(row => this._mapToEntity(row)),
@@ -147,19 +196,31 @@ export class BorrowRepository {
                 pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
-                hasNextPage: page < totalPages,
+                hasNextPage: page < totalPages - 1,
                 hasPrevPage: page > 0
             }
         };
     }
 
-    async findAllWithOverdue(page, limit) {
+    async findAllWithOverdue(page, limit, search) {
         const offset = page * limit;
+        const searchValue = `%${search}%`
 
-        const countResult = await pool.query(
-            "SELECT COUNT(*) FROM borrows WHERE status = $1 AND due_date < NOW()",
-            [BorrowStatus.BORROWED]
-        );
+        const countResult = await pool.query(`
+            SELECT COUNT(*) 
+            FROM borrows b
+            JOIN users u ON b.user_id = u.id
+            JOIN books bk ON b.book_id = bk.id
+            WHERE status = $1 
+            AND due_date < NOW()
+            AND (
+                u.name ILIKE $2
+                OR u.surname ILIKE $2
+                OR u.email ILIKE $2
+                OR bk.title ILIKE $2
+                OR bk.author ILIKE $2
+            )`,
+            [BorrowStatus.BORROWED, searchValue]);
 
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit);
@@ -167,16 +228,24 @@ export class BorrowRepository {
 
         const result = await pool.query(`
                 SELECT
-                    b.id, b.book_id, b.user_id, b.borrow_date, b.due_date, b.return_date, b.status,
+                    b.*,
                     u.id AS user_id, u.name AS user_name, u.surname AS user_surname, u.email AS user_email,
                     bk.id AS book_id, bk.title AS book_title
                 FROM borrows b
-                LEFT JOIN users u ON b.user_id = u.id
-                LEFT JOIN books bk ON b.book_id = bk.id
-                WHERE status = $1 AND due_date < NOW() 
+                JOIN users u ON b.user_id = u.id
+                JOIN books bk ON b.book_id = bk.id
+                WHERE status = $1 
+                AND due_date < NOW() 
+                AND (
+                    u.name ILIKE $4
+                    OR u.surname ILIKE $4
+                    OR u.email ILIKE $4
+                    OR bk.title ILIKE $4
+                )
                 ORDER BY b.borrow_date DESC
-                LIMIT $2 OFFSET $3`,
-            [BorrowStatus.BORROWED, limit, offset]
+                LIMIT $2 OFFSET $3
+                `,
+            [BorrowStatus.BORROWED, limit, offset, searchValue]
         );
 
         if (result.rows.length === 0) {
@@ -200,7 +269,7 @@ export class BorrowRepository {
                 pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
-                hasNextPage: page < totalPages,
+                hasNextPage: page < totalPages - 1,
                 hasPrevPage: page > 0
             }
         };

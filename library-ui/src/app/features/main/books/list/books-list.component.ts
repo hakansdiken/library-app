@@ -15,11 +15,24 @@ import { User } from '../../../../core/models/user/user.model';
 import { CreateBorrow } from '../../../../core/models/borrow/create-borrow.model';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-books-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatDialogModule, MatPaginatorModule, MatIconModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule,
+    FormsModule,
+  ],
   templateUrl: './books-list.component.html',
   styleUrl: './books-list.component.css'
 })

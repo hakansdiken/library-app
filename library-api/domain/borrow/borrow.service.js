@@ -81,7 +81,7 @@ export class BorrowService {
         }
     }
 
-    async getAllBorrows(page, limit) {
+    async getAllBorrows(page, limit, search) {
 
         page = Number(page);
         limit = Number(limit);
@@ -100,7 +100,7 @@ export class BorrowService {
             };
         }
 
-        const data = await this.borrowRepository.findAll(page, limit);
+        const data = await this.borrowRepository.findAll(page, limit, search);
 
         return {
             success: true,
@@ -121,7 +121,7 @@ export class BorrowService {
         }
     }
 
-    async getBorrowsByBookId(bookId, page, limit) {
+    async getBorrowsByBookId(bookId, page, limit, search) {
 
         page = Number(page);
         limit = Number(limit);
@@ -140,7 +140,7 @@ export class BorrowService {
             };
         }
 
-        const data = await this.borrowRepository.findByBookId(bookId, page, limit);
+        const data = await this.borrowRepository.findByBookId(bookId, page, limit, search);
 
         return {
             success: true,
@@ -150,7 +150,7 @@ export class BorrowService {
         }
     }
 
-    async getBorrowsByUserId(userId, page, limit) {
+    async getBorrowsByUserId(userId, page, limit, search) {
 
 
         page = Number(page);
@@ -170,7 +170,7 @@ export class BorrowService {
             };
         }
 
-        const data = await this.borrowRepository.findByUserId(userId, page, limit);
+        const data = await this.borrowRepository.findByUserId(userId, page, limit, search);
 
         return {
             success: true,
@@ -180,7 +180,7 @@ export class BorrowService {
         }
     }
 
-    async getBorrowsWithOverdue(page, limit) {
+    async getBorrowsWithOverdue(page, limit, search) {
 
         page = Number(page);
         limit = Number(limit);
@@ -199,7 +199,7 @@ export class BorrowService {
             };
         }
 
-        const data = await this.borrowRepository.findAllWithOverdue(page, limit);
+        const data = await this.borrowRepository.findAllWithOverdue(page, limit, search);
 
         return {
             success: true,

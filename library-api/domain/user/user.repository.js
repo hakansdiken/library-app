@@ -22,11 +22,19 @@ export class UserRepository {
         return this._mapToEntity(result.rows[0]);
     }
 
-    async findAll(page, limit) {
+    async findAll(page, limit, search) {
 
         const offset = page * limit;
+        const searchValue = `%${search || ''}%`;
 
-        const countResult = await pool.query("SELECT COUNT(*) FROM users")
+        const countResult = await pool.query(`
+            SELECT COUNT(*) 
+            FROM users u
+            WHERE u.name ILIKE $1
+                OR u.surname ILIKE $1
+                OR u.email ILIKE $1 
+        `, [searchValue])
+
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit)
         // borrowun statusu borrowed ise canBeDeleted false olcak. 
@@ -39,11 +47,15 @@ export class UserRepository {
                     WHERE user_id = u.id AND status = 'borrowed'
                     ) AS "canBeDeleted"
                     FROM users u
+                    WHERE u.name ILIKE $3
+                    OR u.surname ILIKE $3
+                    OR u.email ILIKE $3
                     ORDER BY u.created_at  
                     DESC LIMIT $1 OFFSET $2;`,
-            [limit, offset]
+            [limit, offset, searchValue]
         );
 
+        //WHERE title ILIKE $3 OR author ILIKE $3
         if (result.rows.length === 0) {
             return {
                 users: [],
@@ -65,7 +77,7 @@ export class UserRepository {
                 pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
-                hasNextPage: page < totalPages,
+                hasNextPage: page < totalPages - 1,
                 hasPrevPage: page > 0
             }
         }

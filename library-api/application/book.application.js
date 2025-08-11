@@ -25,9 +25,9 @@ export class BookApplication {
         };
     }
 
-    async getAllBooks(page, limit) {
+    async getAllBooks(page, limit, search) {
 
-        const result = await this.bookService.getAllBooks(page, limit);
+        const result = await this.bookService.getAllBooks(page, limit, search);
 
         if (!result.success) {
 

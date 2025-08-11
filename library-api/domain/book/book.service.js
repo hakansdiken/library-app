@@ -27,7 +27,7 @@ export class BookService {
         };
     }
 
-    async getAllBooks(page, limit) {
+    async getAllBooks(page, limit, search) {
 
         page = Number(page);
         limit = Number(limit);
@@ -46,7 +46,7 @@ export class BookService {
             };
         }
 
-        const data = await this.bookRepository.findAll(page, limit);
+        const data = await this.bookRepository.findAll(page, limit, search);
 
         return {
             success: true,
