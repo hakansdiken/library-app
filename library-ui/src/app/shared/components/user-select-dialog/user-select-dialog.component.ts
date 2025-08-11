@@ -25,8 +25,6 @@ export class UserSelectDialogComponent implements OnInit {
   itemsPerPage: number = 10;
   totalItems?: number;
 
-  @Output() userSelected = new EventEmitter<User>();
-
   constructor(private userService: UserService, private dialogRef: MatDialogRef<UserSelectDialogComponent>) { }
 
   ngOnInit(): void {

@@ -1,0 +1,20 @@
+<div class="borrow-container">
+    <h2 class="section-title">Borrow List</h2>
+
+    <mat-form-field *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'librarian'">
+        <mat-select [value]="selectedListType" (selectionChange)="changeListType($event.value)" disableRipple>
+            <mat-option value="all">All</mat-option>
+            <mat-option value="overdue">Overdue</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <app-borrow-list 
+        [borrows]="borrows" 
+        [listType]="selectedListType" 
+        [pageIndex]="pageIndex"
+        [itemsPerPage]="itemsPerPage" 
+        [totalItems]="totalItems"   
+        (pageChange)="onPageChange($event)"
+        (markReturned)="markAsReturned($event)">
+    </app-borrow-list>
+</div>
