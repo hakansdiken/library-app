@@ -5,6 +5,7 @@
 
   <button mat-button (click)="goToBooks()">Books</button>
   <button mat-button (click)="goToBorrows()">Borrows</button>
+  <button mat-button (click)="goToUsers()" *ngIf="currentUser?.role === 'admin' || currentUser?.role === 'librarian'">Users</button>
 
   <span class="spacer"></span>
 

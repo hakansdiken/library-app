@@ -5,12 +5,14 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { User } from '../../../../core/models/user/user.model';
 import { UserService } from '../../../../core/services/user/user.service';
-import { UserCreateComponent } from '../user-create/user-create.component';
+import { UserCreateComponent } from '../../../../features/admin/users/user-create/user-create.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { UserEditComponent } from '../user-edit/user-edit.component';
+import { UserEditComponent } from '../../../../features/admin/users/user-edit/user-edit.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { DeleteItemComponent } from '../../../../shared/components/delete-component/delete-item.component';
+import { DeleteItemComponent } from '../../delete-component/delete-item.component';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth/auth.service';
 
 
 @Component({
@@ -33,15 +35,19 @@ export class UserManagementComponent implements OnInit {
   displayedColumns: string[] = ['userName', 'userEmail', 'userRole', 'actions'];
   pageIndex: number = 0;
   itemsPerPage: number = 10;
+  totalItems?: number;
+
+  currentUser?: User | null;
   // totalPages?: number;
   // hasPrevPage?: boolean = false;
   // hasNextPage?: boolean = false;
-  totalItems?: number;
 
 
-  constructor(private userService: UserService, private dialog: MatDialog) { }
+  constructor(private userService: UserService, private authService: AuthService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
+
+    this.currentUser = this.authService.getUser();
     this.pageIndex = 0;
     this.loadUsers();
   }
@@ -106,6 +112,17 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
+  goToBorrowHistory(userId: string) {
+    const currentUrl = this.router.url;  // mevcut url path + querystring
+    const isAdminRoute = currentUrl.startsWith('/admin');
+
+    if (isAdminRoute) {
+      this.router.navigate(['/admin/borrows'], { queryParams: { userId } });
+    } else {
+      this.router.navigate(['/borrows'], { queryParams: { userId } });
+    }
+  }
+  
   openDeleteDialog(user: User) {
     const dialogRef = this.dialog.open(DeleteItemComponent, {
       width: '400px',

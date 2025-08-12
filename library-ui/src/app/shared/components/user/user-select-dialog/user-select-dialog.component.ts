@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
-import { User } from '../../../core/models/user/user.model';
-import { UserService } from '../../../core/services/user/user.service';
+import { User } from '../../../../core/models/user/user.model';
+import { UserService } from '../../../../core/services/user/user.service';
 import { MatCardModule } from '@angular/material/card';
-import { CreateBorrow } from '../../../core/models/borrow/create-borrow.model';
+import { CreateBorrow } from '../../../../core/models/borrow/create-borrow.model';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({

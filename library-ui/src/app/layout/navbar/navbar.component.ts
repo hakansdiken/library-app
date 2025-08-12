@@ -7,9 +7,11 @@ import { AuthService } from '../../core/services/auth/auth.service';
 import { Roles } from '../../../constants/roles';
 import { CommonModule } from '@angular/common';
 import { UserRole } from '../../core/models/enums/user-role.enum';
+import { User } from '../../core/models/user/user.model';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [CommonModule, MatToolbarModule, MatButtonModule, MatIconModule],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
@@ -18,14 +20,16 @@ import { UserRole } from '../../core/models/enums/user-role.enum';
 export class NavbarComponent {
 
   userRole: string | null = null;
+  currentUser: User | null = null;
 
   constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
 
-    const currentUser = this.authService.getUser();
+    this.currentUser = this.authService.getUser();
+    console.log(this.currentUser)
 
-    this.userRole = currentUser?.role ?? UserRole.Member;
+    this.userRole = this.currentUser?.role ?? UserRole.Member;
 
   }
 
@@ -39,6 +43,10 @@ export class NavbarComponent {
 
   goToBorrows() {
     this.router.navigate(['/borrows']);
+  }
+
+  goToUsers() {
+    this.router.navigate(['/users']);
   }
 
   goToAdmin() {

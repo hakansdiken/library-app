@@ -9,16 +9,17 @@ import { BookFormComponent } from '../../../../shared/components/book-form/book-
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { UserRole } from '../../../../core/models/enums/user-role.enum';
-import { UserSelectDialogComponent } from '../../../../shared/components/user-select-dialog/user-select-dialog.component';
+import { UserSelectDialogComponent } from '../../../../shared/components/user/user-select-dialog/user-select-dialog.component';
 import { BorrowService } from '../../../../core/services/borrow/borrow.service';
 import { User } from '../../../../core/models/user/user.model';
 import { CreateBorrow } from '../../../../core/models/borrow/create-borrow.model';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-books-list',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatDialogModule, MatPaginatorModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatDialogModule, MatPaginatorModule, MatIconModule],
   templateUrl: './books-list.component.html',
   styleUrl: './books-list.component.css'
 })
@@ -117,6 +118,17 @@ export class BooksListComponent implements OnInit {
         console.error('Error: ', err.error?.message);
       }
     });
+  }
+
+  goToBorrowHistory(bookId: string) {
+    const currentUrl = this.router.url;  // mevcut url path + querystring
+    const isAdminRoute = currentUrl.startsWith('/admin');
+
+    if (isAdminRoute) {
+      this.router.navigate(['/admin/borrows'], { queryParams: { bookId } });
+    } else {
+      this.router.navigate(['/borrows'], { queryParams: { bookId } });
+    }
   }
 
   onPageChange(event: PageEvent): void {

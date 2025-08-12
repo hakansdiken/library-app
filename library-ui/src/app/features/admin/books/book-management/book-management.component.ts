@@ -10,6 +10,7 @@ import { BookFormComponent } from '../../../../shared/components/book-form/book-
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DeleteItemComponent } from '../../../../shared/components/delete-component/delete-item.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-book-management',
@@ -27,7 +28,7 @@ export class BookManagementComponent implements OnInit {
   totalItems?: number;
 
 
-  constructor(private bookService: BookService, private dialog: MatDialog) { }
+  constructor(private bookService: BookService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
     this.pageIndex = 0;
@@ -116,6 +117,18 @@ export class BookManagementComponent implements OnInit {
         this.deleteBook(book.id);
       }
     });
+  }
+
+  goToBorrowHistory(bookId: string) {
+
+    const currentUrl = this.router.url;  // mevcut url path + querystring
+    const isAdminRoute = currentUrl.startsWith('/admin');
+
+    if (isAdminRoute) {
+      this.router.navigate(['/admin/borrows'], { queryParams: { bookId } });
+    } else {
+      this.router.navigate(['/borrows'], { queryParams: { bookId } });
+    }
   }
 
   onPageChange(event: PageEvent): void {
