@@ -4,6 +4,7 @@ import { BookService } from '../../../../core/services/book/book.service';
 import { CommonModule } from '@angular/common';
 import { Book } from '../../../../core/models/book/book.model';
 import { MatCardModule } from '@angular/material/card';
+import { BorrowContainerComponent } from '../../../../shared/components/borrow/borrow-container/borrow-container.component';
 
 @Component({
   selector: 'app-book-detail',
@@ -42,7 +43,7 @@ export class BookDetailComponent implements OnInit {
         this.book = response.data;
       },
       error: (err) => {
-        console.error('Error:', err.error.message);
+        console.error('Error: ', err.error.message);
       }
     });
   }

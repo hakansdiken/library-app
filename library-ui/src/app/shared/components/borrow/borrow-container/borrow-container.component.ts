@@ -8,11 +8,13 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
 import { UserRole } from '../../../../core/models/enums/user-role.enum';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-borrow-container',
   standalone: true,
-  imports: [BorrowListComponent, MatSelectModule, CommonModule], 
+  imports: [BorrowListComponent, MatSelectModule, CommonModule],
   templateUrl: './borrow-container.component.html',
   styleUrl: './borrow-container.component.css'
 })
@@ -24,19 +26,27 @@ export class BorrowContainerComponent implements OnInit {
   itemsPerPage: number = 10;
   totalItems: number = 0;
 
-  currentUser?: User | null;
+  targetBookId?: string | null;
+  targetUserId?: string | null;
+  currentUser: User | null = null;
 
 
-  constructor(private borrowService: BorrowService, private authService: AuthService) { }
+  constructor(private borrowService: BorrowService, private authService: AuthService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getUser();
 
-    if (this.currentUser) {
+    this.route.queryParamMap.subscribe(params => {
+      this.targetUserId = params.get('userId');
+      this.targetBookId = params.get('bookId');
 
-      this.loadBorrows(this.currentUser);
-    }
+      if (this.currentUser) {
+
+        this.loadBorrows(this.currentUser, this.targetUserId, this.targetBookId);
+      }
+    });
   }
+
 
   showAllBorrows() {
     this.selectedListType = 'all';
@@ -56,30 +66,48 @@ export class BorrowContainerComponent implements OnInit {
     }
   }
 
-  private loadBorrows(user: User) {
-
+  private loadBorrows(user: User, targetUserId?: string | null, targetBookId?: string | null) {
     const { role, id: userId } = user;
 
     if (role === UserRole.Admin || role === UserRole.Librarian) {
 
-      if (this.selectedListType === 'all') {
+      if (targetUserId) {
+
+        this.borrowService.getBorrowsByUser(targetUserId, this.pageIndex, this.itemsPerPage).subscribe(res => {
+
+          this.borrows = res.data ?? [];
+          this.updatePagination(res);
+        });
+
+        return;
+      }
+
+      if (targetBookId) {
+
+        this.borrowService.getBorrowsByBook(targetBookId, this.pageIndex, this.itemsPerPage).subscribe(res => {
+
+          this.borrows = res.data ?? [];
+          this.updatePagination(res);
+        });
+
+        return;
+      }
+
+      if (this.selectedListType === 'all' && !(targetUserId || targetBookId)) {
 
         this.borrowService.getBorrows(this.pageIndex, this.itemsPerPage).subscribe({
 
           next: (res) => {
 
             this.borrows = res.data ?? [];
-
             this.updatePagination(res);
-
           },
           error: (err) => {
+
             console.error('Error:', err.error?.message);
           }
         });
-
-      } else if (this.selectedListType === 'overdue') {
-
+      } else if (this.selectedListType === 'overdue' && !(targetUserId || targetBookId)) {
         this.borrowService.getOverdueBorrows(this.pageIndex, this.itemsPerPage).subscribe({
 
           next: (res) => {
@@ -87,27 +115,23 @@ export class BorrowContainerComponent implements OnInit {
             this.borrows = res.data ?? [];
 
             this.updatePagination(res);
-
           },
           error: (err) => {
             console.error('Error:', err.error?.message);
           }
         });
       }
-    } else this.borrowService.getBorrowsByUser(userId, this.pageIndex, this.itemsPerPage).subscribe({
-      next: (res) => {
-
-        this.borrows = res.data ?? [];
-
-        this.updatePagination(res);
-
-      },
-      error: (err) => {
-        console.error('Error:', err.error?.message);
-      }
-
-    })
-
+    } else {
+      this.borrowService.getBorrowsByUser(userId, this.pageIndex, this.itemsPerPage).subscribe({
+        next: (res) => {
+          this.borrows = res.data ?? [];
+          this.updatePagination(res);
+        },
+        error: (err) => {
+          console.error('Error:', err.error?.message);
+        }
+      });
+    }
   }
 
   onPageChange(event: PageEvent) {
@@ -116,8 +140,7 @@ export class BorrowContainerComponent implements OnInit {
     this.itemsPerPage = event.pageSize;
 
     if (this.currentUser) {
-
-      this.loadBorrows(this.currentUser);
+      this.loadBorrows(this.currentUser, this.targetUserId, this.targetBookId);
     }
   }
 
@@ -126,8 +149,7 @@ export class BorrowContainerComponent implements OnInit {
       next: () => {
 
         if (this.currentUser) {
-
-          this.loadBorrows(this.currentUser);
+          this.loadBorrows(this.currentUser, this.targetUserId, this.targetBookId);
         }
       },
       error: err => {
