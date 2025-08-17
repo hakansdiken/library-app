@@ -13,17 +13,25 @@ export class BookRepository {
         return this._mapToEntity(result.rows[0]);
     }
 
-    async findAll(page, limit) {
+    async findAll(page, limit, search) {
 
         const offset = page * limit;
+        const searchValue = `%${search || ''}%`;
 
-        const countResult = await pool.query("SELECT COUNT(*) FROM books");
+        const countResult = await pool.query(`
+                SELECT COUNT(*) 
+                FROM books b
+                WHERE b.title ILIKE $1
+                    OR b.author ILIKE $1
+            `, [searchValue]);
+
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit);
 
         const result = await pool.query(
-            "SELECT * FROM books ORDER BY created_at DESC LIMIT $1 OFFSET $2",
-            [limit, offset]
+
+            `SELECT * FROM books  WHERE title ILIKE $3 OR author ILIKE $3 ORDER BY created_at DESC LIMIT $1 OFFSET $2 ;`,
+            [limit, offset, searchValue]
         );
 
         if (result.rows.length === 0) {
@@ -47,7 +55,7 @@ export class BookRepository {
                 pageIndex: page,
                 totalPages,
                 itemsPerPage: limit,
-                hasNextPage: page < totalPages,
+                hasNextPage: page < totalPages - 1,
                 hasPrevPage: page > 0
             }
         };

@@ -90,7 +90,7 @@ export class UserService {
         };
     }
 
-    async getAllUsers(page, limit) {
+    async getAllUsers(page, limit, search) {
 
         page = Number(page);
         limit = Number(limit);
@@ -109,7 +109,7 @@ export class UserService {
             };
         }
 
-        const data = await this.userRepository.findAll(page, limit);
+        const data = await this.userRepository.findAll(page, limit, search);
 
         return {
             success: true,

@@ -16,9 +16,9 @@ router.get('/', authorize([Roles.ADMIN, Roles.LIBRARIAN, Roles.MEMBER]), async (
 
     try {
 
-        const { page = 0, limit = 10 } = req.query;
+        const { page = 0, limit = 10, search = '' } = req.query;
 
-        const result = await bookApplication.getAllBooks(page, limit);
+        const result = await bookApplication.getAllBooks(page, limit, search);
 
         if (!result.success) {
 

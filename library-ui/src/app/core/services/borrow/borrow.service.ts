@@ -13,24 +13,24 @@ export class BorrowService {
 
   constructor(private http: HttpClient) { }
 
-  getBorrows(page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
+  getBorrows(page?: number, limit?: number, search?: string): Observable<ApiResponse<Borrow[]>> {
 
-    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.ROOT(page, limit)}`, { withCredentials: true });
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.ROOT(page, limit, search)}`, { withCredentials: true });
   }
 
-  getBorrowsByUser(userId: string, page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
+  getBorrowsByUser(userId: string, page?: number, limit?: number, search?: string): Observable<ApiResponse<Borrow[]>> {
 
-    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_USERID(userId, page, limit)}`, { withCredentials: true });
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_USERID(userId, page, limit, search)}`, { withCredentials: true });
   }
 
-  getBorrowsByBook(bookId: string, page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
+  getBorrowsByBook(bookId: string, page?: number, limit?: number, search?: string): Observable<ApiResponse<Borrow[]>> {
 
-    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_BOOKID(bookId, page, limit)}`, { withCredentials: true });
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.BY_BOOKID(bookId, page, limit, search)}`, { withCredentials: true });
   }
 
-  getOverdueBorrows(page?: number, limit?: number): Observable<ApiResponse<Borrow[]>> {
+  getOverdueBorrows(page?: number, limit?: number, search?: string): Observable<ApiResponse<Borrow[]>> {
 
-    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.OVERDUE(page, limit)}`, { withCredentials: true });
+    return this.http.get<ApiResponse<Borrow[]>>(`${API_ENDPOINTS.BORROWS.OVERDUE(page, limit, search)}`, { withCredentials: true });
   }
 
   markReturned(borrowId: string): Observable<ApiResponse<Borrow>> {

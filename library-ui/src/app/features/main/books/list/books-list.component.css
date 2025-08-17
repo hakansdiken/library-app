@@ -36,9 +36,12 @@
     margin: 8px;
 }
 
-.paginator-container {
+.search-paging-container {
     display: flex;
-    justify-content: center;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1rem;
     padding: 10px;
 }
 

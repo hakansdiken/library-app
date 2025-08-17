@@ -53,11 +53,11 @@ export class UserApplication {
         };
     }
 
-    async getAllUsers(page, limit) {
+    async getAllUsers(page, limit, search) {
 
-        const result = await this.userService.getAllUsers(page, limit);
+        const result = await this.userService.getAllUsers(page, limit, search);
 
-        if (!result.success) {
+        if (!result.success) {   
             return result;
         }
 

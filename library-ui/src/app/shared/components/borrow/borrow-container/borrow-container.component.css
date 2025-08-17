@@ -11,3 +11,9 @@
     color: #2c3e50;
     letter-spacing: 1px;
 }
+
+.search-select-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
