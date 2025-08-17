@@ -31,6 +31,7 @@ export class BorrowListComponent {
   @Input() itemsPerPage: number = 10;
   @Input() totalItems: number = 0;
   @Input() listType: string = 'all';
+  @Input() searchKey?: string = '';
 
   currentUser?: User | null;
   displayedColumns: string[] = [

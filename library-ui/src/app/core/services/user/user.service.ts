@@ -14,9 +14,9 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  getAllUsers(page?: number, limit?: number): Observable<ApiResponse<User[]>> {
+  getAllUsers(page?: number, limit?: number, search?: string): Observable<ApiResponse<User[]>> {
 
-    return this.http.get<ApiResponse<User[]>>(`${API_ENDPOINTS.USERS.ROOT(page, limit)}`, { withCredentials: true });
+    return this.http.get<ApiResponse<User[]>>(`${API_ENDPOINTS.USERS.ROOT(page, limit, search)}`, { withCredentials: true });
   }
 
   getUserById(id: string): Observable<ApiResponse<User>> {

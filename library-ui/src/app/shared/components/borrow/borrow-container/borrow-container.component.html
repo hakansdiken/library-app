@@ -1,13 +1,27 @@
-<div class="borrow-container">
-    <h2 class="section-title">Borrow List</h2>
+<h2 class="section-title">Borrow List</h2>
 
-    <mat-form-field appearance="outline" *ngIf="(currentUser?.role === 'admin' || currentUser?.role === 'librarian') && !(targetUserId || targetBookId)">
-        <mat-select [value]="selectedListType" (selectionChange)="changeListType($event.value)">
-            <mat-option value="all">All</mat-option>
-            <mat-option value="overdue">Overdue</mat-option>
-        </mat-select>
-    </mat-form-field>
-    
+<div class="borrow-container">
+    <div class="search-select-container">
+        <mat-form-field appearance="outline" class="list-type-select"
+            *ngIf="(currentUser?.role === 'admin' || currentUser?.role === 'librarian') && !(targetUserId || targetBookId)">
+            <mat-label>List Type</mat-label>
+            <mat-select [(value)]="selectedListType" (selectionChange)="changeListType($event.value)">
+                <mat-option value="all">All</mat-option>
+                <mat-option value="overdue">Overdue</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search</mat-label>
+            <input matInput placeholder="Enter search term" [(ngModel)]="searchKey"
+                (keyup.enter)="loadBorrows({ user: currentUser, targetUserId: targetUserId, targetBookId: targetBookId, searchKey: searchKey })">
+            <button mat-icon-button matSuffix
+                (click)="loadBorrows({ user: currentUser, targetUserId: targetUserId, targetBookId: targetBookId, searchKey: searchKey })">
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
+
     <app-borrow-list [borrows]="borrows" [listType]="selectedListType" [pageIndex]="pageIndex"
         [itemsPerPage]="itemsPerPage" [totalItems]="totalItems" (pageChange)="onPageChange($event)"
         (markReturned)="markAsReturned($event)">

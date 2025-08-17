@@ -11,11 +11,14 @@ import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DeleteItemComponent } from '../../../../shared/components/delete-component/delete-item.component';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-book-management',
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatCardModule, MatPaginatorModule],
+  imports: [CommonModule, MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatCardModule, MatPaginatorModule, FormsModule, MatInputModule, MatFormFieldModule],
   templateUrl: './book-management.component.html',
   styleUrl: './book-management.component.css'
 })
@@ -26,7 +29,7 @@ export class BookManagementComponent implements OnInit {
   pageIndex: number = 0;
   itemsPerPage: number = 10;
   totalItems?: number;
-
+  searchKey?: string = '';
 
   constructor(private bookService: BookService, private dialog: MatDialog, private router: Router) { }
 
@@ -37,7 +40,7 @@ export class BookManagementComponent implements OnInit {
 
 
   loadBooks() {
-    this.bookService.getBooks(this.pageIndex, this.itemsPerPage).subscribe({
+    this.bookService.getBooks(this.pageIndex, this.itemsPerPage, this.searchKey).subscribe({
 
       next: (res) => {
 

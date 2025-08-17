@@ -13,6 +13,9 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DeleteItemComponent } from '../../delete-component/delete-item.component';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth/auth.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 
 @Component({
@@ -24,7 +27,10 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
     MatTableModule,
     MatButtonModule,
     MatIconModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule
   ],
   templateUrl: './user-management.component.html',
   styleUrl: './user-management.component.css'
@@ -37,6 +43,7 @@ export class UserManagementComponent implements OnInit {
   itemsPerPage: number = 10;
   totalItems?: number;
 
+  searchKey?: string = '';
   currentUser?: User | null;
   // totalPages?: number;
   // hasPrevPage?: boolean = false;
@@ -54,7 +61,7 @@ export class UserManagementComponent implements OnInit {
 
   loadUsers() {
 
-    this.userService.getAllUsers(this.pageIndex, this.itemsPerPage).subscribe({
+    this.userService.getAllUsers(this.pageIndex, this.itemsPerPage, this.searchKey).subscribe({
 
       next: (res) => {
 
@@ -122,7 +129,7 @@ export class UserManagementComponent implements OnInit {
       this.router.navigate(['/borrows'], { queryParams: { userId } });
     }
   }
-  
+
   openDeleteDialog(user: User) {
     const dialogRef = this.dialog.open(DeleteItemComponent, {
       width: '400px',

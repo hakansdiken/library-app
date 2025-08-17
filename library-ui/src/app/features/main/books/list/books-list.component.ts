@@ -44,6 +44,7 @@ export class BooksListComponent implements OnInit {
   pageIndex: number = 0;
   itemsPerPage: number = 10;
   totalItems?: number;
+  searchKey?: string = ''
 
   constructor(private bookService: BookService, private borrowService: BorrowService, private authService: AuthService, private router: Router, private dialog: MatDialog) { }
 
@@ -62,7 +63,7 @@ export class BooksListComponent implements OnInit {
 
   loadBooks() {
 
-    this.bookService.getBooks(this.pageIndex, this.itemsPerPage).subscribe({
+    this.bookService.getBooks(this.pageIndex, this.itemsPerPage, this.searchKey).subscribe({
 
       next: (res) => {
 

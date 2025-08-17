@@ -3,11 +3,17 @@
 <div class="button-container" *ngIf="userRole === 'admin' || userRole==='librarian'">
   <button mat-raised-button class="round-button" (click)="openCreateDialog()">+</button>
 </div>
-<div class="paginator-container">
 
-  <!-- <input matInput name="search"> -->
+<div class="search-paging-container">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search</mat-label>
+    <input matInput placeholder="Enter search term" [(ngModel)]="searchKey" (keyup.enter)="loadBooks()">
+    <button mat-icon-button matSuffix (click)="loadBooks()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
 
-  <mat-paginator [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="itemsPerPage"
+  <mat-paginator class="paginator-field" [length]="totalItems" [pageIndex]="pageIndex" [pageSize]="itemsPerPage"
     [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPageChange($event)">
   </mat-paginator>
 </div>
@@ -45,6 +51,6 @@
 
   </mat-card>
   <div *ngIf="books.length === 0">
-    <p style="text-align: center;">You have no user records.</p>
+    <p style="text-align: center;">No books available</p>
   </div>
 </div>

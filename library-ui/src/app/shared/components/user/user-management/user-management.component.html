@@ -5,6 +5,15 @@
 </div>
 
 <div class="user-container">
+
+  <mat-form-field appearance="outline">
+    <mat-label>Search</mat-label>
+    <input matInput placeholder="Enter search term" [(ngModel)]="searchKey" (keyup.enter)="loadUsers()">
+    <button mat-icon-button matSuffix (click)="loadUsers()">
+      <mat-icon>search</mat-icon>
+    </button>
+  </mat-form-field>
+
   <mat-card>
     <table mat-table [dataSource]="users" class="mat-elevation-z8 full-width">
 
@@ -15,7 +24,6 @@
           {{ user.name }} {{ user.surname }}
         </td>
       </ng-container>
-
       <!-- User Email Column -->
       <ng-container matColumnDef="userEmail">
         <th mat-header-cell *matHeaderCellDef> Email </th>
@@ -35,8 +43,7 @@
             Edit
           </button>
           <button mat-raised-button *ngIf="currentUser?.role === 'admin'" [disabled]="!user.canBeDeleted"
-            (click)="openDeleteDialog(user)"
-            style="margin-right: 8px;">
+            (click)="openDeleteDialog(user)" style="margin-right: 8px;">
             <mat-icon>delete</mat-icon>
             Delete
           </button>
