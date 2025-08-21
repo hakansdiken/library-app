@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarUtil } from '../../../../shared/utils/snackbar-util';
 
 
 @Component({
@@ -33,7 +34,7 @@ export class BookManagementComponent implements OnInit {
   totalItems?: number;
   searchKey?: string = '';
 
-  constructor(private bookService: BookService, private dialog: MatDialog, private router: Router, private snackBar: MatSnackBar) { }
+  constructor(private bookService: BookService, private dialog: MatDialog, private router: Router, private snackbarUtil: SnackbarUtil) { }
 
   ngOnInit(): void {
     this.pageIndex = 0;
@@ -62,9 +63,12 @@ export class BookManagementComponent implements OnInit {
     this.bookService.deleteBook(bookId).subscribe({
       next: () => {
 
+        this.snackbarUtil.showSuccess('🎉 Book deleted successfully!')
+
         this.loadBooks();
       },
       error: (err) => {
+        this.snackbarUtil.showError('❌ An error occurred while deleting book!')
 
         console.error("Error:" + err.error?.message)
       }
@@ -109,10 +113,8 @@ export class BookManagementComponent implements OnInit {
 
     if (book.isBorrowed) {
 
-      this.snackBar.open('Borrowed books cannot be deleted!', 'Ok', {
-        duration: 3000
-      });
-      
+      this.snackbarUtil.showWarning('⚠️ This user cannot be deleted because has book!')
+
       return;
     }
 

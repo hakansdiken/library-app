@@ -5,10 +5,10 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { User } from '../../../../core/models/user/user.model';
 import { UserService } from '../../../../core/services/user/user.service';
-import { UserCreateComponent } from '../../../../features/admin/users/user-create/user-create.component';
+import { UserCreateComponent } from '../user-create/user-create.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { UserEditComponent } from '../../../../features/admin/users/user-edit/user-edit.component';
+import { UserEditComponent } from '../user-edit/user-edit.component';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DeleteItemComponent } from '../../delete-component/delete-item.component';
 import { Router } from '@angular/router';
@@ -17,6 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarUtil } from '../../../utils/snackbar-util';
 
 
 @Component({
@@ -51,7 +52,7 @@ export class UserManagementComponent implements OnInit {
   // hasNextPage?: boolean = false;
 
 
-  constructor(private userService: UserService, private authService: AuthService, private dialog: MatDialog, private router: Router, private snackBar: MatSnackBar) { }
+  constructor(private userService: UserService, private authService: AuthService, private dialog: MatDialog, private router: Router, private snackbarUtil: SnackbarUtil) { }
 
   ngOnInit(): void {
 
@@ -111,11 +112,15 @@ export class UserManagementComponent implements OnInit {
 
     this.userService.deleteUser(userId).subscribe({
       next: () => {
+        this.snackbarUtil.showSuccess('🎉 User deleted successfully!')
+
         this.loadUsers();
       },
       error: (err) => {
 
-        console.error("Error:" + err.error?.message)
+        this.snackbarUtil.showError('❌ An error occurred while deleting user!')
+
+        console.error("Error: " + err.error?.message)
       }
     });
   }
@@ -134,10 +139,7 @@ export class UserManagementComponent implements OnInit {
   openDeleteDialog(user: User) {
 
     if (!user.canBeDeleted) {
-
-      this.snackBar.open("This user cannot be deleted because has book!", 'Ok', {
-        duration: 3000
-      });
+      this.snackbarUtil.showWarning('⚠️ This user cannot be deleted because has user!')
 
       return;
     }

@@ -20,6 +20,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { DeleteItemComponent } from '../../../../shared/components/delete-component/delete-item.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarUtil } from '../../../../shared/utils/snackbar-util';
 
 @Component({
   selector: 'app-books-list',
@@ -48,7 +49,7 @@ export class BooksListComponent implements OnInit {
   totalItems?: number;
   searchKey?: string = ''
 
-  constructor(private bookService: BookService, private borrowService: BorrowService, private authService: AuthService, private router: Router, private dialog: MatDialog, private snackBar: MatSnackBar) { }
+  constructor(private bookService: BookService, private borrowService: BorrowService, private authService: AuthService, private router: Router, private dialog: MatDialog, private snackbarUtil: SnackbarUtil) { }
 
   ngOnInit(): void {
     const currentUser = this.authService.getUser();
@@ -86,9 +87,12 @@ export class BooksListComponent implements OnInit {
     this.bookService.deleteBook(bookId).subscribe({
       next: () => {
 
+        this.snackbarUtil.showSuccess('🎉 Book deleted successfully!')
+
         this.loadBooks();
       },
       error: (err) => {
+        this.snackbarUtil.showError('❌ An error occurred while deleting book!')
 
         console.error("Error:" + err.error?.message)
       }
@@ -125,11 +129,10 @@ export class BooksListComponent implements OnInit {
   }
 
   openDeleteDialog(book: Book) {
+
     if (book.isBorrowed) {
 
-      this.snackBar.open('Borrowed books cannot be deleted!', 'Ok', {
-        duration: 3000
-      });
+      this.snackbarUtil.showWarning('⚠️ Borrowed books cannot be deleted!')
 
       return;
     }
@@ -170,9 +173,15 @@ export class BooksListComponent implements OnInit {
 
     this.borrowService.createBorrow(borrowRequest).subscribe({
       next: () => {
+
+        this.snackbarUtil.showSuccess('🎉 Book lended successfully!');
+
         this.loadBooks();
       },
       error: (err) => {
+
+        this.snackbarUtil.showError('❌ An error occurred while lending book!')
+
         console.error('Error: ', err.error?.message);
       }
     });

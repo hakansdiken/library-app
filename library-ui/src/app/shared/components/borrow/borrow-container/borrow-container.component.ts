@@ -14,6 +14,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { SnackbarUtil } from '../../../utils/snackbar-util';
 
 @Component({
   selector: 'app-borrow-container',
@@ -44,7 +45,7 @@ export class BorrowContainerComponent implements OnInit {
   targetUserId?: string | null;
   currentUser: User | null = null;
 
-  constructor(private borrowService: BorrowService, private authService: AuthService, private route: ActivatedRoute) { }
+  constructor(private borrowService: BorrowService, private authService: AuthService, private route: ActivatedRoute, private snackbarUtil: SnackbarUtil) { }
 
   ngOnInit(): void {
     this.currentUser = this.authService.getUser();
@@ -74,7 +75,7 @@ export class BorrowContainerComponent implements OnInit {
     this.pageIndex = 0;
 
     if (this.currentUser) {
-      
+
       this.loadBorrows({ user: this.currentUser, searchKey: this.searchKey });
     }
   }
@@ -141,10 +142,16 @@ export class BorrowContainerComponent implements OnInit {
       next: () => {
         if (this.currentUser) {
 
+          this.snackbarUtil.showSuccess('🎉 Book returned successfully!')
+
           this.loadBorrows({ user: this.currentUser, targetUserId: this.targetUserId, targetBookId: this.targetBookId, searchKey: this.searchKey });
         }
       },
-      error: err => console.error('Error: ', err.error.message)
+      error: err => {
+        this.snackbarUtil.showError('❌ An error occurred while returned book!')
+
+        console.error('Error: ', err.error.message)
+      }
     });
   }
 

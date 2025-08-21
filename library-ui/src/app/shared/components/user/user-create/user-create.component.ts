@@ -6,10 +6,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-
 import { UserService } from '../../../../core/services/user/user.service';
 import { CreateUser } from '../../../../core/models/user/create-user.model';
 import { UserRole } from '../../../../core/models/enums/user-role.enum';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarUtil } from '../../../utils/snackbar-util';
 
 @Component({
   selector: 'app-user-create',
@@ -37,17 +38,25 @@ export class UserCreateComponent {
   userRoles = [UserRole.Admin, UserRole.Librarian, UserRole.Member];
   isEditMode = false;
 
-  constructor(
-    private userService: UserService,
-    private dialogRef: MatDialogRef<UserCreateComponent>
-  ) { }
+  constructor(private userService: UserService, private dialogRef: MatDialogRef<UserCreateComponent>, private snackBarUtil: SnackbarUtil) { }
 
   onSubmit(form: NgForm): void {
     if (form.invalid) return;
 
     this.userService.createUser(this.user).subscribe({
-      next: (createdUser) => this.dialogRef.close(createdUser),
-      error: (err) => console.error(err.error?.message),
+
+      next: (createdUser) => {
+
+        this.snackBarUtil.showSuccess('🎉 User added successfully!');
+
+        this.dialogRef.close(createdUser)
+      },
+      error: (err) => 
+        {
+          this.snackBarUtil.showError('❌ An error occurred while adding user!')
+
+          console.error('Error: ', err.error?.message)
+        },
     });
   }
 }

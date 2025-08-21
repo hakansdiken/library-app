@@ -10,6 +10,7 @@ import { UserService } from '../../../../core/services/user/user.service';
 import { UpdateUser } from '../../../../core/models/user/update-user.model';
 import { User } from '../../../../core/models/user/user.model';
 import { UserRole } from '../../../../core/models/enums/user-role.enum';
+import { SnackbarUtil } from '../../../utils/snackbar-util';
 
 @Component({
   selector: 'app-user-edit',
@@ -41,6 +42,7 @@ export class UserEditComponent implements OnInit {
   constructor(
     private userService: UserService,
     private dialogRef: MatDialogRef<UserEditComponent>,
+    private snackBarUtil: SnackbarUtil,
     @Inject(MAT_DIALOG_DATA) public data: { user: User }
   ) { }
 
@@ -57,6 +59,7 @@ export class UserEditComponent implements OnInit {
   }
 
   onSubmit(form: NgForm): void {
+    
     if (form.invalid) {
       return;
     }
@@ -65,9 +68,15 @@ export class UserEditComponent implements OnInit {
 
     this.userService.editUser(this.data.user.id, updateData as UpdateUser).subscribe({
       next: (updatedUser) => {
+
+        this.snackBarUtil.showSuccess('🎉 User edited successfully!');
+
         this.dialogRef.close(updatedUser);
       },
       error: (err) => {
+
+        this.snackBarUtil.showError('❌ An error occurred while editing user!')
+
         console.error("Error: " + err.error?.message);
       }
     });

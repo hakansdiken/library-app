@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { AdminSidenavComponent } from '../../../../layout/admin-sidenav/admin-sidenav.component';
+import { AdminSidenavComponent } from '../../../layout/admin-sidenav/admin-sidenav.component';
 
 @Component({
   selector: 'app-admin-layout',

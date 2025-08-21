@@ -1,8 +1,7 @@
 import { Routes } from '@angular/router';
-import { AdminLayoutComponent } from './layout/admin-layout/admin-layout.component';
+import { AdminLayoutComponent } from './admin-layout/admin-layout.component';
 import { UserManagementComponent } from '../../shared/components/user/user-management/user-management.component';
 import { BookManagementComponent } from './books/book-management/book-management.component';
-import { BorrowListComponent } from '../../shared/components/borrow/borrow-list/borrow-list.component';
 import { BorrowContainerComponent } from '../../shared/components/borrow/borrow-container/borrow-container.component';
 
 export const ADMIN_ROUTES: Routes = [

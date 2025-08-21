@@ -9,6 +9,7 @@ import { BookService } from '../../../core/services/book/book.service';
 import { CreateBook } from '../../../core/models/book/create-book.model';
 import { Book } from '../../../core/models/book/book.model';
 import { UpdateBook } from '../../../core/models/book/update-book.model';
+import { SnackbarUtil } from '../../utils/snackbar-util';
 
 @Component({
   selector: 'app-book-create',
@@ -36,6 +37,7 @@ export class BookFormComponent implements OnInit {
   constructor(
     private bookService: BookService,
     private dialogRef: MatDialogRef<BookFormComponent>,
+    private snackBarUtil: SnackbarUtil,
     @Inject(MAT_DIALOG_DATA) public data: { mode: string, book?: Book }
   ) { }
 
@@ -79,10 +81,15 @@ export class BookFormComponent implements OnInit {
       this.bookService.editBook(this.data.book!.id, updateBook).subscribe({
 
         next: (updatedBook) => {
+
+          this.snackBarUtil.showSuccess('🎉 Book edited successfully!');
+
           this.dialogRef.close(updatedBook);
         },
         error: (err) => {
-          console.error('Error:', err.error?.message);
+          this.snackBarUtil.showError('❌ An error occurred while editing book!')
+
+          console.error('Error: ', err.error?.message);
         }
       });
 
@@ -91,10 +98,16 @@ export class BookFormComponent implements OnInit {
       this.bookService.createBook(this.book).subscribe({
 
         next: (createdBook) => {
+
+          this.snackBarUtil.showSuccess('🎉 Book added successfully!');
+
           this.dialogRef.close(createdBook);
         },
         error: (err) => {
-          console.error('Error:', err.error?.message);
+
+          this.snackBarUtil.showError('❌ An error occurred while adding book!')
+
+          console.error('Error: ', err.error?.message);
         }
       });
     }
