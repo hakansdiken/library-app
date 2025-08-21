@@ -1,5 +1,13 @@
-<h2 class="section-title">Select User</h2>
 <div class="user-container">
+    <h2 class="section-title">Select User</h2>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Search</mat-label>
+        <input matInput placeholder="Enter search term" [(ngModel)]="searchKey" (keyup.enter)="loadUsers()">
+        <button mat-icon-button matSuffix (click)="loadUsers()">
+            <mat-icon>search</mat-icon>
+        </button>
+    </mat-form-field>
     <mat-card>
         <table mat-table [dataSource]="users" class="mat-elevation-z8 full-width">
 

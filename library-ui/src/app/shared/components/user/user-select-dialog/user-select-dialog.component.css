@@ -1,14 +1,21 @@
 .section-title {
-    text-align: center;
+  text-align: center;
 }
 
 .user-container {
-    display: flex;
-    justify-content: center;
-    height: 50vh;
-    overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 50vh;
+  overflow-y: auto;
+  margin: 10px;
+  gap: 15px;
+}
+
+mat-form-field {
+  width: 300px;
 }
 
 mat-card {
-    width: 100%;
+  width: 100%;
 }
