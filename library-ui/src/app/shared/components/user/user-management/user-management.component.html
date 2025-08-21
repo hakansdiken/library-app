@@ -42,8 +42,9 @@
             <mat-icon>edit</mat-icon>
             Edit
           </button>
-          <button mat-raised-button *ngIf="currentUser?.role === 'admin'" [disabled]="!user.canBeDeleted"
-            (click)="openDeleteDialog(user)" style="margin-right: 8px;">
+          <button mat-raised-button *ngIf="currentUser?.role === 'admin'" (click)="openDeleteDialog(user)"
+            style="margin-right: 8px;">
+            <!-- [disabled]="!user.canBeDeleted" eklenebilir -->
             <mat-icon>delete</mat-icon>
             Delete
           </button>

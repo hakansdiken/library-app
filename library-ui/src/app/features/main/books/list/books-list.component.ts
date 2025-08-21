@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { DeleteItemComponent } from '../../../../shared/components/delete-component/delete-item.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-books-list',
@@ -46,7 +48,7 @@ export class BooksListComponent implements OnInit {
   totalItems?: number;
   searchKey?: string = ''
 
-  constructor(private bookService: BookService, private borrowService: BorrowService, private authService: AuthService, private router: Router, private dialog: MatDialog) { }
+  constructor(private bookService: BookService, private borrowService: BorrowService, private authService: AuthService, private router: Router, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     const currentUser = this.authService.getUser();
@@ -79,6 +81,20 @@ export class BooksListComponent implements OnInit {
     });
   }
 
+  deleteBook(bookId: string): void {
+
+    this.bookService.deleteBook(bookId).subscribe({
+      next: () => {
+
+        this.loadBooks();
+      },
+      error: (err) => {
+
+        console.error("Error:" + err.error?.message)
+      }
+    });
+  }
+
   openCreateDialog() {
 
     const dialogRef = this.dialog.open(BookFormComponent, {
@@ -104,6 +120,34 @@ export class BooksListComponent implements OnInit {
       if (selectedUser) {
 
         this.createBorrow(book, selectedUser);
+      }
+    });
+  }
+
+  openDeleteDialog(book: Book) {
+    if (book.isBorrowed) {
+
+      this.snackBar.open('Borrowed books cannot be deleted!', 'Ok', {
+        duration: 3000
+      });
+
+      return;
+    }
+
+    const dialogRef = this.dialog.open(DeleteItemComponent, {
+
+      width: '400px',
+      data: {
+        title: 'Delete Book',
+        message: `Are you sure you want to delete ${book.title}?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+
+      if (result) {
+
+        this.deleteBook(book.id);
       }
     });
   }

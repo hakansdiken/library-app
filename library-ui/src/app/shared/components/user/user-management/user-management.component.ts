@@ -16,6 +16,7 @@ import { AuthService } from '../../../../core/services/auth/auth.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -50,7 +51,7 @@ export class UserManagementComponent implements OnInit {
   // hasNextPage?: boolean = false;
 
 
-  constructor(private userService: UserService, private authService: AuthService, private dialog: MatDialog, private router: Router) { }
+  constructor(private userService: UserService, private authService: AuthService, private dialog: MatDialog, private router: Router, private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
 
@@ -131,6 +132,16 @@ export class UserManagementComponent implements OnInit {
   }
 
   openDeleteDialog(user: User) {
+
+    if (!user.canBeDeleted) {
+
+      this.snackBar.open("This user cannot be deleted because has book!", 'Ok', {
+        duration: 3000
+      });
+
+      return;
+    }
+
     const dialogRef = this.dialog.open(DeleteItemComponent, {
       width: '400px',
       data: {

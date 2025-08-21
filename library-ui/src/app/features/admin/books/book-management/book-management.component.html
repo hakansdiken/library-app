@@ -53,8 +53,8 @@
                         <mat-icon>edit</mat-icon>
                         Edit
                     </button>
-                    <button mat-raised-button color="warn" [disabled]="book.isBorrowed" style="margin-right: 8px;"
-                        (click)="openDeleteDialog(book)">
+                    <button mat-raised-button color="warn" style="margin-right: 8px;" (click)="openDeleteDialog(book)">
+                        <!-- [disabled]="book.isBorrowed" eklenebilir -->
                         <mat-icon>delete</mat-icon>
                         Delete
                     </button>

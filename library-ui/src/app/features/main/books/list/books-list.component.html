@@ -39,12 +39,19 @@
         <button mat-flat-button [hidden]="userRole !== 'admin' && userRole !=='librarian'" [disabled]="book.isBorrowed"
           (click)="openLendDialog(book)">Lend</button>
         <button mat-raised-button (click)="goToBookDetail(book.id)">Detail</button>
-        <button mat-icon-button (click)="goToBorrowHistory(book.id)"
-          *ngIf="userRole === 'admin' || userRole ==='librarian'">
-          <mat-icon>
-            history
-          </mat-icon>
-        </button>
+
+        <div class="button-container" *ngIf="userRole === 'admin' || userRole ==='librarian'">
+          <button mat-icon-button (click)="goToBorrowHistory(book.id)">
+            <mat-icon>
+              history
+            </mat-icon>
+          </button>
+          <button mat-icon-button (click)="openDeleteDialog(book)">
+            <mat-icon>
+              delete
+            </mat-icon>
+          </button>
+        </div>
       </div>
 
     </mat-card-content>
