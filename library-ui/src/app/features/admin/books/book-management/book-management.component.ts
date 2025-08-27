@@ -113,7 +113,7 @@ export class BookManagementComponent implements OnInit {
 
     if (book.isBorrowed) {
 
-      this.snackbarUtil.showWarning('⚠️ This user cannot be deleted because has book!')
+      this.snackbarUtil.showWarning('⚠️ Borrowed books cannot be deleted!')
 
       return;
     }

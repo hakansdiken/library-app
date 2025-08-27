@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 import { LoginRequest } from '../../../core/models/auth/login.model';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Roles } from '../../../../constants/roles';
+import { UserRole } from '../../../core/models/enums/user-role.enum';
 
 @Component({
   selector: 'app-login',
@@ -46,7 +46,7 @@ export class LoginComponent {
 
         const role = res.data.role;
 
-        if (role === Roles.ADMIN) {
+        if (role === UserRole.Admin) {
 
           this.router.navigate(['/admin']);
         } else {

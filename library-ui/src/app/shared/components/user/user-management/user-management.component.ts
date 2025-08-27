@@ -139,7 +139,7 @@ export class UserManagementComponent implements OnInit {
   openDeleteDialog(user: User) {
 
     if (!user.canBeDeleted) {
-      this.snackbarUtil.showWarning('⚠️ This user cannot be deleted because has user!')
+      this.snackbarUtil.showWarning('⚠️ This user cannot be deleted because has book!')
 
       return;
     }

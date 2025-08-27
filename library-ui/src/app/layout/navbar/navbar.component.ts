@@ -4,7 +4,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth/auth.service';
-import { Roles } from '../../../constants/roles';
 import { CommonModule } from '@angular/common';
 import { UserRole } from '../../core/models/enums/user-role.enum';
 import { User } from '../../core/models/user/user.model';
@@ -34,7 +33,7 @@ export class NavbarComponent {
   }
 
   isAdmin(): boolean {
-    return this.userRole === Roles.ADMIN;
+    return this.userRole === UserRole.Admin;
   }
 
   goToBooks() {

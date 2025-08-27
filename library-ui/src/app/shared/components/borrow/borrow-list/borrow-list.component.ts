@@ -8,7 +8,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { Borrow } from '../../../../core/models/borrow/borrow';
 import { User } from '../../../../core/models/user/user.model';
 import { AuthService } from '../../../../core/services/auth/auth.service';
-import { Roles } from '../../../../../constants/roles';
+import { UserRole } from '../../../../core/models/enums/user-role.enum';
 
 @Component({
   selector: 'app-borrow-list',
@@ -51,7 +51,7 @@ export class BorrowListComponent {
   ngOnInit() {
     this.currentUser = this.authService.getUser();
 
-    if ((this.currentUser?.role === Roles.ADMIN || this.currentUser?.role === Roles.LIBRARIAN)
+    if ((this.currentUser?.role === UserRole.Admin || this.currentUser?.role === UserRole.Librarian)
       && !this.displayedColumns.includes('actions')) {
 
       this.displayedColumns.push('actions');
