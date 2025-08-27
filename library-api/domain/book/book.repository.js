@@ -21,16 +21,24 @@ export class BookRepository {
         const countResult = await pool.query(`
                 SELECT COUNT(*) 
                 FROM books b
-                WHERE b.title ILIKE $1
-                    OR b.author ILIKE $1
+                WHERE ( 
+                    b.title ILIKE $1 
+                    OR b.author ILIKE $1 )
+                    AND b.is_deleted = false
             `, [searchValue]);
 
         const totalItems = Number(countResult.rows[0].count);
         const totalPages = Math.ceil(totalItems / limit);
 
-        const result = await pool.query(
-
-            `SELECT * FROM books  WHERE title ILIKE $3 OR author ILIKE $3 ORDER BY created_at DESC LIMIT $1 OFFSET $2 ;`,
+        const result = await pool.query(`
+                SELECT * FROM books  
+                    WHERE (
+                    title ILIKE $3 
+                    OR author ILIKE $3) 
+                    AND  is_deleted = false 
+                    ORDER BY created_at DESC 
+                    LIMIT $1 OFFSET $2
+                    `,
             [limit, offset, searchValue]
         );
 
@@ -125,7 +133,7 @@ export class BookRepository {
         }
     }
 
-    async delete(id) {
+    async hardDelete(id) {
         // Eğer kitap borrowed ise silinmesin
         const borrowedCount = await pool.query(
             "SELECT COUNT(*) FROM borrows WHERE book_id = $1 AND status = $2",
@@ -137,6 +145,22 @@ export class BookRepository {
         }
 
         await pool.query("DELETE FROM books WHERE id = $1", [id]);
+
+        return { success: true };
+    }
+
+    async delete(id) {
+        // Eğer kitap borrowed ise silinmesin
+        const borrowedCount = await pool.query(
+            "SELECT COUNT(*) FROM borrows WHERE book_id = $1 AND status = $2",
+            [id, BorrowStatus.BORROWED]
+        );
+
+        if (Number(borrowedCount.rows[0].count) > 0) {
+            return { success: false };
+        }
+
+        await pool.query("UPDATE books  SET is_deleted = true WHERE id = $1", [id]);
 
         return { success: true };
     }

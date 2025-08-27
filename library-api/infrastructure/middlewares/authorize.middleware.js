@@ -1,4 +1,3 @@
-import { Roles } from "../../domain/constants/roles.js";
 
 /**
  * @param {string[]} allowedRoles - Allowed roles.

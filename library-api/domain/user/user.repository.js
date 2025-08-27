@@ -30,9 +30,10 @@ export class UserRepository {
         const countResult = await pool.query(`
             SELECT COUNT(*) 
             FROM users u
-            WHERE u.name ILIKE $1
+            WHERE (u.name ILIKE $1
                 OR u.surname ILIKE $1
-                OR u.email ILIKE $1 
+                OR u.email ILIKE $1)
+                AND u.is_deleted = false
         `, [searchValue])
 
         const totalItems = Number(countResult.rows[0].count);
@@ -47,15 +48,15 @@ export class UserRepository {
                     WHERE user_id = u.id AND status = 'borrowed'
                     ) AS "canBeDeleted"
                     FROM users u
-                    WHERE u.name ILIKE $3
+                    WHERE ( u.name ILIKE $3
                     OR u.surname ILIKE $3
-                    OR u.email ILIKE $3
+                    OR u.email ILIKE $3 )
+                    AND u.is_deleted = false
                     ORDER BY u.created_at  
-                    DESC LIMIT $1 OFFSET $2;`,
+                    DESC LIMIT $1 OFFSET $2`,
             [limit, offset, searchValue]
         );
 
-        //WHERE title ILIKE $3 OR author ILIKE $3
         if (result.rows.length === 0) {
             return {
                 users: [],
@@ -129,7 +130,7 @@ export class UserRepository {
         }
     }
 
-    async delete(id) {
+    async hardDelete(id) {
 
         const borrowedCount = await pool.query(
             "SELECT COUNT(*) FROM borrows WHERE user_id = $1 AND status = $2",
@@ -141,6 +142,22 @@ export class UserRepository {
         }
 
         await pool.query("DELETE FROM users WHERE id = $1", [id]);
+
+        return { success: true };
+    }
+
+    async delete(id) {
+
+        const borrowedCount = await pool.query(
+            "SELECT COUNT(*) FROM borrows WHERE user_id = $1 AND status = $2",
+            [id, BorrowStatus.BORROWED]
+        );
+
+        if (Number(borrowedCount.rows[0].count) > 0) {
+            return { success: false };
+        }
+
+        await pool.query("UPDATE users SET is_deleted = true WHERE id = $1", [id]);
 
         return { success: true };
     }
